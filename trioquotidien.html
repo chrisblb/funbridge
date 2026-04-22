@@ -56,7 +56,7 @@ table.wt tr.r1 td:nth-child(-n+2),table.wt tr.r2 td:nth-child(-n+2),table.wt tr.
 table.wt tr.r40 td:nth-child(-n+2){background:#fff8f0;}
 </style></head><body>
 <header><h1>♠♥♦♣ Trio Quotidien</h1>
-<p>Classements Funbridge · Mis à jour le 22 avril 2026 à 13:59</p></header>
+<p>Classements Funbridge · Mis à jour le 22 avril 2026 à 14:02</p></header>
 <div class="tw"><div class="tbs" id="tabs"></div></div>
 <div class="sb">
 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -109,7 +109,7 @@ var S=[{"label":"Avril 2026","headers":["#","Joueur","Pts","Jokers","NbJ"],"rows
 function show(i){
   document.querySelectorAll(".tb").forEach(function(t,j){t.classList.toggle("on",j===i);});
   document.querySelectorAll(".sh").forEach(function(s,j){s.classList.toggle("on",j===i);});
-  cs();
+  ds(document.getElementById("sq").value);
 }
 function ds(q){
   var ql=q.toLowerCase(),cb=document.getElementById("cb"),mc=document.getElementById("mc");
