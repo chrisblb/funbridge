@@ -24,7 +24,9 @@ header p{font-size:13px;opacity:.75;margin-top:4px;}
 .mc{font-size:12px;color:var(--mu);white-space:nowrap;min-width:60px;text-align:right;}
 .ct{padding:16px;max-width:960px;margin:0 auto;}
 .sh{display:none;}.sh.on{display:block;}
-.ts{overflow-x:auto;margin-top:8px;}
+.ts{overflow-x:auto;overflow-y:auto;max-height:calc(100vh - 200px);margin-top:8px;}
+thead th{position:sticky;top:0;z-index:3;}
+table.wt thead th:nth-child(-n+2){z-index:4;}
 table{width:100%;border-collapse:collapse;font-size:13px;}
 th{background:var(--g);color:#fff;padding:8px 10px;text-align:left;font-weight:600;font-size:11px;letter-spacing:.5px;white-space:nowrap;}
 td{padding:7px 10px;border-bottom:1px solid var(--b);white-space:nowrap;}
@@ -42,6 +44,9 @@ mark{background:#fff176;border-radius:2px;padding:0 1px;}
 @media(max-width:640px){.dg{grid-template-columns:1fr;}}
 .dh4{font-size:11px;font-weight:600;color:var(--g);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;padding-bottom:5px;border-bottom:2px solid var(--g);}
 tr.nr td{color:var(--mu);font-style:italic;}
+th.sk{cursor:pointer;user-select:none;}
+th.sk:hover{background:var(--gm);}
+.sa{opacity:.55;font-size:9px;margin-left:3px;}
 table.wt{width:auto;min-width:100%;}
 table.wt th:nth-child(1),table.wt td:nth-child(1){position:sticky;left:0;z-index:1;min-width:46px;}
 table.wt th:nth-child(2),table.wt td:nth-child(2){position:sticky;left:46px;z-index:1;min-width:130px;box-shadow:2px 0 4px rgba(0,0,0,.07);}
@@ -51,7 +56,7 @@ table.wt tr.r1 td:nth-child(-n+2),table.wt tr.r2 td:nth-child(-n+2),table.wt tr.
 table.wt tr.r40 td:nth-child(-n+2){background:#fff8f0;}
 </style></head><body>
 <header><h1>♠♥♦♣ Trio Quotidien</h1>
-<p>Classements Funbridge · Mis à jour le 22 avril 2026 à 13:42</p></header>
+<p>Classements Funbridge · Mis à jour le 22 avril 2026 à 13:51</p></header>
 <div class="tw"><div class="tbs" id="tabs"></div></div>
 <div class="sb">
 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -99,6 +104,7 @@ var S=[{"label":"Avril 2026","headers":["#","Joueur","Pts","Jokers","NbJ"],"rows
     }
     ct.appendChild(d);
   });
+  initSort();
 })();
 function show(i){
   document.querySelectorAll(".tb").forEach(function(t,j){t.classList.toggle("on",j===i);});
@@ -134,6 +140,39 @@ function rm(r){
   r.querySelectorAll("td").forEach(function(td){
     var o=td.getAttribute("data-o");
     if(o){td.textContent=o;td.removeAttribute("data-o");}
+  });
+}
+function initSort(){
+  document.querySelectorAll(".sh table").forEach(function(tbl){
+    tbl.querySelectorAll("thead th").forEach(function(th,ci){
+      if(/joker/i.test(th.textContent)) return;
+      th.classList.add("sk");
+      var sp=document.createElement("span");
+      sp.className="sa";sp.textContent="⇅";
+      th.appendChild(sp);
+      th.addEventListener("click",function(){
+        var asc=th.dataset.sort!=="asc";
+        tbl.querySelectorAll("thead th").forEach(function(h){
+          h.dataset.sort="";
+          var s=h.querySelector(".sa");
+          if(s){s.textContent="⇅";s.style.opacity=".55";}
+        });
+        th.dataset.sort=asc?"asc":"desc";
+        sp.textContent=asc?"↑":"↓";
+        sp.style.opacity="1";
+        var tbody=tbl.querySelector("tbody");
+        var rows=Array.from(tbody.querySelectorAll("tr"));
+        rows.sort(function(a,b){
+          var av=(a.cells[ci]||{}).textContent||"";
+          var bv=(b.cells[ci]||{}).textContent||"";
+          av=av.trim();bv=bv.trim();
+          var an=parseFloat(av.replace(/[^\d.-]/g,"")),bn=parseFloat(bv.replace(/[^\d.-]/g,""));
+          if(!isNaN(an)&&!isNaN(bn)) return asc?an-bn:bn-an;
+          return asc?av.localeCompare(bv,"fr"):bv.localeCompare(av,"fr");
+        });
+        rows.forEach(function(r){tbody.appendChild(r);});
+      });
+    });
   });
 }
 </script>
