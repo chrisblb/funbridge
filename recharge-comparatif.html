@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comparatif Recharge VE</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --card: #21253a;
+      --border: #2e3352;
+      --accent: #4f8ef7;
+      --green: #3ecf8e;
+      --orange: #f59e0b;
+      --red: #ef4444;
+      --text: #e2e8f0;
+      --muted: #8892a4;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 16px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    header p.subtitle {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    #meta-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 16px;
+      max-width: 1100px;
+      margin: 0 auto 28px auto;
+      font-size: 0.82rem;
+      color: var(--muted);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    #meta-bar span strong { color: var(--text); }
+
+    #meta-bar button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 14px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: opacity .2s;
+    }
+
+    #meta-bar button:hover { opacity: 0.85; }
+
+    /* ── GRID ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 18px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform .15s, box-shadow .15s;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 28px rgba(0,0,0,.45);
+    }
+
+    .card-header {
+      padding: 16px 18px 12px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-circle {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1rem;
+      flex-shrink: 0;
+      color: #fff;
+    }
+
+    .card-header .name { font-weight: 700; font-size: 1rem; }
+    .card-header .offer-name { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+
+    .badge {
+      margin-left: auto;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    .badge-sub   { background: rgba(79,142,247,.18); color: var(--accent); }
+    .badge-nosub { background: rgba(62,207,142,.18); color: var(--green); }
+
+    .card-body {
+      padding: 14px 18px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 0.85rem;
+    }
+
+    .row .label { color: var(--muted); }
+
+    .row .val {
+      font-weight: 600;
+      text-align: right;
+      max-width: 60%;
+    }
+
+    .price-big {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--green);
+      line-height: 1;
+    }
+
+    .price-unit { font-size: 0.75rem; color: var(--muted); }
+
+    .price-block {
+      background: var(--surface);
+      border-radius: 8px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .price-block .sub-label {
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .tag-note {
+      font-size: 0.73rem;
+      color: var(--orange);
+      background: rgba(245,158,11,.1);
+      border-radius: 5px;
+      padding: 4px 8px;
+      margin-top: 2px;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 2px 0;
+    }
+
+    /* ── EDIT PANEL ── */
+    #edit-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.7);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    #edit-modal.open { display: flex; }
+
+    #edit-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 680px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    #edit-box h2 { margin-bottom: 14px; font-size: 1.1rem; }
+
+    #edit-box textarea {
+      width: 100%;
+      height: 360px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      padding: 12px;
+      resize: vertical;
+    }
+
+    #edit-box .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      justify-content: flex-end;
+    }
+
+    #edit-box button {
+      padding: 8px 18px;
+      border-radius: 7px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .btn-save { background: var(--green); color: #0f1117; }
+    .btn-cancel { background: var(--border); color: var(--text); }
+
+    .note-global {
+      max-width: 1100px;
+      margin: 24px auto 0;
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .star { color: var(--orange); }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>⚡ Comparatif Recharge VE</h1>
+  <p class="subtitle">Opérateurs · Abonnements · Prix au kWh · Cartes physiques</p>
+</header>
+
+<div id="meta-bar">
+  <span>Dernière mise à jour : <strong id="last-update"></strong></span>
+  <span><button onclick="openEdit()">✏️ Modifier manuellement</button></span>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<p class="note-global">
+  <span class="star">★</span> Tarifs indicatifs, susceptibles d'évoluer. Sources : Mobilize app, Ionity, Chargemap, Izivia, Freshmile.<br>
+  Les prix s'entendent TTC. Hors frais de parking éventuels.
+</p>
+
+<!-- MODAL EDITION -->
+<div id="edit-modal">
+  <div id="edit-box">
+    <h2>✏️ Modifier les données</h2>
+    <textarea id="json-editor"></textarea>
+    <div class="btn-row">
+      <button class="btn-cancel" onclick="closeEdit()">Annuler</button>
+      <button class="btn-save" onclick="saveEdit()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// DONNÉES — modifiables ici ou via le bouton
+// ─────────────────────────────────────────────
+const DEFAULT_DATA = {
+  lastUpdate: "2026-05-08",
+  operators: [
+    {
+      name: "Mobilize",
+      offerName: "Basic (sans abonnement)",
+      color: "#f7c948",
+      initials: "MO",
+      subscription: null,
+      kwh: [
+        { label: "Ionity / Electra / Plug Inn", price: "0,43 €", note: "tarif sans abonnement" },
+        { label: "Autres réseaux", price: "Variable", note: "" }
+      ],
+      card: { included: true, price: 0, note: "Charge Pass inclus (livraison offerte)" },
+      engagement: "Aucun",
+      notes: ""
+    },
+    {
+      name: "Mobilize",
+      offerName: "INTENSE",
+      color: "#f7c948",
+      initials: "MO",
+      subscription: { price: 5.99, unit: "mois", cancelable: true },
+      kwh: [
+        { label: "Ionity / Electra / Plug Inn", price: "0,39 €", note: "→ 0,44 € dès le 05/05/2026 sur Ionity" },
+        { label: "Autres réseaux", price: "−9 %", note: "vs offre Basic" }
+      ],
+      card: { included: true, price: 0, note: "Charge Pass gratuit (max 2/abonnement, livraison incluse)" },
+      engagement: "Aucun — résiliable à tout moment",
+      notes: ""
+    },
+    {
+      name: "Ionity",
+      offerName: "Pass Ionity — Starter",
+      color: "#00c4b0",
+      initials: "IO",
+      subscription: { price: 5.99, unit: "mois", cancelable: true },
+      kwh: [
+        { label: "Bornes Ionity", price: "0,41 €", note: "" }
+      ],
+      card: { included: false, price: 9.79, note: "Carte physique en option" },
+      engagement: "Sans engagement",
+      notes: ""
+    },
+    {
+      name: "Ionity",
+      offerName: "Pass Ionity — Premium",
+      color: "#00c4b0",
+      initials: "IO",
+      subscription: { price: 11.79, unit: "mois", cancelable: true },
+      kwh: [
+        { label: "Bornes Ionity", price: "0,33 €", note: "" }
+      ],
+      card: { included: false, price: 9.79, note: "Carte physique en option" },
+      engagement: "Sans engagement",
+      notes: ""
+    },
+    {
+      name: "Chargemap",
+      offerName: "Pass sans abonnement",
+      color: "#ff7043",
+      initials: "CM",
+      subscription: null,
+      kwh: [
+        { label: "Tous réseaux compatibles", price: "Variable", note: "+ commission 5–15 % par session" }
+      ],
+      card: { included: false, price: 14.90, note: "Carte RFID vendue séparément" },
+      engagement: "Aucun",
+      notes: ""
+    },
+    {
+      name: "Chargemap",
+      offerName: "Boost",
+      color: "#ff7043",
+      initials: "CM",
+      subscription: { price: 8.99, unit: "mois", cancelable: true },
+      kwh: [
+        { label: "Tous réseaux", price: "Sans surcharge", note: "Supprime les frais de service" }
+      ],
+      card: { included: false, price: 14.90, note: "Carte vendue séparément" },
+      engagement: "Sans engagement",
+      notes: ""
+    },
+    {
+      name: "Chargemap",
+      offerName: "Ionity via Chargemap",
+      color: "#ff7043",
+      initials: "CM",
+      subscription: { price: 7.90, unit: "mois", cancelable: true },
+      kwh: [
+        { label: "Bornes Ionity", price: "−30 %", note: "sur tarif Ionity standard" }
+      ],
+      card: { included: false, price: 14.90, note: "Carte vendue séparément" },
+      engagement: "Sans engagement",
+      notes: ""
+    },
+    {
+      name: "Izivia (EDF)",
+      offerName: "Pass IZIVIA",
+      color: "#1e88e5",
+      initials: "IZ",
+      subscription: null,
+      kwh: [
+        { label: "Bornes jusqu'à 50 kW", price: "≈ 0,38 €", note: "Varie selon réseau et opérateur local" }
+      ],
+      card: { included: false, price: 15, note: "Badge sans abonnement" },
+      engagement: "Aucun",
+      notes: "Compatible ~100 % réseaux ouverts France"
+    },
+    {
+      name: "Freshmile",
+      offerName: "Pass Freshmile",
+      color: "#7c3aed",
+      initials: "FM",
+      subscription: null,
+      kwh: [
+        { label: "AC (lent)", price: "0,25–0,40 €", note: "" },
+        { label: "DC (rapide)", price: "≈ 0,65 €", note: "" }
+      ],
+      card: { included: false, price: 4.99, note: "Carte RFID — la moins chère du marché" },
+      engagement: "Aucun",
+      notes: "+650 000 bornes en Europe"
+    }
+  ]
+};
+
+// ─────────────────────────────────────────────
+// MOTEUR DE RENDU
+// ─────────────────────────────────────────────
+function loadData() {
+  try {
+    const stored = localStorage.getItem('recharge-data');
+    return stored ? JSON.parse(stored) : DEFAULT_DATA;
+  } catch { return DEFAULT_DATA; }
+}
+
+function saveData(data) {
+  localStorage.setItem('recharge-data', JSON.stringify(data, null, 2));
+}
+
+function renderCard(op) {
+  const hasSub = !!op.subscription;
+  const cardCost = op.card.price === 0 ? 'Gratuite' : op.card.price.toFixed(2).replace('.', ',') + ' €';
+
+  const kwhRows = op.kwh.map(k => `
+    <div class="row">
+      <span class="label">${k.label}</span>
+      <span class="val">${k.price}</span>
+    </div>
+    ${k.note ? `<div class="tag-note">${k.note}</div>` : ''}
+  `).join('<div class="divider"></div>');
+
+  return `
+    <div class="card">
+      <div class="card-header">
+        <div class="logo-circle" style="background:${op.color}">${op.initials}</div>
+        <div>
+          <div class="name">${op.name}</div>
+          <div class="offer-name">${op.offerName}</div>
+        </div>
+        <span class="badge ${hasSub ? 'badge-sub' : 'badge-nosub'}">${hasSub ? 'Abonnement' : 'Sans abo'}</span>
+      </div>
+      <div class="card-body">
+
+        ${hasSub ? `
+        <div class="price-block">
+          <span class="sub-label">Abonnement mensuel</span>
+          <span><span class="price-big">${op.subscription.price.toFixed(2).replace('.', ',')} €</span>
+          <span class="price-unit">/${op.subscription.unit}</span></span>
+          ${op.subscription.cancelable ? '<div style="font-size:.72rem;color:var(--green);margin-top:2px;">✓ Résiliable à tout moment</div>' : ''}
+        </div>
+        ` : `
+        <div class="price-block">
+          <span class="sub-label">Abonnement</span>
+          <span style="font-size:.9rem;color:var(--green);font-weight:600;">Aucun</span>
+        </div>
+        `}
+
+        <div class="divider"></div>
+
+        <div style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;">Prix au kWh</div>
+        ${kwhRows}
+
+        <div class="divider"></div>
+
+        <div class="row">
+          <span class="label">Carte physique</span>
+          <span class="val" style="color:${op.card.price === 0 ? 'var(--green)' : 'var(--orange)'}">${cardCost}</span>
+        </div>
+        ${op.card.note ? `<div style="font-size:.72rem;color:var(--muted);">${op.card.note}</div>` : ''}
+
+        ${op.engagement ? `
+        <div class="row">
+          <span class="label">Engagement</span>
+          <span class="val" style="font-size:.78rem;">${op.engagement}</span>
+        </div>` : ''}
+
+        ${op.notes ? `<div class="tag-note" style="color:var(--accent);background:rgba(79,142,247,.1)">${op.notes}</div>` : ''}
+
+      </div>
+    </div>
+  `;
+}
+
+function render() {
+  const data = loadData();
+  document.getElementById('last-update').textContent = data.lastUpdate;
+  document.getElementById('grid').innerHTML = data.operators.map(renderCard).join('');
+}
+
+// ─────────────────────────────────────────────
+// EDITION MANUELLE
+// ─────────────────────────────────────────────
+function openEdit() {
+  const data = loadData();
+  document.getElementById('json-editor').value = JSON.stringify(data, null, 2);
+  document.getElementById('edit-modal').classList.add('open');
+}
+
+function closeEdit() {
+  document.getElementById('edit-modal').classList.remove('open');
+}
+
+function saveEdit() {
+  try {
+    const val = JSON.parse(document.getElementById('json-editor').value);
+    saveData(val);
+    closeEdit();
+    render();
+  } catch(e) {
+    alert('JSON invalide : ' + e.message);
+  }
+}
+
+// Fermer en cliquant hors de la modale
+document.getElementById('edit-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeEdit();
+});
+
+// ─────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
