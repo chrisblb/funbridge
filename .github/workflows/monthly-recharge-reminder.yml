@@ -1,0 +1,60 @@
+name: Rappel mensuel — Comparatif Recharge VE
+
+on:
+  schedule:
+    - cron: '0 8 1 * *'   # Le 1er de chaque mois à 8h UTC
+  workflow_dispatch:        # Déclenchable manuellement depuis GitHub
+
+jobs:
+  create-reminder-issue:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+
+    steps:
+      - name: Créer l'issue de rappel
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const today = new Date().toLocaleDateString('fr-FR', {
+              day: 'numeric', month: 'long', year: 'numeric'
+            });
+
+            const body = `
+## ⚡ Mise à jour mensuelle du comparatif recharge VE
+
+**Date du rappel :** ${today}
+
+Il est temps de vérifier et mettre à jour la page [recharge-comparatif.html](https://chrisblb.github.io/funbridge/recharge-comparatif.html).
+
+### Points à vérifier
+
+- [ ] **Mobilize** — Tarifs Basic et INTENSE (prix kWh Ionity/Electra/Plug Inn)
+- [ ] **Ionity** — Starter et Premium (prix kWh, coût carte)
+- [ ] **Chargemap** — Pass, Boost, abonnement Ionity
+- [ ] **Izivia (EDF)** — Prix kWh, tarif carte
+- [ ] **Freshmile** — Prix AC/DC, tarif carte
+- [ ] Nouveaux opérateurs à ajouter ?
+
+### Comment mettre à jour
+
+**Option 1 — Manuellement dans la page**
+Ouvrir la page et cliquer sur **✏️ Modifier manuellement** (modifications sauvegardées dans le navigateur, locales uniquement).
+
+**Option 2 — Demander à Claude de mettre à jour**
+Mentionner cette issue dans une session Claude Code avec les nouveaux tarifs.
+
+**Option 3 — Modifier directement le fichier**
+Éditer \`recharge-comparatif.html\` dans GitHub → section \`DEFAULT_DATA\` en haut du \`<script>\`.
+
+---
+*Issue créée automatiquement par le workflow mensuel.*
+            `;
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `⚡ [${today}] Mettre à jour le comparatif recharge VE`,
+              body: body.trim(),
+              labels: []
+            });

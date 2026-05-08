@@ -269,6 +269,19 @@
       line-height: 1.6;
     }
 
+    #stale-banner {
+      display: none;
+      max-width: 1100px;
+      margin: 0 auto 20px auto;
+      background: rgba(245,158,11,.12);
+      border: 1px solid rgba(245,158,11,.35);
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-size: 0.85rem;
+      color: var(--orange);
+      text-align: center;
+    }
+
     .star { color: var(--orange); }
   </style>
 </head>
@@ -284,6 +297,7 @@
   <span><button onclick="openEdit()">✏️ Modifier manuellement</button></span>
 </div>
 
+<div id="stale-banner"></div>
 <div class="grid" id="grid"></div>
 
 <p class="note-global">
@@ -515,6 +529,7 @@ function render() {
   const data = loadData();
   document.getElementById('last-update').textContent = data.lastUpdate;
   document.getElementById('grid').innerHTML = data.operators.map(renderCard).join('');
+  checkStaleness(data.lastUpdate);
 }
 
 // ─────────────────────────────────────────────
@@ -545,6 +560,18 @@ function saveEdit() {
 document.getElementById('edit-modal').addEventListener('click', function(e) {
   if (e.target === this) closeEdit();
 });
+
+// ─────────────────────────────────────────────
+function checkStaleness(dateStr) {
+  const updated = new Date(dateStr);
+  const now = new Date();
+  const days = Math.floor((now - updated) / 86400000);
+  const banner = document.getElementById('stale-banner');
+  if (days > 30) {
+    banner.style.display = 'block';
+    banner.textContent = `⚠️ Ces données ont ${days} jours — pensez à les actualiser.`;
+  }
+}
 
 // ─────────────────────────────────────────────
 render();
