@@ -9,34 +9,24 @@
 :root{--purple:#1a2a4a;--purple-mid:#2d4a7a;--gold:#c9a84c;--gold-light:#e8c97a;--cream:#f5f0e8;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'DM Sans',sans-serif;background:var(--purple);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
-
 header{text-align:center;margin-bottom:32px;}
 .suits{font-size:28px;letter-spacing:4px;color:var(--gold);}
 h1{font-family:'Playfair Display',serif;color:var(--gold-light);font-size:1.7rem;margin:10px 0 4px;}
 .subtitle{color:rgba(255,255,255,0.45);font-size:0.78rem;letter-spacing:2px;text-transform:uppercase;}
-
 .card{background:var(--cream);border-radius:14px;padding:36px 40px;width:100%;max-width:480px;box-shadow:0 8px 40px rgba(0,0,0,0.4);}
-
 .info-box{background:#eef4ff;border-left:4px solid var(--purple-mid);border-radius:6px;padding:12px 16px;margin-bottom:28px;font-size:0.88rem;color:#2d3a5a;line-height:1.5;}
 .info-box strong{display:block;margin-bottom:4px;color:var(--purple);}
-.info-box ul{margin:6px 0 0 16px;}
-.info-box li{margin-bottom:4px;}
-
 label{display:block;font-size:0.82rem;font-weight:500;color:#2a2a2a;margin-bottom:6px;letter-spacing:0.5px;}
 input{width:100%;padding:11px 14px;border:1.5px solid #ccc;border-radius:8px;font-size:0.97rem;font-family:'DM Sans',sans-serif;background:#fff;transition:border-color 0.2s;}
 input:focus{outline:none;border-color:var(--purple-mid);}
 textarea{width:100%;padding:11px 14px;border:1.5px solid #ccc;border-radius:8px;font-size:0.97rem;font-family:'DM Sans',sans-serif;background:#fff;transition:border-color 0.2s;resize:vertical;min-height:90px;}
 textarea:focus{outline:none;border-color:var(--purple-mid);}
 .field{margin-bottom:20px;}
-.section-sep{border:none;border-top:1px solid #ddd;margin:22px 0;}
-
 button{width:100%;padding:14px;background:var(--purple);color:var(--gold-light);font-family:'Playfair Display',serif;font-size:1.05rem;border:none;border-radius:8px;cursor:pointer;transition:background 0.2s;margin-top:8px;}
 button:hover{background:var(--purple-mid);}
-
 .success{display:none;text-align:center;padding:20px 0;}
 .success .check{font-size:48px;margin-bottom:12px;}
 .success p{color:#2a2a2a;font-size:1rem;line-height:1.6;}
-
 .footer{margin-top:24px;color:rgba(255,255,255,0.3);font-size:0.72rem;text-align:center;}
 </style>
 </head>
@@ -50,13 +40,8 @@ button:hover{background:var(--purple-mid);}
 
 <div class="card">
   <div class="info-box">
-    <strong>Comment fonctionne la sélection ?</strong>
-    Chaque mois, les joueurs retenus pour <strong>LesCadors</strong> sont sélectionnés automatiquement :
-    <ul>
-      <li>Les <strong>40 meilleurs</strong> du Trio Quotidien du mois précédent</li>
-      <li>Les <strong>10 meilleurs</strong> des Petits Cadors du mois précédent</li>
-    </ul>
-    <br>Votre adresse email me permettra de vous communiquer le mot de passe d'accès au tournoi si vous êtes sélectionné(e).
+    <strong>Pourquoi votre adresse email ?</strong>
+    Elle me permettra de vous communiquer le mot de passe d'accès au tournoi LesCadors si vous êtes sélectionné(e) chaque mois.
   </div>
 
   <form id="inscriptionForm" action="https://formspree.io/f/mvzlrdee" method="POST">
@@ -67,18 +52,13 @@ button:hover{background:var(--purple-mid);}
     </div>
 
     <div class="field">
-      <label for="nom">Nom</label>
-      <input type="text" id="nom" name="nom" placeholder="Votre nom (facultatif)">
-    </div>
-
-    <div class="field">
       <label for="email">Adresse email *</label>
       <input type="email" id="email" name="email" placeholder="votre@email.fr" required>
     </div>
 
     <div class="field">
-      <label for="message">Demandes ou remarques éventuelles</label>
-      <textarea id="message" name="message" placeholder="Vos questions ou demandes particulières…"></textarea>
+      <label for="message">Message éventuel</label>
+      <textarea id="message" name="message" placeholder="Vos questions ou remarques…"></textarea>
     </div>
 
     <input type="hidden" name="_subject" value="Nouvelle inscription — LesCadors chrisblb">
