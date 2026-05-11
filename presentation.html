@@ -147,19 +147,21 @@ header p.tagline {
   gap: 10px;
 }
 .rule-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
+  display: block;
+  padding-left: 18px;
+  position: relative;
   font-size: 0.92rem;
   color: rgba(255,255,255,0.75);
+  line-height: 1.65;
 }
 .rule-item::before {
   content: '';
+  position: absolute;
+  left: 0;
+  top: 9px;
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  margin-top: 7px;
-  flex-shrink: 0;
 }
 
 /* Note */
@@ -281,7 +283,7 @@ footer a:hover { color: #e8c97a; }
     <div class="rules">
       <div class="rule-item">Tournoi exceptionnel organisé en décembre</div>
       <div class="rule-item">Ouvert aux meilleurs joueurs de la saison Cadors 2026</div>
-      <div class="rule-item">La règle de sélection sera définie en fin d'année</div>
+      <div class="rule-item">La règle de sélection sera définie ultérieurement</div>
     </div>
   </div>
 
