@@ -14,6 +14,7 @@
       justify-content: center;
       background: #1a1a2e;
       font-family: 'Courier New', monospace;
+      padding: 10px;
     }
 
     .calc {
@@ -21,7 +22,7 @@
       border-radius: 16px;
       padding: 20px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-      width: 280px;
+      width: 300px;
     }
 
     /* Stack display */
@@ -79,18 +80,29 @@
     }
 
     .display-hint {
-      color: #e94560;
-      font-size: 11px;
+      color: #ffd54f;
+      font-size: 12px;
       height: 16px;
+      font-weight: bold;
     }
 
     /* Memory indicator */
     .mem-indicator {
       color: #53c0f0;
       font-size: 11px;
-      text-align: right;
+      text-align: left;
       margin-bottom: 12px;
-      height: 14px;
+      min-height: 14px;
+      line-height: 1.4;
+      word-break: break-all;
+    }
+
+    .mem-indicator span {
+      display: inline-block;
+      background: rgba(83,192,240,0.15);
+      padding: 1px 5px;
+      border-radius: 4px;
+      margin: 1px 2px 1px 0;
     }
 
     /* Buttons grid */
@@ -108,13 +120,18 @@
       font-family: 'Courier New', monospace;
       font-weight: bold;
       cursor: pointer;
-      transition: transform 0.08s, filter 0.08s;
+      transition: transform 0.08s, filter 0.08s, box-shadow 0.08s;
       user-select: none;
     }
 
     button:active {
       transform: scale(0.93);
       filter: brightness(0.85);
+    }
+
+    button.armed {
+      box-shadow: 0 0 0 3px #ffd54f;
+      filter: brightness(1.2);
     }
 
     .btn-digit {
@@ -184,8 +201,8 @@
     <!-- Row 1 -->
     <button class="btn-clear" onclick="ac()">AC</button>
     <button class="btn-back"  onclick="backspace()">&#9003;</button>
-    <button class="btn-mem"   onclick="sto()">STO</button>
-    <button class="btn-mem"   onclick="rcl()">RCL</button>
+    <button class="btn-mem" id="btn-sto" onclick="sto()">STO</button>
+    <button class="btn-mem" id="btn-rcl" onclick="rcl()">RCL</button>
 
     <!-- Row 2 -->
     <button class="btn-digit" onclick="digit('7')">7</button>
@@ -223,12 +240,12 @@
   let entry = '0';
   let hasEntry = false;
   let justEntered = false;
-  let memory = null;
+  let memories = {};        // { 0: val, 1: val, ... }  registres 0-9
+  let pendingMemOp = null;  // 'sto' | 'rcl' | null
 
   function fmt(n) {
     if (!isFinite(n)) return isNaN(n) ? 'Erreur' : (n > 0 ? '+∞' : '−∞');
-    let s = parseFloat(n.toPrecision(10)).toString();
-    return s;
+    return parseFloat(n.toPrecision(10)).toString();
   }
 
   function updateDisplay() {
@@ -237,8 +254,26 @@
     document.getElementById('st-y').textContent = fmt(stack[1]);
     document.getElementById('st-z').textContent = fmt(stack[2]);
     document.getElementById('st-t').textContent = fmt(stack[3]);
-    document.getElementById('mem-ind').textContent = memory !== null ? `M: ${fmt(memory)}` : '';
-    document.getElementById('hint').textContent = hasEntry ? 'saisie' : '';
+
+    // Indicateur mémoires : liste des registres remplis
+    const memEl = document.getElementById('mem-ind');
+    const keys = Object.keys(memories).sort();
+    if (keys.length === 0) {
+      memEl.innerHTML = '';
+    } else {
+      memEl.innerHTML = keys.map(k => `<span>R${k}=${fmt(memories[k])}</span>`).join('');
+    }
+
+    // Hint
+    let hint = '';
+    if (pendingMemOp === 'sto') hint = 'STO — chiffre 0-9 ?';
+    else if (pendingMemOp === 'rcl') hint = 'RCL — chiffre 0-9 ?';
+    else if (hasEntry) hint = 'saisie';
+    document.getElementById('hint').textContent = hint;
+
+    // Armed buttons
+    document.getElementById('btn-sto').classList.toggle('armed', pendingMemOp === 'sto');
+    document.getElementById('btn-rcl').classList.toggle('armed', pendingMemOp === 'rcl');
   }
 
   function liftStack() {
@@ -247,7 +282,44 @@
     stack[1] = stack[0];
   }
 
+  function cancelPending() {
+    if (pendingMemOp) {
+      pendingMemOp = null;
+      updateDisplay();
+    }
+  }
+
   function digit(d) {
+    // Si STO/RCL en attente, le chiffre est un n° de registre
+    if (pendingMemOp === 'sto') {
+      const reg = d;
+      const val = hasEntry ? parseFloat(entry) : stack[0];
+      memories[reg] = isNaN(val) ? 0 : val;
+      pendingMemOp = null;
+      updateDisplay();
+      return;
+    }
+    if (pendingMemOp === 'rcl') {
+      const reg = d;
+      pendingMemOp = null;
+      if (memories[reg] === undefined) {
+        updateDisplay();
+        return;
+      }
+      // Si saisie en cours, on la pousse d'abord (comme ENTER)
+      if (hasEntry) {
+        const val = parseFloat(entry);
+        liftStack();
+        stack[0] = isNaN(val) ? 0 : val;
+        hasEntry = false;
+      }
+      liftStack();
+      stack[0] = memories[reg];
+      updateDisplay();
+      return;
+    }
+
+    // saisie normale
     if (!hasEntry) {
       entry = d === '0' ? '0' : d;
       hasEntry = true;
@@ -260,6 +332,7 @@
   }
 
   function dot() {
+    cancelPending();
     if (!hasEntry) { entry = '0.'; hasEntry = true; }
     else if (!entry.includes('.')) entry += '.';
     justEntered = false;
@@ -267,6 +340,7 @@
   }
 
   function negate() {
+    cancelPending();
     if (hasEntry) {
       entry = entry.startsWith('-') ? entry.slice(1) : '-' + entry;
     } else {
@@ -276,6 +350,7 @@
   }
 
   function backspace() {
+    if (pendingMemOp) { cancelPending(); return; }
     if (!hasEntry) return;
     entry = entry.slice(0, -1);
     if (entry === '' || entry === '-') entry = '0';
@@ -283,6 +358,7 @@
   }
 
   function enter() {
+    cancelPending();
     const val = hasEntry ? parseFloat(entry) : stack[0];
     liftStack();
     stack[0] = isNaN(val) ? 0 : val;
@@ -292,6 +368,7 @@
   }
 
   function op(operator) {
+    cancelPending();
     if (hasEntry) {
       const val = parseFloat(entry);
       liftStack();
@@ -314,6 +391,8 @@
   }
 
   function ac() {
+    // AC efface la pile et la saisie mais conserve les mémoires
+    if (pendingMemOp) { cancelPending(); return; }
     stack = [0, 0, 0, 0];
     entry = '0';
     hasEntry = false;
@@ -322,6 +401,7 @@
   }
 
   function drop() {
+    cancelPending();
     if (hasEntry) { hasEntry = false; entry = '0'; }
     else {
       stack[0] = stack[1];
@@ -332,6 +412,7 @@
   }
 
   function swap() {
+    cancelPending();
     if (hasEntry) {
       const val = parseFloat(entry);
       liftStack();
@@ -343,26 +424,23 @@
   }
 
   function sto() {
-    // Mémorise la valeur affichée (saisie en cours ou X) sans toucher la pile
-    const val = hasEntry ? parseFloat(entry) : stack[0];
-    memory = isNaN(val) ? 0 : val;
+    // Re-appui sur STO annule
+    if (pendingMemOp === 'sto') { pendingMemOp = null; updateDisplay(); return; }
+    pendingMemOp = 'sto';
     updateDisplay();
   }
 
   function rcl() {
-    if (memory === null) return;
-    // Si saisie en cours, on la pousse d'abord sur la pile (comme ENTER)
-    if (hasEntry) {
-      const val = parseFloat(entry);
-      liftStack();
-      stack[0] = isNaN(val) ? 0 : val;
-      hasEntry = false;
-    }
-    // Puis on remonte la pile et on place la mémoire en X
-    liftStack();
-    stack[0] = memory;
+    if (pendingMemOp === 'rcl') { pendingMemOp = null; updateDisplay(); return; }
+    pendingMemOp = 'rcl';
     updateDisplay();
   }
+
+  // Effacer toutes les mémoires : double-tap long sur STO ? non, plus simple :
+  // appui sur AC pendant que STO est armé efface toutes les mémoires
+  // (la fonction ac() ci-dessus annule juste le pending — adaptation :)
+  // En réalité on garde le comportement simple ; pour vider une mémoire,
+  // tu peux y stocker 0.
 
   document.addEventListener('keydown', e => {
     if (e.key >= '0' && e.key <= '9') digit(e.key);
@@ -374,6 +452,8 @@
     else if (e.key === '/') { e.preventDefault(); op('/'); }
     else if (e.key === 'Backspace') backspace();
     else if (e.key === 'Escape') ac();
+    else if (e.key === 's' || e.key === 'S') sto();
+    else if (e.key === 'r' || e.key === 'R') rcl();
   });
 
   updateDisplay();
