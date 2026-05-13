@@ -343,20 +343,24 @@
   }
 
   function sto() {
-    if (hasEntry) {
-      const val = parseFloat(entry);
-      stack[0] = isNaN(val) ? 0 : val;
-      hasEntry = false;
-    }
-    memory = stack[0];
+    // Mémorise la valeur affichée (saisie en cours ou X) sans toucher la pile
+    const val = hasEntry ? parseFloat(entry) : stack[0];
+    memory = isNaN(val) ? 0 : val;
     updateDisplay();
   }
 
   function rcl() {
     if (memory === null) return;
+    // Si saisie en cours, on la pousse d'abord sur la pile (comme ENTER)
+    if (hasEntry) {
+      const val = parseFloat(entry);
+      liftStack();
+      stack[0] = isNaN(val) ? 0 : val;
+      hasEntry = false;
+    }
+    // Puis on remonte la pile et on place la mémoire en X
     liftStack();
     stack[0] = memory;
-    hasEntry = false;
     updateDisplay();
   }
 
