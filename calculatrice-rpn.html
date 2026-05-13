@@ -343,14 +343,18 @@
   }
 
   function sto() {
-    memory = hasEntry ? parseFloat(entry) : stack[0];
-    if (isNaN(memory)) memory = 0;
+    if (hasEntry) {
+      const val = parseFloat(entry);
+      stack[0] = isNaN(val) ? 0 : val;
+      hasEntry = false;
+    }
+    memory = stack[0];
     updateDisplay();
   }
 
   function rcl() {
     if (memory === null) return;
-    if (!hasEntry) liftStack();
+    liftStack();
     stack[0] = memory;
     hasEntry = false;
     updateDisplay();
