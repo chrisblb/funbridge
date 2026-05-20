@@ -9,30 +9,24 @@
     body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; color: #333; padding: 20px; }
     h1 { text-align: center; margin-bottom: 20px; color: #2c3e50; font-size: 1.8rem; }
 
-    .controls {
-      display: flex; gap: 10px; flex-wrap: wrap;
-      justify-content: center; margin-bottom: 16px; align-items: center;
-    }
-    input[type="text"] {
+    .controls { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 12px; align-items: center; }
+    #searchInput {
       padding: 9px 14px; border: 1px solid #ccc; border-radius: 8px;
-      font-size: 1rem; width: 300px; outline: none; transition: border-color .2s;
+      font-size: 1rem; width: 300px; outline: none;
     }
-    input[type="text"]:focus { border-color: #3498db; }
-
-    select {
+    #searchInput:focus { border-color: #3498db; }
+    #sortSelect {
       padding: 9px 12px; border: 1px solid #ccc; border-radius: 8px;
-      font-size: .9rem; background: #fff; cursor: pointer; outline: none;
+      font-size: .9rem; background: #fff; cursor: pointer;
     }
-
-    .filter-btns { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+    .filter-btns { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; margin-bottom: 12px; }
     .filter-btns button {
       padding: 8px 16px; border: 1px solid #ccc; background: #fff;
-      border-radius: 8px; cursor: pointer; font-size: .9rem; transition: all .2s;
+      border-radius: 8px; cursor: pointer; font-size: .9rem;
     }
-    .filter-btns button:hover { background: #eaf4fb; }
     .filter-btns button.active { background: #3498db; color: #fff; border-color: #3498db; }
 
-    .summary { text-align: center; margin-bottom: 18px; color: #666; font-size: .9rem; }
+    #summary { text-align: center; margin-bottom: 16px; color: #666; font-size: .9rem; }
 
     .section-block { margin-top: 28px; }
     .section-title {
@@ -40,21 +34,26 @@
       border-radius: 8px 8px 0 0; font-size: 1rem; font-weight: 600;
     }
     .section-title span { font-weight: 300; font-size: .85rem; margin-left: 8px; opacity: .8; }
+    .section-title.green { background: #27ae60; }
+    .section-title.orange { background: #e67e22; }
 
     .book-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-      gap: 12px; background: #e8ecf0; padding: 12px; border-radius: 0 0 8px 8px;
+      display: flex; flex-wrap: wrap; gap: 12px;
+      background: #e8ecf0; padding: 12px; border-radius: 0 0 8px 8px;
     }
     .book-card {
       background: #fff; border-radius: 8px; padding: 14px;
       border-left: 4px solid #3498db; box-shadow: 0 1px 3px rgba(0,0,0,.08);
-      transition: transform .15s, box-shadow .15s;
+      width: calc(25% - 9px); min-width: 240px; flex-shrink: 0;
     }
-    .book-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.12); }
-    .book-card.commande { border-left-color: #27ae60; }
+    @media (max-width: 1100px) { .book-card { width: calc(33% - 8px); } }
+    @media (max-width: 800px)  { .book-card { width: calc(50% - 6px); } }
+    @media (max-width: 520px)  { .book-card { width: 100%; } }
+    .book-card.commande   { border-left-color: #27ae60; }
     .book-card.precommande { border-left-color: #e67e22; }
+    .book-card.hidden { display: none !important; }
 
-    .book-title { font-weight: 700; font-size: .95rem; color: #2c3e50; line-height: 1.3; margin-bottom: 4px; }
+    .book-title { font-weight: 700; font-size: .93rem; color: #2c3e50; line-height: 1.3; margin-bottom: 4px; }
     .book-author { font-size: .85rem; color: #555; margin-bottom: 6px; font-style: italic; }
     .book-meta { font-size: .8rem; color: #777; margin-bottom: 2px; }
     .book-price {
@@ -66,286 +65,1145 @@
       margin-left: 6px; font-weight: 600; vertical-align: middle;
       background: #fdebd0; color: #e67e22;
     }
-    .empty-section { padding: 16px; text-align: center; color: #999; background: #e8ecf0; border-radius: 0 0 8px 8px; }
-    .no-results { text-align: center; padding: 40px; color: #999; font-size: 1.1rem; }
-    .hidden { display: none !important; }
+    .section-block.hidden { display: none; }
+    .empty-msg { padding: 16px; color: #999; background: #e8ecf0; border-radius: 0 0 8px 8px; text-align: center; display: none; }
   </style>
 </head>
 <body>
 
-<h1>📚 Inventaire Livres</h1>
+<h1>&#128218; Inventaire Livres</h1>
 
 <div class="controls">
-  <input type="text" id="searchInput" placeholder="Rechercher titre, auteur, éditeur…">
+  <input type="text" id="searchInput" placeholder="Rechercher titre, auteur, &#233;diteur&#8230;">
   <select id="sortSelect">
     <option value="default">Ordre d'origine</option>
-    <option value="title-az">Titre A → Z</option>
-    <option value="title-za">Titre Z → A</option>
-    <option value="author-az">Auteur A → Z</option>
+    <option value="title-az">Titre A &#8594; Z</option>
+    <option value="title-za">Titre Z &#8594; A</option>
+    <option value="author-az">Auteur A &#8594; Z</option>
     <option value="price-asc">Prix croissant</option>
-    <option value="price-desc">Prix décroissant</option>
-    <option value="date-asc">Date ancienne → récente</option>
-    <option value="date-desc">Date récente → ancienne</option>
-    <option value="publisher-az">Éditeur A → Z</option>
+    <option value="price-desc">Prix d&#233;croissant</option>
+    <option value="date-asc">Date ancienne &#8594; r&#233;cente</option>
+    <option value="date-desc">Date r&#233;cente &#8594; ancienne</option>
+    <option value="publisher-az">&#201;diteur A &#8594; Z</option>
   </select>
 </div>
-
-<div class="controls">
-  <div class="filter-btns">
-    <button class="active" data-filter="all">Tout</button>
-    <button data-filter="stock">En stock</button>
-    <button data-filter="commande">Commandés</button>
-    <button data-filter="precommande">Précommandes</button>
-  </div>
+<div class="filter-btns">
+  <button id="btn-all"         class="active">Tout</button>
+  <button id="btn-stock">En stock</button>
+  <button id="btn-commande">Command&#233;s</button>
+  <button id="btn-precommande">Pr&#233;commandes</button>
 </div>
+<div id="summary"></div>
 
-<div class="summary" id="summary"></div>
+<!-- ═══════════════════════════════════════════════════════ EN STOCK ═══ -->
+<div class="section-block" id="sec-stock">
+  <div class="section-title">&#128230; Articles en stock <span>Exp&#233;di&#233; du lundi au samedi</span></div>
+  <div class="empty-msg" id="empty-stock">Aucun r&#233;sultat dans cette section.</div>
+  <div class="book-grid" id="grid-stock">
 
-<div id="sections-container"></div>
+    <div class="book-card stock" data-s="le garcon eternel" data-a="jerome loubry" data-p="calmann-levy" data-date="2026-01-02" data-price="19.93">
+      <div class="book-title">Le Gar&#231;on &#233;ternel</div>
+      <div class="book-author">J&#233;r&#244;me Loubry</div>
+      <div class="book-meta">Calmann-L&#233;vy &middot; 02/01/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782702190753</div>
+      <span class="book-price">19,93&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="ne jamais trembler" data-a="stephen king" data-p="albin michel" data-date="2026-01-28" data-price="22.66">
+      <div class="book-title">Ne jamais trembler</div>
+      <div class="book-author">Stephen King</div>
+      <div class="book-meta">Albin Michel &middot; 28/01/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782226501875</div>
+      <span class="book-price">22,66&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="je suis romane monnier" data-a="delphine de vigan" data-p="gallimard" data-date="2026-01-15" data-price="20.02">
+      <div class="book-title">Je suis Romane Monnier</div>
+      <div class="book-author">Delphine de Vigan</div>
+      <div class="book-meta">Gallimard &middot; 15/01/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782073113252</div>
+      <span class="book-price">20,02&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="une pension en italie" data-a="philippe besson" data-p="editions julliard" data-date="2026-01-08" data-price="19.11">
+      <div class="book-title">Une pension en Italie</div>
+      <div class="book-author">Philippe Besson</div>
+      <div class="book-meta">&#201;ditions Julliard &middot; 08/01/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782260056782</div>
+      <span class="book-price">19,11&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="la femme medecin de galveston" data-a="amanda skenandore" data-p="faubourg marigny" data-date="2025-11-06" data-price="22.75">
+      <div class="book-title">La femme m&#233;decin de Galveston</div>
+      <div class="book-author">Amanda Skenandore</div>
+      <div class="book-meta">Faubourg Marigny &middot; 06/11/2025</div>
+      <div class="book-meta">ISBN&nbsp;: 9782384363827</div>
+      <span class="book-price">22,75&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="la locataire" data-a="freida mcfadden" data-p="city editions" data-date="2026-02-11" data-price="20.02">
+      <div class="book-title">La locataire</div>
+      <div class="book-author">Freida McFadden</div>
+      <div class="book-meta">City &#201;ditions &middot; 11/02/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782824626338</div>
+      <span class="book-price">20,02&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="fauves" data-a="melissa da costa" data-p="albin michel" data-date="2026-01-07" data-price="21.75">
+      <div class="book-title">Fauves</div>
+      <div class="book-author">M&#233;lissa Da Costa</div>
+      <div class="book-meta">Albin Michel &middot; 07/01/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782226483546</div>
+      <span class="book-price">21,75&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="les belles promesses" data-a="pierre lemaitre" data-p="calmann-levy" data-date="2026-01-06" data-price="21.75">
+      <div class="book-title">Les Belles Promesses</div>
+      <div class="book-author">Pierre Lemaitre</div>
+      <div class="book-meta">Calmann-L&#233;vy &middot; 06/01/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782702191477</div>
+      <span class="book-price">21,75&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="le manoir des reves perdus vers la lumiere" data-a="marie-bernadette dupuy" data-p="calmann-levy" data-date="2026-02-04" data-price="21.75">
+      <div class="book-title">Le Manoir des r&#234;ves perdus T.2&nbsp;: Vers la lumi&#232;re</div>
+      <div class="book-author">Marie-Bernadette Dupuy</div>
+      <div class="book-meta">Calmann-L&#233;vy &middot; 04/02/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782702182383</div>
+      <span class="book-price">21,75&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="l ile aux jardins enchantes" data-a="sarah beth durst lulu chen" data-p="bragelonne" data-date="2026-02-11" data-price="20.02">
+      <div class="book-title">L'&#206;le aux jardins enchant&#233;s</div>
+      <div class="book-author">Sarah Beth Durst, Lulu Chen</div>
+      <div class="book-meta">Bragelonne &middot; 11/02/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9791028135492</div>
+      <span class="book-price">20,02&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="le parfum des fleurs sauvages la fille aux boutons d or" data-a="tessa collins" data-p="charleston" data-date="2026-02-12" data-price="20.84">
+      <div class="book-title">Le Parfum des fleurs sauvages T.2&nbsp;: La fille aux boutons d'or</div>
+      <div class="book-author">Tessa Collins</div>
+      <div class="book-meta">Charleston &middot; 12/02/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782385294953</div>
+      <span class="book-price">20,84&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="une jeune fille sans histoires" data-a="shari lapena" data-p="les presses de la cite" data-date="2026-01-22" data-price="20.93">
+      <div class="book-title">Une jeune fille sans histoires</div>
+      <div class="book-author">Shari Lapena</div>
+      <div class="book-meta">Les Presses de la Cit&#233; &middot; 22/01/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782258213425</div>
+      <span class="book-price">20,93&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="sans ame ni conscience" data-a="michael connelly" data-p="calmann-levy" data-date="2026-01-14" data-price="20.84">
+      <div class="book-title">Sans &#226;me ni conscience</div>
+      <div class="book-author">Michael Connelly</div>
+      <div class="book-meta">Calmann-L&#233;vy &middot; 14/01/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782702189054</div>
+      <span class="book-price">20,84&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="aurore" data-a="nicolas leclerc" data-p="le seuil" data-date="2026-02-06" data-price="19.93">
+      <div class="book-title">Aurore</div>
+      <div class="book-author">Nicolas Leclerc</div>
+      <div class="book-meta">Le Seuil &middot; 06/02/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782021590371</div>
+      <span class="book-price">19,93&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="la fin du voyage" data-a="arnaldur indridason" data-p="editions metailie" data-date="2026-02-06" data-price="19.11">
+      <div class="book-title">La fin du voyage</div>
+      <div class="book-author">Arnaldur Indridason</div>
+      <div class="book-meta">&#201;ditions M&#233;taili&#233; &middot; 06/02/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9791022615051</div>
+      <span class="book-price">19,11&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="derniere chance dans les pyrenees" data-a="julia chapman" data-p="robert laffont" data-date="2026-01-29" data-price="17.29">
+      <div class="book-title">Derni&#232;re chance dans les Pyr&#233;n&#233;es</div>
+      <div class="book-author">Julia Chapman</div>
+      <div class="book-meta">Robert Laffont &middot; 29/01/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782221273012</div>
+      <span class="book-price">17,29&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="immersion" data-a="nicolas druart" data-p="belfond" data-date="2026-01-15" data-price="18.20">
+      <div class="book-title">Immersion</div>
+      <div class="book-author">Nicolas Druart</div>
+      <div class="book-meta">Belfond &middot; 15/01/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782714405401</div>
+      <span class="book-price">18,20&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="pas de fumee sans feu" data-a="m j arlidge" data-p="editions les escales" data-date="2026-02-05" data-price="20.84">
+      <div class="book-title">Pas de fum&#233;e sans feu</div>
+      <div class="book-author">M. J. Arlidge</div>
+      <div class="book-meta">&#201;ditions Les Escales &middot; 05/02/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782386980121</div>
+      <span class="book-price">20,84&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="killing me softly" data-a="jacky schwartzmann" data-p="la manufacture de livres" data-date="2026-01-08" data-price="14.47">
+      <div class="book-title">Killing me softly</div>
+      <div class="book-author">Jacky Schwartzmann</div>
+      <div class="book-meta">La Manufacture de Livres &middot; 08/01/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782385532185</div>
+      <span class="book-price">14,47&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="ici" data-a="johana gustawsson thomas enger" data-p="calmann-levy" data-date="2026-02-04" data-price="20.47">
+      <div class="book-title">Ici</div>
+      <div class="book-author">Johana Gustawsson, Thomas Enger</div>
+      <div class="book-meta">Calmann-L&#233;vy &middot; 04/02/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782702194140</div>
+      <span class="book-price">20,47&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="56 jours" data-a="catherine ryan howard" data-p="editions de l archipel" data-date="2026-01-08" data-price="20.93">
+      <div class="book-title">56 jours</div>
+      <div class="book-author">Catherine Ryan Howard</div>
+      <div class="book-meta">&#201;ditions de l'Archipel &middot; 08/01/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782809853179</div>
+      <span class="book-price">20,93&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="les mysteres de byton cove un secret a deterrer" data-a="laetitia sivi" data-p="fleurus" data-date="2025-09-12" data-price="16.33">
+      <div class="book-title">Les Myst&#232;res de Byton Cove&nbsp;: Un secret &#224; d&#233;terrer</div>
+      <div class="book-author">La&#235;titia Sivi</div>
+      <div class="book-meta">Fleurus &middot; 12/09/2025</div>
+      <div class="book-meta">ISBN&nbsp;: 9782215194958</div>
+      <span class="book-price">16,33&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="les mysteres de byton cove la nuit de la disparition" data-a="laetitia sivi" data-p="fleurus" data-date="2026-02-06" data-price="16.33">
+      <div class="book-title">Les myst&#232;res de Byton Cove&nbsp;: La nuit de la disparition</div>
+      <div class="book-author">La&#235;titia Sivi</div>
+      <div class="book-meta">Fleurus &middot; 06/02/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782215200253</div>
+      <span class="book-price">16,33&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="impossibles creatures le roi empoisonne" data-a="katherine rundell" data-p="gallimard jeunesse" data-date="2026-02-05" data-price="15.01">
+      <div class="book-title">Impossibles Cr&#233;atures&nbsp;: Le Roi Empoisonn&#233;</div>
+      <div class="book-author">Katherine Rundell</div>
+      <div class="book-meta">Gallimard Jeunesse &middot; 05/02/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782075234047</div>
+      <span class="book-price">15,01&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="love mom" data-a="iliana xander" data-p="fleuve editions" data-date="2026-01-08" data-price="19.97">
+      <div class="book-title">Love, mom</div>
+      <div class="book-author">Iliana Xander</div>
+      <div class="book-meta">Fleuve &#201;ditions &middot; 08/01/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782265159686</div>
+      <span class="book-price">19,97&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="les enquetes du departement v les morts ne chantent pas" data-a="jussi adler-olsen line holm stine bolther" data-p="albin michel" data-date="2026-03-04" data-price="20.84">
+      <div class="book-title">Les enqu&#234;tes du d&#233;partement V T.11&nbsp;: Les morts ne chantent pas</div>
+      <div class="book-author">Jussi Adler-Olsen, Line Holm, Stine Bolther</div>
+      <div class="book-meta">Albin Michel &middot; 04/03/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782226503732</div>
+      <span class="book-price">20,84&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="le secret des agapanthes morgane et juliette" data-a="clarisse sabard" data-p="charleston" data-date="2026-04-02" data-price="19.02">
+      <div class="book-title">Le secret des agapanthes T.3&nbsp;: Morgane et Juliette</div>
+      <div class="book-author">Clarisse Sabard</div>
+      <div class="book-meta">Charleston &middot; 02/04/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782385295035</div>
+      <span class="book-price">19,02&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="les disparues de willowbrook" data-a="ellen marie wiseman" data-p="faubourg marigny" data-date="2026-03-05" data-price="20.02">
+      <div class="book-title">Les disparues de Willowbrook</div>
+      <div class="book-author">Ellen Marie Wiseman</div>
+      <div class="book-meta">Faubourg Marigny &middot; 05/03/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782384363438</div>
+      <span class="book-price">20,02&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="les soeurs de la resistance" data-a="anna stuart" data-p="city editions" data-date="2026-02-04" data-price="20.02">
+      <div class="book-title">Les S&#339;urs de la R&#233;sistance</div>
+      <div class="book-author">Anna Stuart</div>
+      <div class="book-meta">City &#201;ditions &middot; 04/02/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782824626321</div>
+      <span class="book-price">20,02&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="je vais te detruire" data-a="linwood barclay" data-p="belfond" data-date="2026-02-05" data-price="20.93">
+      <div class="book-title">Je vais te d&#233;truire</div>
+      <div class="book-author">Linwood Barclay</div>
+      <div class="book-meta">Belfond &middot; 05/02/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782714405043</div>
+      <span class="book-price">20,93&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="deferlante" data-a="celine denjean" data-p="michel lafon" data-date="2026-02-12" data-price="19.97">
+      <div class="book-title">D&#233;ferlante</div>
+      <div class="book-author">C&#233;line Denjean</div>
+      <div class="book-meta">Michel Lafon &middot; 12/02/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782749964126</div>
+      <span class="book-price">19,97&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="du gout pour le bonheur" data-a="lorraine fouchet" data-p="editions heloise d ormesson" data-date="2026-03-05" data-price="19.11">
+      <div class="book-title">Du go&#251;t pour le bonheur</div>
+      <div class="book-author">Lorraine Fouchet</div>
+      <div class="book-meta">&#201;ditions H&#233;lo&#239;se d'Ormesson &middot; 05/03/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782487819849</div>
+      <span class="book-price">19,11&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="les invisibles" data-a="roger jon ellory" data-p="sonatine editions" data-date="2026-04-02" data-price="22.29">
+      <div class="book-title">Les Invisibles</div>
+      <div class="book-author">Roger Jon Ellory</div>
+      <div class="book-meta">Sonatine &#201;ditions &middot; 02/04/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782383992691</div>
+      <span class="book-price">22,29&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="le crime du paradis" data-a="guillaume musso" data-p="calmann-levy" data-date="2026-03-03" data-price="20.84">
+      <div class="book-title">Le crime du paradis</div>
+      <div class="book-author">Guillaume Musso</div>
+      <div class="book-meta">Calmann-L&#233;vy &middot; 03/03/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782702192979</div>
+      <span class="book-price">20,84&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="la reine de mai" data-a="neo" data-p="albin michel" data-date="2026-01-28" data-price="19.02">
+      <div class="book-title">La reine de mai</div>
+      <div class="book-author">N&#233;O</div>
+      <div class="book-meta">Albin Michel &middot; 28/01/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782226498984</div>
+      <span class="book-price">19,02&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="nous qui avons connu solange" data-a="marie vareille" data-p="flammarion" data-date="2026-03-11" data-price="20.02">
+      <div class="book-title">Nous qui avons connu Solange</div>
+      <div class="book-author">Marie Vareille</div>
+      <div class="book-meta">Flammarion &middot; 11/03/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782080476418</div>
+      <span class="book-price">20,02&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="le visage de la nuit" data-a="cecile coulon" data-p="editions de l iconoclaste" data-date="2026-01-08" data-price="19.93">
+      <div class="book-title">Le visage de la nuit</div>
+      <div class="book-author">C&#233;cile Coulon</div>
+      <div class="book-meta">&#201;ditions de l'Iconoclaste &middot; 08/01/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782378805715</div>
+      <span class="book-price">19,93&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="les miroirs sourient a ceux qui s aiment" data-a="raphaelle giordano" data-p="editions recamier" data-date="2026-04-23" data-price="19.02">
+      <div class="book-title">Les miroirs sourient &#224; ceux qui s'aiment</div>
+      <div class="book-author">Rapha&#235;lle Giordano</div>
+      <div class="book-meta">&#201;ditions R&#233;camier &middot; 23/04/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782385771201</div>
+      <span class="book-price">19,02&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="que la mort nous frole" data-a="michel bussi" data-p="les presses de la cite" data-date="2026-04-16" data-price="20.84">
+      <div class="book-title">Que la mort nous fr&#244;le</div>
+      <div class="book-author">Michel Bussi</div>
+      <div class="book-meta">Les Presses de la Cit&#233; &middot; 16/04/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782258214460</div>
+      <span class="book-price">20,84&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="le groupe" data-a="isabelle lagarrigue" data-p="editions recamier" data-date="2026-04-09" data-price="19.02">
+      <div class="book-title">Le Groupe</div>
+      <div class="book-author">Isabelle Lagarrigue</div>
+      <div class="book-meta">&#201;ditions R&#233;camier &middot; 09/04/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782385772406</div>
+      <span class="book-price">19,02&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="il faudrait leur dire" data-a="carene ponte" data-p="fleuve editions" data-date="2026-04-02" data-price="18.15">
+      <div class="book-title">Il faudrait leur dire</div>
+      <div class="book-author">Car&#232;ne Ponte</div>
+      <div class="book-meta">Fleuve &#201;ditions &middot; 02/04/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782265158931</div>
+      <span class="book-price">18,15&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="la ferme" data-a="francois-xavier dillard" data-p="editions recamier" data-date="2026-04-02" data-price="19.11">
+      <div class="book-title">La Ferme</div>
+      <div class="book-author">Fran&#231;ois-Xavier Dillard</div>
+      <div class="book-meta">&#201;ditions R&#233;camier &middot; 02/04/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782385770532</div>
+      <span class="book-price">19,11&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="traque" data-a="frank leduc" data-p="belfond" data-date="2026-03-19" data-price="19.56">
+      <div class="book-title">Traqu&#233;</div>
+      <div class="book-author">Frank Leduc</div>
+      <div class="book-meta">Belfond &middot; 19/03/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782714405708</div>
+      <span class="book-price">19,56&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="le berger d alep" data-a="stephanie perez" data-p="editions recamier" data-date="2026-03-12" data-price="19.11">
+      <div class="book-title">Le Berger d'Alep</div>
+      <div class="book-author">St&#233;phanie Perez</div>
+      <div class="book-meta">&#201;ditions R&#233;camier &middot; 12/03/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782385772062</div>
+      <span class="book-price">19,11&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="le club des amateurs de romans policiers le crime de l indian pacific" data-a="c a larmer" data-p="le cherche midi" data-date="2026-03-12" data-price="14.47">
+      <div class="book-title">Le club des amateurs de romans policiers T.7&nbsp;: Le Crime de l'Indian Pacific</div>
+      <div class="book-author">C. A. Larmer</div>
+      <div class="book-meta">Le Cherche Midi &middot; 12/03/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782749185408</div>
+      <span class="book-price">14,47&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="la gardienne" data-a="sonja delzongle" data-p="fleuve editions" data-date="2026-02-05" data-price="19.97">
+      <div class="book-title">La gardienne</div>
+      <div class="book-author">Sonja Delzongle</div>
+      <div class="book-meta">Fleuve &#201;ditions &middot; 05/02/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782265159228</div>
+      <span class="book-price">19,97&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="le silence est a nous" data-a="coline pierre" data-p="flammarion jeunesse" data-date="2025-03-19" data-price="18.11">
+      <div class="book-title">Le silence est &#224; nous</div>
+      <div class="book-author">Coline Pierr&#233;</div>
+      <div class="book-meta">Flammarion jeunesse &middot; 19/03/2025</div>
+      <div class="book-meta">ISBN&nbsp;: 9782080480118</div>
+      <span class="book-price">18,11&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="une employee modele" data-a="jean-christophe tixier" data-p="albin michel" data-date="2026-02-11" data-price="19.93">
+      <div class="book-title">Une employ&#233;e mod&#232;le</div>
+      <div class="book-author">Jean-Christophe Tixier</div>
+      <div class="book-meta">Albin Michel &middot; 11/02/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782226508096</div>
+      <span class="book-price">19,93&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="l autre moi" data-a="franck thilliez" data-p="fleuve editions" data-date="2026-04-28" data-price="20.88">
+      <div class="book-title">L'autre moi</div>
+      <div class="book-author">Franck Thilliez</div>
+      <div class="book-meta">Fleuve &#201;ditions &middot; 28/04/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782265159075</div>
+      <span class="book-price">20,88&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="volare" data-a="serena giuliano" data-p="calmann-levy" data-date="2026-03-18" data-price="17.20">
+      <div class="book-title">Volare</div>
+      <div class="book-author">Serena Giuliano</div>
+      <div class="book-meta">Calmann-L&#233;vy &middot; 18/03/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782702194423</div>
+      <span class="book-price">17,20&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="la mort en miroir" data-a="petronille rostagnat" data-p="editions belladone" data-date="2026-03-19" data-price="19.02">
+      <div class="book-title">La mort en miroir</div>
+      <div class="book-author">P&#233;tronille Rostagnat</div>
+      <div class="book-meta">&#201;ditions Belladone &middot; 19/03/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782488853002</div>
+      <span class="book-price">19,02&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="l emerveillement" data-a="aurelie valognes" data-p="jc lattes" data-date="2026-03-11" data-price="19.02">
+      <div class="book-title">L'&#233;merveillement</div>
+      <div class="book-author">Aur&#233;lie Valognes</div>
+      <div class="book-meta">JC Latt&#232;s &middot; 11/03/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782709676465</div>
+      <span class="book-price">19,02&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="mes freres nos fantomes et moi" data-a="julien sandrel" data-p="charleston" data-date="2026-04-10" data-price="17.20">
+      <div class="book-title">Mes fr&#232;res, nos fant&#244;mes et moi</div>
+      <div class="book-author">Julien Sandrel</div>
+      <div class="book-meta">Charleston &middot; 10/04/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782385295011</div>
+      <span class="book-price">17,20&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="le prieur de bethleem" data-a="yasmina khadra" data-p="flammarion" data-date="2026-03-04" data-price="19.11">
+      <div class="book-title">Le prieur de Bethl&#233;em</div>
+      <div class="book-author">Yasmina Khadra</div>
+      <div class="book-meta">Flammarion &middot; 04/03/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782080149671</div>
+      <span class="book-price">19,11&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="lucia ruptures" data-a="bernard minier" data-p="xo" data-date="2026-03-26" data-price="20.84">
+      <div class="book-title">Lucia T.3&nbsp;: Ruptures</div>
+      <div class="book-author">Bernard Minier</div>
+      <div class="book-meta">XO &middot; 26/03/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782374489513</div>
+      <span class="book-price">20,84&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="la sage-femme et la riviere" data-a="ariel lawhon" data-p="harpercollins france" data-date="2026-02-11" data-price="19.93">
+      <div class="book-title">La sage-femme et la rivi&#232;re</div>
+      <div class="book-author">Ariel Lawhon</div>
+      <div class="book-meta">HarperCollins France &middot; 11/02/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9791033919933</div>
+      <span class="book-price">19,93&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="ces lignes qui tracent mon corps" data-a="mansoureh kamari" data-p="casterman" data-date="2025-09-10" data-price="21.84">
+      <div class="book-title">Ces Lignes qui tracent mon corps</div>
+      <div class="book-author">Mansoureh Kamari</div>
+      <div class="book-meta">Casterman &middot; 10/09/2025</div>
+      <div class="book-meta">ISBN&nbsp;: 9782203290006</div>
+      <span class="book-price">21,84&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="les cheveux d edith" data-a="fabienne blanchut catherine locandro dawid" data-p="dargaud" data-date="2025-09-05" data-price="20.88">
+      <div class="book-title">Les cheveux d'&#201;dith</div>
+      <div class="book-author">Fabienne Blanchut, Catherine Locandro, Dawid</div>
+      <div class="book-meta">Dargaud &middot; 05/09/2025</div>
+      <div class="book-meta">ISBN&nbsp;: 9782505120001</div>
+      <span class="book-price">20,88&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="malgre tout ce qui nous separe" data-a="sophie tal men" data-p="albin michel" data-date="2026-02-25" data-price="19.02">
+      <div class="book-title">Malgr&#233; tout ce qui nous s&#233;pare</div>
+      <div class="book-author">Sophie Tal Men</div>
+      <div class="book-meta">Albin Michel &middot; 25/02/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782226507556</div>
+      <span class="book-price">19,02&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="m comme meurtre" data-a="anthony horowitz" data-p="sonatine editions" data-date="2026-03-05" data-price="20.93">
+      <div class="book-title">M comme meurtre&nbsp;?</div>
+      <div class="book-author">Anthony Horowitz</div>
+      <div class="book-meta">Sonatine &#201;ditions &middot; 05/03/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782383993032</div>
+      <span class="book-price">20,93&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="tous leurs secrets" data-a="john marrs" data-p="city editions" data-date="2026-03-11" data-price="20.47">
+      <div class="book-title">Tous leurs secrets</div>
+      <div class="book-author">John Marrs</div>
+      <div class="book-meta">City &#201;ditions &middot; 11/03/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782824625911</div>
+      <span class="book-price">20,47&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="bienvenue a dietland" data-a="sarai walker" data-p="gallmeister" data-date="2026-04-08" data-price="23.57">
+      <div class="book-title">Bienvenue &#224; Dietland</div>
+      <div class="book-author">Sarai Walker</div>
+      <div class="book-meta">Gallmeister &middot; 08/04/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782404081090</div>
+      <span class="book-price">23,57&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="je suis drole" data-a="david foenkinos" data-p="gallimard" data-date="2026-04-02" data-price="18.20">
+      <div class="book-title">Je suis dr&#244;le</div>
+      <div class="book-author">David Foenkinos</div>
+      <div class="book-meta">Gallimard &middot; 02/04/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782073152985</div>
+      <span class="book-price">18,20&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="le hameau" data-a="niko tackian" data-p="calmann-levy" data-date="2026-03-25" data-price="18.65">
+      <div class="book-title">Le Hameau</div>
+      <div class="book-author">Niko Tackian</div>
+      <div class="book-meta">Calmann-L&#233;vy &middot; 25/03/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782702191613</div>
+      <span class="book-price">18,65&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="danser sur les volcans" data-a="laure manel" data-p="michel lafon" data-date="2026-03-26" data-price="19.06">
+      <div class="book-title">Danser sur les volcans</div>
+      <div class="book-author">Laure Manel</div>
+      <div class="book-meta">Michel Lafon &middot; 26/03/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782749962061</div>
+      <span class="book-price">19,06&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="les silencieuses" data-a="anna mcpartlin" data-p="le cherche midi" data-date="2026-04-16" data-price="20.02">
+      <div class="book-title">Les Silencieuses</div>
+      <div class="book-author">Anna McPartlin</div>
+      <div class="book-meta">Le Cherche Midi &middot; 16/04/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782749185576</div>
+      <span class="book-price">20,02&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="sept jours avant la tombe" data-a="holly jackson" data-p="harpercollins france" data-date="2026-03-04" data-price="18.20">
+      <div class="book-title">Sept jours avant la tombe</div>
+      <div class="book-author">Holly Jackson</div>
+      <div class="book-meta">HarperCollins France &middot; 04/03/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9791033922438</div>
+      <span class="book-price">18,20&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="une bonne epouse" data-a="ingrid desjours" data-p="harpercollins france" data-date="2026-03-11" data-price="19.02">
+      <div class="book-title">Une bonne &#233;pouse</div>
+      <div class="book-author">Ingrid Desjours</div>
+      <div class="book-meta">HarperCollins France &middot; 11/03/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9791033922711</div>
+      <span class="book-price">19,02&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="la fille des embruns" data-a="marie-haude meriguet" data-p="charleston" data-date="2026-03-12" data-price="18.11">
+      <div class="book-title">La Fille des embruns</div>
+      <div class="book-author">Marie-Haude M&#233;riguet</div>
+      <div class="book-meta">Charleston &middot; 12/03/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782385295004</div>
+      <span class="book-price">18,11&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="les fantomes de shearwater" data-a="charlotte mcconaghy" data-p="gaia" data-date="2026-01-14" data-price="21.38">
+      <div class="book-title">Les fant&#244;mes de Shearwater</div>
+      <div class="book-author">Charlotte McConaghy</div>
+      <div class="book-meta">Ga&#239;a &middot; 14/01/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782330216139</div>
+      <span class="book-price">21,38&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="juste apres dieu il y a papa" data-a="eric-emmanuel schmitt" data-p="albin michel" data-date="2026-02-25" data-price="18.11">
+      <div class="book-title">Juste apr&#232;s Dieu, il y a papa</div>
+      <div class="book-author">Eric-Emmanuel Schmitt</div>
+      <div class="book-meta">Albin Michel &middot; 25/02/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782226488589</div>
+      <span class="book-price">18,11&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="dans leurs yeux" data-a="charlotte letourneur" data-p="fleuve editions" data-date="2026-03-05" data-price="19.97">
+      <div class="book-title">Dans leurs yeux</div>
+      <div class="book-author">Charlotte Letourneur</div>
+      <div class="book-meta">Fleuve &#201;ditions &middot; 05/03/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782265159372</div>
+      <span class="book-price">19,97&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="mon nom ne suffit pas" data-a="jodi picoult" data-p="charleston" data-date="2026-01-13" data-price="20.84">
+      <div class="book-title">Mon nom ne suffit pas</div>
+      <div class="book-author">Jodi Picoult</div>
+      <div class="book-meta">Charleston &middot; 13/01/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782385294861</div>
+      <span class="book-price">20,84&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="le piege" data-a="olivier bal" data-p="xo" data-date="2026-04-23" data-price="19.93">
+      <div class="book-title">Le Pi&#232;ge</div>
+      <div class="book-author">Olivier Bal</div>
+      <div class="book-meta">XO &middot; 23/04/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782374489391</div>
+      <span class="book-price">19,93&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="d autres printemps" data-a="virginie grimaldi" data-p="flammarion" data-date="2026-05-06" data-price="19.02">
+      <div class="book-title">D'autres printemps</div>
+      <div class="book-author">Virginie Grimaldi</div>
+      <div class="book-meta">Flammarion &middot; 06/05/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782080510655</div>
+      <span class="book-price">19,02&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="la colline" data-a="mathilde beaussault" data-p="le seuil" data-date="2026-03-06" data-price="18.11">
+      <div class="book-title">La Colline</div>
+      <div class="book-author">Mathilde Beaussault</div>
+      <div class="book-meta">Le Seuil &middot; 06/03/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782021602302</div>
+      <span class="book-price">18,11&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="les coeurs sont faits pour etre brises" data-a="tatiana de rosnay" data-p="albin michel" data-date="2026-03-11" data-price="19.93">
+      <div class="book-title">Les c&#339;urs sont faits pour &#234;tre bris&#233;s</div>
+      <div class="book-author">Tatiana de Rosnay</div>
+      <div class="book-meta">Albin Michel &middot; 11/03/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782226504555</div>
+      <span class="book-price">19,93&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="l intruse" data-a="freida mcfadden" data-p="city editions" data-date="2026-05-06" data-price="20.02">
+      <div class="book-title">L'intruse</div>
+      <div class="book-author">Freida McFadden</div>
+      <div class="book-meta">City &#201;ditions &middot; 06/05/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782824625256</div>
+      <span class="book-price">20,02&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="les cottages de la mer" data-a="jenny colgan" data-p="charleston" data-date="2026-04-10" data-price="18.11">
+      <div class="book-title">Les Cottages de la mer</div>
+      <div class="book-author">Jenny Colgan</div>
+      <div class="book-meta">Charleston &middot; 10/04/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782385295042</div>
+      <span class="book-price">18,11&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="chiens fous" data-a="max monnehay" data-p="harpercollins france" data-date="2025-10-08" data-price="18.65">
+      <div class="book-title">Chiens fous</div>
+      <div class="book-author">Max Monnehay</div>
+      <div class="book-meta">HarperCollins France &middot; 08/10/2025</div>
+      <div class="book-meta">ISBN&nbsp;: 9791033919797</div>
+      <span class="book-price">18,65&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="et la joie de vivre" data-a="gisele pelicot" data-p="flammarion" data-date="2026-02-17" data-price="20.47">
+      <div class="book-title">Et la joie de vivre</div>
+      <div class="book-author">Gis&#232;le Pelicot</div>
+      <div class="book-meta">Flammarion &middot; 17/02/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782080497260</div>
+      <span class="book-price">20,47&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="le livre de la culpabilite" data-a="catherine chidgey" data-p="gallmeister" data-date="2026-03-04" data-price="24.48">
+      <div class="book-title">Le livre de la culpabilit&#233;</div>
+      <div class="book-author">Catherine Chidgey</div>
+      <div class="book-meta">Gallmeister &middot; 04/03/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782351783856</div>
+      <span class="book-price">24,48&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="le domaine aux secrets" data-a="valentin musso" data-p="editions julliard" data-date="2026-05-07" data-price="19.56">
+      <div class="book-title">Le domaine aux secrets</div>
+      <div class="book-author">Valentin Musso</div>
+      <div class="book-meta">&#201;ditions Julliard &middot; 07/05/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782260056744</div>
+      <span class="book-price">19,56&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="sales gosses" data-a="mathieu lecerf" data-p="harpercollins france" data-date="2026-04-01" data-price="19.02">
+      <div class="book-title">Sales gosses</div>
+      <div class="book-author">Mathieu Lecerf</div>
+      <div class="book-meta">HarperCollins France &middot; 01/04/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9791033926139</div>
+      <span class="book-price">19,02&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="la saga des haller la revolte d ida" data-a="anne jacobs" data-p="charleston" data-date="2026-03-12" data-price="20.84">
+      <div class="book-title">La saga des Haller T.2&nbsp;: La R&#233;volte d'Ida</div>
+      <div class="book-author">Anne Jacobs</div>
+      <div class="book-meta">Charleston &middot; 12/03/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782385295059</div>
+      <span class="book-price">20,84&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="tous mes mensonges" data-a="nelle lamarr" data-p="city editions" data-date="2026-03-04" data-price="20.02">
+      <div class="book-title">Tous mes mensonges</div>
+      <div class="book-author">Nelle Lamarr</div>
+      <div class="book-meta">City &#201;ditions &middot; 04/03/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782824625898</div>
+      <span class="book-price">20,02&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="la correspondante" data-a="virginia evans" data-p="editions de la table ronde" data-date="2026-01-08" data-price="20.47">
+      <div class="book-title">La Correspondante</div>
+      <div class="book-author">Virginia Evans</div>
+      <div class="book-meta">&#201;ditions de La Table Ronde &middot; 08/01/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9791037114884</div>
+      <span class="book-price">20,47&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="le poids du sang" data-a="paul cleave" data-p="harpercollins france" data-date="2026-03-18" data-price="20.47">
+      <div class="book-title">Le poids du sang</div>
+      <div class="book-author">Paul Cleave</div>
+      <div class="book-meta">HarperCollins France &middot; 18/03/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9791033923893</div>
+      <span class="book-price">20,47&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="baignades" data-a="andree a michaud" data-p="rivages" data-date="2025-08-20" data-price="19.11">
+      <div class="book-title">Baignades</div>
+      <div class="book-author">Andr&#233;e A. Michaud</div>
+      <div class="book-meta">Rivages &middot; 20/08/2025</div>
+      <div class="book-meta">ISBN&nbsp;: 9782743667948</div>
+      <span class="book-price">19,11&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="specimen" data-a="pauline claviere" data-p="editions grasset" data-date="2026-03-11" data-price="21.84">
+      <div class="book-title">Sp&#233;cimen</div>
+      <div class="book-author">Pauline Clavi&#232;re</div>
+      <div class="book-meta">&#201;ditions Grasset &middot; 11/03/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782246846109</div>
+      <span class="book-price">21,84&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="cavillore" data-a="jeremie claes" data-p="editions heloise d ormesson" data-date="2026-02-19" data-price="19.11">
+      <div class="book-title">Cavillore</div>
+      <div class="book-author">J&#233;r&#233;mie Claes</div>
+      <div class="book-meta">&#201;ditions H&#233;lo&#239;se d'Ormesson &middot; 19/02/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782487819696</div>
+      <span class="book-price">19,11&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="la fabrique du mal" data-a="angelina delcroix" data-p="michel lafon" data-date="2026-05-13" data-price="19.97">
+      <div class="book-title">La Fabrique du mal</div>
+      <div class="book-author">Ang&#233;lina Delcroix</div>
+      <div class="book-meta">Michel Lafon &middot; 13/05/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782749964003</div>
+      <span class="book-price">19,97&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="dans la jungle" data-a="adeline dieudonne" data-p="editions de l iconoclaste" data-date="2026-04-02" data-price="20.47">
+      <div class="book-title">Dans la jungle</div>
+      <div class="book-author">Adeline Dieudonn&#233;</div>
+      <div class="book-meta">&#201;ditions de l'Iconoclaste &middot; 02/04/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782378805814</div>
+      <span class="book-price">20,47&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="xx" data-a="sam holland" data-p="harpercollins france" data-date="2026-04-08" data-price="20.47">
+      <div class="book-title">XX</div>
+      <div class="book-author">Sam Holland</div>
+      <div class="book-meta">HarperCollins France &middot; 08/04/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9791033924715</div>
+      <span class="book-price">20,47&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="une histoire qui finit mal" data-a="evelyn clarke" data-p="verso" data-date="2026-04-24" data-price="19.93">
+      <div class="book-title">Une histoire qui finit mal</div>
+      <div class="book-author">Evelyn Clarke</div>
+      <div class="book-meta">Verso &middot; 24/04/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782386432941</div>
+      <span class="book-price">19,93&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="phobos la tempete des destins" data-a="victor dixen maria francesca perifano" data-p="glenat" data-date="2026-04-22" data-price="14.56">
+      <div class="book-title">Phobos T.4&nbsp;: La temp&#234;te des destins</div>
+      <div class="book-author">Victor Dixen, Maria Francesca Perifano</div>
+      <div class="book-meta">Gl&#233;nat &middot; 22/04/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782344071588</div>
+      <span class="book-price">14,56&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="les mysteres d eversand la promise" data-a="victor dixen" data-p="robert laffont" data-date="2026-04-02" data-price="13.56">
+      <div class="book-title">Les Myst&#232;res d'Eversand T.2&nbsp;: La promise</div>
+      <div class="book-author">Victor Dixen</div>
+      <div class="book-meta">Robert Laffont &middot; 02/04/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782221285695</div>
+      <span class="book-price">13,56&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="les mysteres d eversand la suivante" data-a="victor dixen" data-p="robert laffont" data-date="2026-04-02" data-price="13.56">
+      <div class="book-title">Les Myst&#232;res d'Eversand T.1&nbsp;: La suivante</div>
+      <div class="book-author">Victor Dixen</div>
+      <div class="book-meta">Robert Laffont &middot; 02/04/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782221285688</div>
+      <span class="book-price">13,56&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="les mysteres d eversand l epouse" data-a="victor dixen" data-p="robert laffont" data-date="2026-05-13" data-price="13.56">
+      <div class="book-title">Les Myst&#232;res d'Eversand T.3&nbsp;: L'&#201;pouse</div>
+      <div class="book-author">Victor Dixen</div>
+      <div class="book-meta">Robert Laffont &middot; 13/05/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782221285701</div>
+      <span class="book-price">13,56&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="un jour sans femme" data-a="laetitia colombani" data-p="editions de l iconoclaste" data-date="2026-05-07" data-price="19.02">
+      <div class="book-title">Un jour sans femme</div>
+      <div class="book-author">Laetitia Colombani</div>
+      <div class="book-meta">&#201;ditions de l'Iconoclaste &middot; 07/05/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782378804978</div>
+      <span class="book-price">19,02&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="le pot de depart" data-a="julien aime" data-p="mazarine" data-date="2026-04-08" data-price="18.11">
+      <div class="book-title">Le pot de d&#233;part</div>
+      <div class="book-author">Julien Aime</div>
+      <div class="book-meta">Mazarine &middot; 08/04/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782213734323</div>
+      <span class="book-price">18,11&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="clement" data-a="romain lemire" data-p="le cherche midi" data-date="2026-04-09" data-price="20.02">
+      <div class="book-title">Cl&#233;ment</div>
+      <div class="book-author">Romain Lemire</div>
+      <div class="book-meta">Le Cherche Midi &middot; 09/04/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782749185705</div>
+      <span class="book-price">20,02&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="les evades du convoi 53" data-a="benjamin fogel" data-p="gallimard" data-date="2026-03-12" data-price="19.11">
+      <div class="book-title">Les &#233;vad&#233;s du convoi 53</div>
+      <div class="book-author">Benjamin Fogel</div>
+      <div class="book-meta">Gallimard &middot; 12/03/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782073129864</div>
+      <span class="book-price">19,11&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="les preuves" data-a="suzie miller" data-p="editions de l archipel" data-date="2026-02-26" data-price="20.93">
+      <div class="book-title">Les Preuves</div>
+      <div class="book-author">Suzie Miller</div>
+      <div class="book-meta">&#201;ditions de l'Archipel &middot; 26/02/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782809852981</div>
+      <span class="book-price">20,93&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card stock" data-s="les amazones" data-a="jim fergus" data-p="pocket" data-date="2020-09-03" data-price="8.19">
+      <div class="book-title">Les Amazones</div>
+      <div class="book-author">Jim Fergus</div>
+      <div class="book-meta">Pocket &middot; 03/09/2020</div>
+      <div class="book-meta">ISBN&nbsp;: 9782266298278</div>
+      <span class="book-price">8,19&nbsp;&#8364;</span>
+    </div>
+
+  </div><!-- /grid-stock -->
+</div><!-- /sec-stock -->
+
+<!-- ══════════════════════════════════════════════════════ COMMANDÉS ═══ -->
+<div class="section-block" id="sec-commande">
+  <div class="section-title green">&#128666; Articles command&#233;s <span>Exp&#233;di&#233; sous 4 &#224; 15 jours</span></div>
+  <div class="empty-msg" id="empty-commande">Aucun r&#233;sultat dans cette section.</div>
+  <div class="book-grid" id="grid-commande">
+
+    <div class="book-card commande" data-s="la vallee du lotus rose" data-a="kate mcalistair" data-p="archipoche" data-date="2019-10-02" data-price="9.05">
+      <div class="book-title">La vall&#233;e du lotus rose</div>
+      <div class="book-author">Kate McAlistair</div>
+      <div class="book-meta">Archipoche &middot; 02/10/2019</div>
+      <div class="book-meta">ISBN&nbsp;: 9782377353590</div>
+      <span class="book-price">9,05&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card commande" data-s="l heritiere du lotus rose" data-a="kate mcalistair" data-p="archipoche" data-date="2021-10-07" data-price="9.05">
+      <div class="book-title">L'h&#233;riti&#232;re du lotus rose</div>
+      <div class="book-author">Kate McAlistair</div>
+      <div class="book-meta">Archipoche &middot; 07/10/2021</div>
+      <div class="book-meta">ISBN&nbsp;: 9791039200363</div>
+      <span class="book-price">9,05&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card commande" data-s="la cite du lotus rose" data-a="kate mcalistair" data-p="archipoche" data-date="2020-10-01" data-price="9.05">
+      <div class="book-title">La cit&#233; du lotus rose</div>
+      <div class="book-author">Kate McAlistair</div>
+      <div class="book-meta">Archipoche &middot; 01/10/2020</div>
+      <div class="book-meta">ISBN&nbsp;: 9782377358250</div>
+      <span class="book-price">9,05&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card commande" data-s="mille femmes blanches" data-a="jim fergus" data-p="le cherche midi" data-date="2013-05-02" data-price="19.02">
+      <div class="book-title">Mille femmes blanches</div>
+      <div class="book-author">Jim Fergus</div>
+      <div class="book-meta">Le Cherche Midi &middot; 02/05/2013</div>
+      <div class="book-meta">ISBN&nbsp;: 9782749121079</div>
+      <span class="book-price">19,02&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card commande" data-s="la vengeance des meres" data-a="jim fergus" data-p="le cherche midi" data-date="2016-09-22" data-price="21.75">
+      <div class="book-title">La vengeance des m&#232;res</div>
+      <div class="book-author">Jim Fergus</div>
+      <div class="book-meta">Le Cherche Midi &middot; 22/09/2016</div>
+      <div class="book-meta">ISBN&nbsp;: 9782749143293</div>
+      <span class="book-price">21,75&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card commande" data-s="les sirenes noires" data-a="jean-marc souvira" data-p="fleuve editions" data-date="2015-11-12" data-price="19.93">
+      <div class="book-title">Les sir&#232;nes noires</div>
+      <div class="book-author">Jean-Marc Souvira</div>
+      <div class="book-meta">Fleuve &#201;ditions &middot; 12/11/2015</div>
+      <div class="book-meta">ISBN&nbsp;: 9782265099302</div>
+      <span class="book-price">19,93&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card commande" data-s="le magicien" data-a="jean-marc souvira" data-p="fleuve editions" data-date="2008-02-21" data-price="19.93">
+      <div class="book-title">Le magicien</div>
+      <div class="book-author">Jean-Marc Souvira</div>
+      <div class="book-meta">Fleuve &#201;ditions &middot; 21/02/2008</div>
+      <div class="book-meta">ISBN&nbsp;: 9782265086142</div>
+      <span class="book-price">19,93&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card commande" data-s="le vent t emportera" data-a="jean-marc souvira" data-p="fleuve editions" data-date="2010-05-12" data-price="19.93">
+      <div class="book-title">Le vent t'emportera</div>
+      <div class="book-author">Jean-Marc Souvira</div>
+      <div class="book-meta">Fleuve &#201;ditions &middot; 12/05/2010</div>
+      <div class="book-meta">ISBN&nbsp;: 9782265089181</div>
+      <span class="book-price">19,93&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card commande" data-s="les oiseaux ne se retournent pas" data-a="nadia nakhle" data-p="delcourt" data-date="2020-03-18" data-price="23.61">
+      <div class="book-title">Les oiseaux ne se retournent pas</div>
+      <div class="book-author">Nadia Nakhl&#233;</div>
+      <div class="book-meta">Delcourt &middot; 18/03/2020</div>
+      <div class="book-meta">ISBN&nbsp;: 9782413027652</div>
+      <span class="book-price">23,61&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card commande" data-s="et avec votre esprit" data-a="alexis laipsker" data-p="michel lafon" data-date="2020-02-27" data-price="17.24">
+      <div class="book-title">Et avec votre esprit</div>
+      <div class="book-author">Alexis Laipsker</div>
+      <div class="book-meta">Michel Lafon &middot; 27/02/2020</div>
+      <div class="book-meta">ISBN&nbsp;: 9782749941325</div>
+      <span class="book-price">17,24&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card commande" data-s="l horloger" data-a="jeremie claes" data-p="editions heloise d ormesson" data-date="2024-02-08" data-price="20.84">
+      <div class="book-title">L'horloger</div>
+      <div class="book-author">J&#233;r&#233;mie Claes</div>
+      <div class="book-meta">&#201;ditions H&#233;lo&#239;se d'Ormesson &middot; 08/02/2024</div>
+      <div class="book-meta">ISBN&nbsp;: 9782350879291</div>
+      <span class="book-price">20,84&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card commande" data-s="commandant solane" data-a="jeremie claes" data-p="editions heloise d ormesson" data-date="2025-02-06" data-price="20.02">
+      <div class="book-title">Commandant Solane</div>
+      <div class="book-author">J&#233;r&#233;mie Claes</div>
+      <div class="book-meta">&#201;ditions H&#233;lo&#239;se d'Ormesson &middot; 06/02/2025</div>
+      <div class="book-meta">ISBN&nbsp;: 9782350879918</div>
+      <span class="book-price">20,02&nbsp;&#8364;</span>
+    </div>
+
+  </div><!-- /grid-commande -->
+</div><!-- /sec-commande -->
+
+<!-- ═════════════════════════════════════════════════ PRÉCOMMANDES ═══ -->
+<div class="section-block" id="sec-precommande">
+  <div class="section-title orange">&#9203; Pr&#233;commandes</div>
+  <div class="empty-msg" id="empty-precommande">Aucun r&#233;sultat dans cette section.</div>
+  <div class="book-grid" id="grid-precommande">
+
+    <div class="book-card precommande" data-s="les enfants de la resistance la guerre n est pas finie" data-a="ers dugomier" data-p="editions du lombard" data-date="2026-06-12" data-price="12.24">
+      <div class="book-title">Les enfants de la r&#233;sistance T.10&nbsp;: La guerre n'est pas finie <span class="badge">Pr&#233;co</span></div>
+      <div class="book-author">Ers, Dugomier</div>
+      <div class="book-meta">&#201;ditions du Lombard &middot; 12/06/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782808216937</div>
+      <span class="book-price">12,24&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card precommande" data-s="le serment des deverill filles d irlande" data-a="montefiore santa" data-p="verso" data-date="2026-06-05" data-price="20.84">
+      <div class="book-title">Le serment des Deverill &#8211; Filles d'Irlande T.5 <span class="badge">Pr&#233;co</span></div>
+      <div class="book-author">Montefiore Santa</div>
+      <div class="book-meta">Verso &middot; 05/06/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782386433382</div>
+      <span class="book-price">20,84&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card precommande" data-s="le calamity club" data-a="kathryn stockett" data-p="robert laffont" data-date="2026-05-28" data-price="22.66">
+      <div class="book-title">Le Calamity Club <span class="badge">Pr&#233;co</span></div>
+      <div class="book-author">Kathryn Stockett</div>
+      <div class="book-meta">Robert Laffont &middot; 28/05/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782221284131</div>
+      <span class="book-price">22,66&nbsp;&#8364;</span>
+    </div>
+
+    <div class="book-card precommande" data-s="les mysteres d eversand l heretique" data-a="victor dixen" data-p="robert laffont" data-date="2026-06-11" data-price="13.56">
+      <div class="book-title">Les Myst&#232;res d'Eversand T.4&nbsp;: L'H&#233;r&#233;tique <span class="badge">Pr&#233;co</span></div>
+      <div class="book-author">Victor Dixen</div>
+      <div class="book-meta">Robert Laffont &middot; 11/06/2026</div>
+      <div class="book-meta">ISBN&nbsp;: 9782221285718</div>
+      <span class="book-price">13,56&nbsp;&#8364;</span>
+    </div>
+
+  </div><!-- /grid-precommande -->
+</div><!-- /sec-precommande -->
 
 <script>
-const BOOKS = [
-  // ── EN STOCK ────────────────────────────────────────────────────────────────
-  { title: "Le Garçon éternel", author: "Jérôme Loubry", publisher: "Calmann-Lévy", date: "02/01/2026", dateSort: "2026-01-02", price: 19.93, isbn: "9782702190753", section: "stock" },
-  { title: "Ne jamais trembler", author: "Stephen King", publisher: "Albin Michel", date: "28/01/2026", dateSort: "2026-01-28", price: 22.66, isbn: "9782226501875", section: "stock" },
-  { title: "Je suis Romane Monnier", author: "Delphine de Vigan", publisher: "Gallimard", date: "15/01/2026", dateSort: "2026-01-15", price: 20.02, isbn: "9782073113252", section: "stock" },
-  { title: "Une pension en Italie", author: "Philippe Besson", publisher: "Éditions Julliard", date: "08/01/2026", dateSort: "2026-01-08", price: 19.11, isbn: "9782260056782", section: "stock" },
-  { title: "La femme médecin de Galveston", author: "Amanda Skenandore", publisher: "Faubourg Marigny", date: "06/11/2025", dateSort: "2025-11-06", price: 22.75, isbn: "9782384363827", section: "stock" },
-  { title: "La locataire", author: "Freida McFadden", publisher: "City Éditions", date: "11/02/2026", dateSort: "2026-02-11", price: 20.02, isbn: "9782824626338", section: "stock" },
-  { title: "Fauves", author: "Mélissa Da Costa", publisher: "Albin Michel", date: "07/01/2026", dateSort: "2026-01-07", price: 21.75, isbn: "9782226483546", section: "stock" },
-  { title: "Les Belles Promesses", author: "Pierre Lemaitre", publisher: "Calmann-Lévy", date: "06/01/2026", dateSort: "2026-01-06", price: 21.75, isbn: "9782702191477", section: "stock" },
-  { title: "Le Manoir des rêves perdus T.2 : Vers la lumière", author: "Marie-Bernadette Dupuy", publisher: "Calmann-Lévy", date: "04/02/2026", dateSort: "2026-02-04", price: 21.75, isbn: "9782702182383", section: "stock" },
-  { title: "L'Île aux jardins enchantés", author: "Sarah Beth Durst, Lulu Chen", publisher: "Bragelonne", date: "11/02/2026", dateSort: "2026-02-11", price: 20.02, isbn: "9791028135492", section: "stock" },
-  { title: "Le Parfum des fleurs sauvages T.2 : La fille aux boutons d'or", author: "Tessa Collins", publisher: "Charleston", date: "12/02/2026", dateSort: "2026-02-12", price: 20.84, isbn: "9782385294953", section: "stock" },
-  { title: "Une jeune fille sans histoires", author: "Shari Lapena", publisher: "Les Presses de la Cité", date: "22/01/2026", dateSort: "2026-01-22", price: 20.93, isbn: "9782258213425", section: "stock" },
-  { title: "Sans âme ni conscience", author: "Michael Connelly", publisher: "Calmann-Lévy", date: "14/01/2026", dateSort: "2026-01-14", price: 20.84, isbn: "9782702189054", section: "stock" },
-  { title: "Aurore", author: "Nicolas Leclerc", publisher: "Le Seuil", date: "06/02/2026", dateSort: "2026-02-06", price: 19.93, isbn: "9782021590371", section: "stock" },
-  { title: "La fin du voyage", author: "Arnaldur Indridason", publisher: "Éditions Métailié", date: "06/02/2026", dateSort: "2026-02-06", price: 19.11, isbn: "9791022615051", section: "stock" },
-  { title: "Dernière chance dans les Pyrénées", author: "Julia Chapman", publisher: "Robert Laffont", date: "29/01/2026", dateSort: "2026-01-29", price: 17.29, isbn: "9782221273012", section: "stock" },
-  { title: "Immersion", author: "Nicolas Druart", publisher: "Belfond", date: "15/01/2026", dateSort: "2026-01-15", price: 18.20, isbn: "9782714405401", section: "stock" },
-  { title: "Pas de fumée sans feu", author: "M. J. Arlidge", publisher: "Éditions Les Escales", date: "05/02/2026", dateSort: "2026-02-05", price: 20.84, isbn: "9782386980121", section: "stock" },
-  { title: "Killing me softly", author: "Jacky Schwartzmann", publisher: "La Manufacture de Livres", date: "08/01/2026", dateSort: "2026-01-08", price: 14.47, isbn: "9782385532185", section: "stock" },
-  { title: "Ici", author: "Johana Gustawsson, Thomas Enger", publisher: "Calmann-Lévy", date: "04/02/2026", dateSort: "2026-02-04", price: 20.47, isbn: "9782702194140", section: "stock" },
-  { title: "56 jours", author: "Catherine Ryan Howard", publisher: "Éditions de l'Archipel", date: "08/01/2026", dateSort: "2026-01-08", price: 20.93, isbn: "9782809853179", section: "stock" },
-  { title: "Les Mystères de Byton Cove : Un secret à déterrer", author: "Laëtitia Sivi", publisher: "Fleurus", date: "12/09/2025", dateSort: "2025-09-12", price: 16.33, isbn: "9782215194958", section: "stock" },
-  { title: "Les mystères de Byton Cove : La nuit de la disparition", author: "Laëtitia Sivi", publisher: "Fleurus", date: "06/02/2026", dateSort: "2026-02-06", price: 16.33, isbn: "9782215200253", section: "stock" },
-  { title: "Impossibles Créatures : Le Roi Empoisonné", author: "Katherine Rundell", publisher: "Gallimard Jeunesse", date: "05/02/2026", dateSort: "2026-02-05", price: 15.01, isbn: "9782075234047", section: "stock" },
-  { title: "Love, mom", author: "Iliana Xander", publisher: "Fleuve Éditions", date: "08/01/2026", dateSort: "2026-01-08", price: 19.97, isbn: "9782265159686", section: "stock" },
-  { title: "Les enquêtes du département V T.11 : Les morts ne chantent pas", author: "Jussi Adler-Olsen, Line Holm, Stine Bolther", publisher: "Albin Michel", date: "04/03/2026", dateSort: "2026-03-04", price: 20.84, isbn: "9782226503732", section: "stock" },
-  { title: "Le secret des agapanthes T.3 : Morgane et Juliette", author: "Clarisse Sabard", publisher: "Charleston", date: "02/04/2026", dateSort: "2026-04-02", price: 19.02, isbn: "9782385295035", section: "stock" },
-  { title: "Les disparues de Willowbrook", author: "Ellen Marie Wiseman", publisher: "Faubourg Marigny", date: "05/03/2026", dateSort: "2026-03-05", price: 20.02, isbn: "9782384363438", section: "stock" },
-  { title: "Les Sœurs de la Résistance", author: "Anna Stuart", publisher: "City Éditions", date: "04/02/2026", dateSort: "2026-02-04", price: 20.02, isbn: "9782824626321", section: "stock" },
-  { title: "Je vais te détruire", author: "Linwood Barclay", publisher: "Belfond", date: "05/02/2026", dateSort: "2026-02-05", price: 20.93, isbn: "9782714405043", section: "stock" },
-  { title: "Déferlante", author: "Céline Denjean", publisher: "Michel Lafon", date: "12/02/2026", dateSort: "2026-02-12", price: 19.97, isbn: "9782749964126", section: "stock" },
-  { title: "Du goût pour le bonheur", author: "Lorraine Fouchet", publisher: "Éditions Héloïse d'Ormesson", date: "05/03/2026", dateSort: "2026-03-05", price: 19.11, isbn: "9782487819849", section: "stock" },
-  { title: "Les Invisibles", author: "Roger Jon Ellory", publisher: "Sonatine Éditions", date: "02/04/2026", dateSort: "2026-04-02", price: 22.29, isbn: "9782383992691", section: "stock" },
-  { title: "Le crime du paradis", author: "Guillaume Musso", publisher: "Calmann-Lévy", date: "03/03/2026", dateSort: "2026-03-03", price: 20.84, isbn: "9782702192979", section: "stock" },
-  { title: "La reine de mai", author: "NéO", publisher: "Albin Michel", date: "28/01/2026", dateSort: "2026-01-28", price: 19.02, isbn: "9782226498984", section: "stock" },
-  { title: "Nous qui avons connu Solange", author: "Marie Vareille", publisher: "Flammarion", date: "11/03/2026", dateSort: "2026-03-11", price: 20.02, isbn: "9782080476418", section: "stock" },
-  { title: "Le visage de la nuit", author: "Cécile Coulon", publisher: "Éditions de l'Iconoclaste", date: "08/01/2026", dateSort: "2026-01-08", price: 19.93, isbn: "9782378805715", section: "stock" },
-  { title: "Les miroirs sourient à ceux qui s'aiment", author: "Raphaëlle Giordano", publisher: "Éditions Récamier", date: "23/04/2026", dateSort: "2026-04-23", price: 19.02, isbn: "9782385771201", section: "stock" },
-  { title: "Que la mort nous frôle", author: "Michel Bussi", publisher: "Les Presses de la Cité", date: "16/04/2026", dateSort: "2026-04-16", price: 20.84, isbn: "9782258214460", section: "stock" },
-  { title: "Le Groupe", author: "Isabelle Lagarrigue", publisher: "Éditions Récamier", date: "09/04/2026", dateSort: "2026-04-09", price: 19.02, isbn: "9782385772406", section: "stock" },
-  { title: "Il faudrait leur dire", author: "Carène Ponte", publisher: "Fleuve Éditions", date: "02/04/2026", dateSort: "2026-04-02", price: 18.15, isbn: "9782265158931", section: "stock" },
-  { title: "La Ferme", author: "François-Xavier Dillard", publisher: "Éditions Récamier", date: "02/04/2026", dateSort: "2026-04-02", price: 19.11, isbn: "9782385770532", section: "stock" },
-  { title: "Traqué", author: "Frank Leduc", publisher: "Belfond", date: "19/03/2026", dateSort: "2026-03-19", price: 19.56, isbn: "9782714405708", section: "stock" },
-  { title: "Le Berger d'Alep", author: "Stéphanie Perez", publisher: "Éditions Récamier", date: "12/03/2026", dateSort: "2026-03-12", price: 19.11, isbn: "9782385772062", section: "stock" },
-  { title: "Le club des amateurs de romans policiers T.7 : Le Crime de l'Indian Pacific", author: "C. A. Larmer", publisher: "Le Cherche Midi", date: "12/03/2026", dateSort: "2026-03-12", price: 14.47, isbn: "9782749185408", section: "stock" },
-  { title: "La gardienne", author: "Sonja Delzongle", publisher: "Fleuve Éditions", date: "05/02/2026", dateSort: "2026-02-05", price: 19.97, isbn: "9782265159228", section: "stock" },
-  { title: "Le silence est à nous", author: "Coline Pierré", publisher: "Flammarion jeunesse", date: "19/03/2025", dateSort: "2025-03-19", price: 18.11, isbn: "9782080480118", section: "stock" },
-  { title: "Une employée modèle", author: "Jean-Christophe Tixier", publisher: "Albin Michel", date: "11/02/2026", dateSort: "2026-02-11", price: 19.93, isbn: "9782226508096", section: "stock" },
-  { title: "L'autre moi", author: "Franck Thilliez", publisher: "Fleuve Éditions", date: "28/04/2026", dateSort: "2026-04-28", price: 20.88, isbn: "9782265159075", section: "stock" },
-  { title: "Volare", author: "Serena Giuliano", publisher: "Calmann-Lévy", date: "18/03/2026", dateSort: "2026-03-18", price: 17.20, isbn: "9782702194423", section: "stock" },
-  { title: "La mort en miroir", author: "Pétronille Rostagnat", publisher: "Éditions Belladone", date: "19/03/2026", dateSort: "2026-03-19", price: 19.02, isbn: "9782488853002", section: "stock" },
-  { title: "L'émerveillement", author: "Aurélie Valognes", publisher: "JC Lattès", date: "11/03/2026", dateSort: "2026-03-11", price: 19.02, isbn: "9782709676465", section: "stock" },
-  { title: "Mes frères, nos fantômes et moi", author: "Julien Sandrel", publisher: "Charleston", date: "10/04/2026", dateSort: "2026-04-10", price: 17.20, isbn: "9782385295011", section: "stock" },
-  { title: "Le prieur de Bethléem", author: "Yasmina Khadra", publisher: "Flammarion", date: "04/03/2026", dateSort: "2026-03-04", price: 19.11, isbn: "9782080149671", section: "stock" },
-  { title: "Lucia T.3 : Ruptures", author: "Bernard Minier", publisher: "XO", date: "26/03/2026", dateSort: "2026-03-26", price: 20.84, isbn: "9782374489513", section: "stock" },
-  { title: "La sage-femme et la rivière", author: "Ariel Lawhon", publisher: "HarperCollins France", date: "11/02/2026", dateSort: "2026-02-11", price: 19.93, isbn: "9791033919933", section: "stock" },
-  { title: "Ces Lignes qui tracent mon corps", author: "Mansoureh Kamari", publisher: "Casterman", date: "10/09/2025", dateSort: "2025-09-10", price: 21.84, isbn: "9782203290006", section: "stock" },
-  { title: "Les cheveux d'Édith", author: "Fabienne Blanchut, Catherine Locandro, Dawid", publisher: "Dargaud", date: "05/09/2025", dateSort: "2025-09-05", price: 20.88, isbn: "9782505120001", section: "stock" },
-  { title: "Malgré tout ce qui nous sépare", author: "Sophie Tal Men", publisher: "Albin Michel", date: "25/02/2026", dateSort: "2026-02-25", price: 19.02, isbn: "9782226507556", section: "stock" },
-  { title: "M comme meurtre ?", author: "Anthony Horowitz", publisher: "Sonatine Éditions", date: "05/03/2026", dateSort: "2026-03-05", price: 20.93, isbn: "9782383993032", section: "stock" },
-  { title: "Tous leurs secrets", author: "John Marrs", publisher: "City Éditions", date: "11/03/2026", dateSort: "2026-03-11", price: 20.47, isbn: "9782824625911", section: "stock" },
-  { title: "Bienvenue à Dietland", author: "Sarai Walker", publisher: "Gallmeister", date: "08/04/2026", dateSort: "2026-04-08", price: 23.57, isbn: "9782404081090", section: "stock" },
-  { title: "Je suis drôle", author: "David Foenkinos", publisher: "Gallimard", date: "02/04/2026", dateSort: "2026-04-02", price: 18.20, isbn: "9782073152985", section: "stock" },
-  { title: "Le Hameau", author: "Niko Tackian", publisher: "Calmann-Lévy", date: "25/03/2026", dateSort: "2026-03-25", price: 18.65, isbn: "9782702191613", section: "stock" },
-  { title: "Danser sur les volcans", author: "Laure Manel", publisher: "Michel Lafon", date: "26/03/2026", dateSort: "2026-03-26", price: 19.06, isbn: "9782749962061", section: "stock" },
-  { title: "Les Silencieuses", author: "Anna McPartlin", publisher: "Le Cherche Midi", date: "16/04/2026", dateSort: "2026-04-16", price: 20.02, isbn: "9782749185576", section: "stock" },
-  { title: "Sept jours avant la tombe", author: "Holly Jackson", publisher: "HarperCollins France", date: "04/03/2026", dateSort: "2026-03-04", price: 18.20, isbn: "9791033922438", section: "stock" },
-  { title: "Une bonne épouse", author: "Ingrid Desjours", publisher: "HarperCollins France", date: "11/03/2026", dateSort: "2026-03-11", price: 19.02, isbn: "9791033922711", section: "stock" },
-  { title: "La Fille des embruns", author: "Marie-Haude Mériguet", publisher: "Charleston", date: "12/03/2026", dateSort: "2026-03-12", price: 18.11, isbn: "9782385295004", section: "stock" },
-  { title: "Les fantômes de Shearwater", author: "Charlotte McConaghy", publisher: "Gaïa", date: "14/01/2026", dateSort: "2026-01-14", price: 21.38, isbn: "9782330216139", section: "stock" },
-  { title: "Juste après Dieu, il y a papa", author: "Eric-Emmanuel Schmitt", publisher: "Albin Michel", date: "25/02/2026", dateSort: "2026-02-25", price: 18.11, isbn: "9782226488589", section: "stock" },
-  { title: "Dans leurs yeux", author: "Charlotte Letourneur", publisher: "Fleuve Éditions", date: "05/03/2026", dateSort: "2026-03-05", price: 19.97, isbn: "9782265159372", section: "stock" },
-  { title: "Mon nom ne suffit pas", author: "Jodi Picoult", publisher: "Charleston", date: "13/01/2026", dateSort: "2026-01-13", price: 20.84, isbn: "9782385294861", section: "stock" },
-  { title: "Le Piège", author: "Olivier Bal", publisher: "XO", date: "23/04/2026", dateSort: "2026-04-23", price: 19.93, isbn: "9782374489391", section: "stock" },
-  { title: "D'autres printemps", author: "Virginie Grimaldi", publisher: "Flammarion", date: "06/05/2026", dateSort: "2026-05-06", price: 19.02, isbn: "9782080510655", section: "stock" },
-  { title: "La Colline", author: "Mathilde Beaussault", publisher: "Le Seuil", date: "06/03/2026", dateSort: "2026-03-06", price: 18.11, isbn: "9782021602302", section: "stock" },
-  { title: "Les cœurs sont faits pour être brisés", author: "Tatiana de Rosnay", publisher: "Albin Michel", date: "11/03/2026", dateSort: "2026-03-11", price: 19.93, isbn: "9782226504555", section: "stock" },
-  { title: "L'intruse", author: "Freida McFadden", publisher: "City Éditions", date: "06/05/2026", dateSort: "2026-05-06", price: 20.02, isbn: "9782824625256", section: "stock" },
-  { title: "Les Cottages de la mer", author: "Jenny Colgan", publisher: "Charleston", date: "10/04/2026", dateSort: "2026-04-10", price: 18.11, isbn: "9782385295042", section: "stock" },
-  { title: "Chiens fous", author: "Max Monnehay", publisher: "HarperCollins France", date: "08/10/2025", dateSort: "2025-10-08", price: 18.65, isbn: "9791033919797", section: "stock" },
-  { title: "Et la joie de vivre", author: "Gisèle Pelicot", publisher: "Flammarion", date: "17/02/2026", dateSort: "2026-02-17", price: 20.47, isbn: "9782080497260", section: "stock" },
-  { title: "Le livre de la culpabilité", author: "Catherine Chidgey", publisher: "Gallmeister", date: "04/03/2026", dateSort: "2026-03-04", price: 24.48, isbn: "9782351783856", section: "stock" },
-  { title: "Le domaine aux secrets", author: "Valentin Musso", publisher: "Éditions Julliard", date: "07/05/2026", dateSort: "2026-05-07", price: 19.56, isbn: "9782260056744", section: "stock" },
-  { title: "Sales gosses", author: "Mathieu Lecerf", publisher: "HarperCollins France", date: "01/04/2026", dateSort: "2026-04-01", price: 19.02, isbn: "9791033926139", section: "stock" },
-  { title: "La saga des Haller T.2 : La Révolte d'Ida", author: "Anne Jacobs", publisher: "Charleston", date: "12/03/2026", dateSort: "2026-03-12", price: 20.84, isbn: "9782385295059", section: "stock" },
-  { title: "Tous mes mensonges", author: "Nelle Lamarr", publisher: "City Éditions", date: "04/03/2026", dateSort: "2026-03-04", price: 20.02, isbn: "9782824625898", section: "stock" },
-  { title: "La Correspondante", author: "Virginia Evans", publisher: "Éditions de La Table Ronde", date: "08/01/2026", dateSort: "2026-01-08", price: 20.47, isbn: "9791037114884", section: "stock" },
-  { title: "Le poids du sang", author: "Paul Cleave", publisher: "HarperCollins France", date: "18/03/2026", dateSort: "2026-03-18", price: 20.47, isbn: "9791033923893", section: "stock" },
-  { title: "Baignades", author: "Andrée A. Michaud", publisher: "Rivages", date: "20/08/2025", dateSort: "2025-08-20", price: 19.11, isbn: "9782743667948", section: "stock" },
-  { title: "Spécimen", author: "Pauline Clavière", publisher: "Éditions Grasset", date: "11/03/2026", dateSort: "2026-03-11", price: 21.84, isbn: "9782246846109", section: "stock" },
-  { title: "Cavillore", author: "Jérémie Claes", publisher: "Éditions Héloïse d'Ormesson", date: "19/02/2026", dateSort: "2026-02-19", price: 19.11, isbn: "9782487819696", section: "stock" },
-  { title: "La Fabrique du mal", author: "Angélina Delcroix", publisher: "Michel Lafon", date: "13/05/2026", dateSort: "2026-05-13", price: 19.97, isbn: "9782749964003", section: "stock" },
-  { title: "Dans la jungle", author: "Adeline Dieudonné", publisher: "Éditions de l'Iconoclaste", date: "02/04/2026", dateSort: "2026-04-02", price: 20.47, isbn: "9782378805814", section: "stock" },
-  { title: "XX", author: "Sam Holland", publisher: "HarperCollins France", date: "08/04/2026", dateSort: "2026-04-08", price: 20.47, isbn: "9791033924715", section: "stock" },
-  { title: "Une histoire qui finit mal", author: "Evelyn Clarke", publisher: "Verso", date: "24/04/2026", dateSort: "2026-04-24", price: 19.93, isbn: "9782386432941", section: "stock" },
-  { title: "Phobos T.4 : La tempête des destins", author: "Victor Dixen, Maria Francesca Perifano", publisher: "Glénat", date: "22/04/2026", dateSort: "2026-04-22", price: 14.56, isbn: "9782344071588", section: "stock" },
-  { title: "Les Mystères d'Eversand T.2 : La promise", author: "Victor Dixen", publisher: "Robert Laffont", date: "02/04/2026", dateSort: "2026-04-02", price: 13.56, isbn: "9782221285695", section: "stock" },
-  { title: "Les Mystères d'Eversand T.1 : La suivante", author: "Victor Dixen", publisher: "Robert Laffont", date: "02/04/2026", dateSort: "2026-04-02", price: 13.56, isbn: "9782221285688", section: "stock" },
-  { title: "Les Mystères d'Eversand T.3 : L'Épouse", author: "Victor Dixen", publisher: "Robert Laffont", date: "13/05/2026", dateSort: "2026-05-13", price: 13.56, isbn: "9782221285701", section: "stock" },
-  { title: "Un jour sans femme", author: "Laetitia Colombani", publisher: "Éditions de l'Iconoclaste", date: "07/05/2026", dateSort: "2026-05-07", price: 19.02, isbn: "9782378804978", section: "stock" },
-  { title: "Le pot de départ", author: "Julien Aime", publisher: "Mazarine", date: "08/04/2026", dateSort: "2026-04-08", price: 18.11, isbn: "9782213734323", section: "stock" },
-  { title: "Clément", author: "Romain Lemire", publisher: "Le Cherche Midi", date: "09/04/2026", dateSort: "2026-04-09", price: 20.02, isbn: "9782749185705", section: "stock" },
-  { title: "Les évadés du convoi 53", author: "Benjamin Fogel", publisher: "Gallimard", date: "12/03/2026", dateSort: "2026-03-12", price: 19.11, isbn: "9782073129864", section: "stock" },
-  { title: "Les Preuves", author: "Suzie Miller", publisher: "Éditions de l'Archipel", date: "26/02/2026", dateSort: "2026-02-26", price: 20.93, isbn: "9782809852981", section: "stock" },
-  { title: "Les Amazones", author: "Jim Fergus", publisher: "Pocket", date: "03/09/2020", dateSort: "2020-09-03", price: 8.19, isbn: "9782266298278", section: "stock" },
+(function() {
+  var searchInput  = document.getElementById('searchInput');
+  var sortSelect   = document.getElementById('sortSelect');
+  var btnAll       = document.getElementById('btn-all');
+  var btnStock     = document.getElementById('btn-stock');
+  var btnCommande  = document.getElementById('btn-commande');
+  var btnPreco     = document.getElementById('btn-precommande');
+  var summary      = document.getElementById('summary');
 
-  // ── COMMANDÉS ───────────────────────────────────────────────────────────────
-  { title: "La vallée du lotus rose", author: "Kate McAlistair", publisher: "Archipoche", date: "02/10/2019", dateSort: "2019-10-02", price: 9.05, isbn: "9782377353590", section: "commande" },
-  { title: "L'héritière du lotus rose", author: "Kate McAlistair", publisher: "Archipoche", date: "07/10/2021", dateSort: "2021-10-07", price: 9.05, isbn: "9791039200363", section: "commande" },
-  { title: "La cité du lotus rose", author: "Kate McAlistair", publisher: "Archipoche", date: "01/10/2020", dateSort: "2020-10-01", price: 9.05, isbn: "9782377358250", section: "commande" },
-  { title: "Mille femmes blanches", author: "Jim Fergus", publisher: "Le Cherche Midi", date: "02/05/2013", dateSort: "2013-05-02", price: 19.02, isbn: "9782749121079", section: "commande" },
-  { title: "La vengeance des mères", author: "Jim Fergus", publisher: "Le Cherche Midi", date: "22/09/2016", dateSort: "2016-09-22", price: 21.75, isbn: "9782749143293", section: "commande" },
-  { title: "Les sirènes noires", author: "Jean-Marc Souvira", publisher: "Fleuve Éditions", date: "12/11/2015", dateSort: "2015-11-12", price: 19.93, isbn: "9782265099302", section: "commande" },
-  { title: "Le magicien", author: "Jean-Marc Souvira", publisher: "Fleuve Éditions", date: "21/02/2008", dateSort: "2008-02-21", price: 19.93, isbn: "9782265086142", section: "commande" },
-  { title: "Le vent t'emportera", author: "Jean-Marc Souvira", publisher: "Fleuve Éditions", date: "12/05/2010", dateSort: "2010-05-12", price: 19.93, isbn: "9782265089181", section: "commande" },
-  { title: "Les oiseaux ne se retournent pas", author: "Nadia Nakhlé", publisher: "Delcourt", date: "18/03/2020", dateSort: "2020-03-18", price: 23.61, isbn: "9782413027652", section: "commande" },
-  { title: "Et avec votre esprit", author: "Alexis Laipsker", publisher: "Michel Lafon", date: "27/02/2020", dateSort: "2020-02-27", price: 17.24, isbn: "9782749941325", section: "commande" },
-  { title: "L'horloger", author: "Jérémie Claes", publisher: "Éditions Héloïse d'Ormesson", date: "08/02/2024", dateSort: "2024-02-08", price: 20.84, isbn: "9782350879291", section: "commande" },
-  { title: "Commandant Solane", author: "Jérémie Claes", publisher: "Éditions Héloïse d'Ormesson", date: "06/02/2025", dateSort: "2025-02-06", price: 20.02, isbn: "9782350879918", section: "commande" },
+  var sections = ['stock', 'commande', 'precommande'];
+  var currentFilter = 'all';
 
-  // ── PRÉCOMMANDES ────────────────────────────────────────────────────────────
-  { title: "Les enfants de la résistance T.10 : La guerre n'est pas finie", author: "Ers, Dugomier", publisher: "Éditions du Lombard", date: "12/06/2026", dateSort: "2026-06-12", price: 12.24, isbn: "9782808216937", section: "precommande" },
-  { title: "Le serment des Deverill – Filles d'Irlande T.5", author: "Montefiore Santa", publisher: "Verso", date: "05/06/2026", dateSort: "2026-06-05", price: 20.84, isbn: "9782386433382", section: "precommande" },
-  { title: "Le Calamity Club", author: "Kathryn Stockett", publisher: "Robert Laffont", date: "28/05/2026", dateSort: "2026-05-28", price: 22.66, isbn: "9782221284131", section: "precommande" },
-  { title: "Les Mystères d'Eversand T.4 : L'Hérétique", author: "Victor Dixen", publisher: "Robert Laffont", date: "11/06/2026", dateSort: "2026-06-11", price: 13.56, isbn: "9782221285718", section: "precommande" },
-];
-
-const SECTIONS = [
-  { key: "stock",       label: "📦 Articles en stock",  sub: "Expédié du lundi au samedi", color: "#2c3e50" },
-  { key: "commande",    label: "🚚 Articles commandés",  sub: "Expédié sous 4 à 15 jours", color: "#27ae60" },
-  { key: "precommande", label: "⏳ Précommandes",        sub: "",                           color: "#e67e22" },
-];
-
-let currentFilter = 'all';
-let currentSort = 'default';
-let currentQuery = '';
-
-function normalize(str) {
-  return str.toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-}
-
-function sortedBooks(list) {
-  const copy = [...list];
-  switch (currentSort) {
-    case 'title-az':     return copy.sort((a, b) => normalize(a.title).localeCompare(normalize(b.title)));
-    case 'title-za':     return copy.sort((a, b) => normalize(b.title).localeCompare(normalize(a.title)));
-    case 'author-az':    return copy.sort((a, b) => normalize(a.author).localeCompare(normalize(b.author)));
-    case 'price-asc':    return copy.sort((a, b) => a.price - b.price);
-    case 'price-desc':   return copy.sort((a, b) => b.price - a.price);
-    case 'date-asc':     return copy.sort((a, b) => a.dateSort.localeCompare(b.dateSort));
-    case 'date-desc':    return copy.sort((a, b) => b.dateSort.localeCompare(a.dateSort));
-    case 'publisher-az': return copy.sort((a, b) => normalize(a.publisher).localeCompare(normalize(b.publisher)));
-    default:             return copy;
+  /* ── helpers ── */
+  function getCards(secId) {
+    return Array.prototype.slice.call(
+      document.getElementById('grid-' + secId).querySelectorAll('.book-card')
+    );
   }
-}
 
-function matchesQuery(book) {
-  if (!currentQuery) return true;
-  const q = normalize(currentQuery);
-  return normalize(book.title).includes(q)
-      || normalize(book.author).includes(q)
-      || normalize(book.publisher).includes(q)
-      || book.isbn.includes(q);
-}
+  function applyFilter() {
+    var query = searchInput.value.toLowerCase();
+    var total = 0;
 
-function render() {
-  const container = document.getElementById('sections-container');
-  container.innerHTML = '';
-  let totalVisible = 0;
+    sections.forEach(function(id) {
+      var secBlock = document.getElementById('sec-' + id);
+      var emptyMsg = document.getElementById('empty-' + id);
+      var grid     = document.getElementById('grid-' + id);
 
-  SECTIONS.forEach(sec => {
-    if (currentFilter !== 'all' && currentFilter !== sec.key) return;
+      /* hide entire section if filtered out */
+      var sectionVisible = (currentFilter === 'all' || currentFilter === id);
+      secBlock.style.display = sectionVisible ? '' : 'none';
+      if (!sectionVisible) return;
 
-    const filtered = sortedBooks(BOOKS.filter(b => b.section === sec.key && matchesQuery(b)));
-    totalVisible += filtered.length;
-
-    const block = document.createElement('div');
-    block.className = 'section-block';
-
-    const titleEl = document.createElement('div');
-    titleEl.className = 'section-title';
-    titleEl.style.background = sec.color;
-    titleEl.innerHTML = sec.label + (sec.sub ? `<span>${sec.sub}</span>` : '');
-    block.appendChild(titleEl);
-
-    if (filtered.length === 0) {
-      const empty = document.createElement('div');
-      empty.className = 'empty-section';
-      empty.textContent = 'Aucun résultat dans cette section.';
-      block.appendChild(empty);
-    } else {
-      const grid = document.createElement('div');
-      grid.className = 'book-grid';
-
-      filtered.forEach(book => {
-        const card = document.createElement('div');
-        card.className = 'book-card ' + book.section;
-        card.innerHTML = `
-          <div class="book-title">${book.title}${book.section === 'precommande' ? ' <span class="badge">Préco</span>' : ''}</div>
-          <div class="book-author">${book.author}</div>
-          <div class="book-meta">${book.publisher} · ${book.date}</div>
-          <div class="book-meta">ISBN : ${book.isbn}</div>
-          <span class="book-price">${book.price.toFixed(2).replace('.', ',')} €</span>`;
-        grid.appendChild(card);
+      /* filter cards */
+      var cards = getCards(id);
+      var visible = 0;
+      cards.forEach(function(card) {
+        var match = !query
+          || (card.getAttribute('data-s') || '').indexOf(query) >= 0
+          || (card.getAttribute('data-a') || '').indexOf(query) >= 0
+          || (card.getAttribute('data-p') || '').indexOf(query) >= 0;
+        card.style.display = match ? '' : 'none';
+        if (match) visible++;
       });
 
-      block.appendChild(grid);
-    }
+      emptyMsg.style.display  = (visible === 0) ? 'block' : 'none';
+      grid.style.display      = (visible === 0) ? 'none'  : '';
+      total += visible;
+    });
 
-    container.appendChild(block);
-  });
+    summary.textContent = total + ' livre' + (total > 1 ? 's' : '') + ' affich' + (total > 1 ? 'es' : 'e');
+  }
 
-  const countTxt = totalVisible === 0
-    ? 'Aucun résultat.'
-    : totalVisible + ' livre' + (totalVisible > 1 ? 's' : '') + ' affiché' + (totalVisible > 1 ? 's' : '');
-  document.getElementById('summary').textContent = countTxt;
-}
+  function applySort() {
+    var val = sortSelect.value;
+    if (val === 'default') { applyFilter(); return; }
 
-// ── Events ───────────────────────────────────────────────────────────────────
-document.getElementById('searchInput').addEventListener('input', function() {
-  currentQuery = this.value;
-  render();
-});
+    sections.forEach(function(id) {
+      var grid  = document.getElementById('grid-' + id);
+      var cards = getCards(id);
 
-document.getElementById('sortSelect').addEventListener('change', function() {
-  currentSort = this.value;
-  render();
-});
+      cards.sort(function(a, b) {
+        var da, db;
+        switch (val) {
+          case 'title-az':
+            return (a.getAttribute('data-s') || '').localeCompare(b.getAttribute('data-s') || '');
+          case 'title-za':
+            return (b.getAttribute('data-s') || '').localeCompare(a.getAttribute('data-s') || '');
+          case 'author-az':
+            return (a.getAttribute('data-a') || '').localeCompare(b.getAttribute('data-a') || '');
+          case 'publisher-az':
+            return (a.getAttribute('data-p') || '').localeCompare(b.getAttribute('data-p') || '');
+          case 'price-asc':
+            return parseFloat(a.getAttribute('data-price')) - parseFloat(b.getAttribute('data-price'));
+          case 'price-desc':
+            return parseFloat(b.getAttribute('data-price')) - parseFloat(a.getAttribute('data-price'));
+          case 'date-asc':
+            da = a.getAttribute('data-date') || ''; db = b.getAttribute('data-date') || '';
+            return da < db ? -1 : da > db ? 1 : 0;
+          case 'date-desc':
+            da = a.getAttribute('data-date') || ''; db = b.getAttribute('data-date') || '';
+            return db < da ? -1 : db > da ? 1 : 0;
+          default: return 0;
+        }
+      });
 
-document.querySelectorAll('.filter-btns button').forEach(btn => {
-  btn.addEventListener('click', function() {
-    document.querySelectorAll('.filter-btns button').forEach(b => b.classList.remove('active'));
-    this.classList.add('active');
-    currentFilter = this.dataset.filter;
-    render();
-  });
-});
+      /* re-insert in sorted order */
+      cards.forEach(function(card) { grid.appendChild(card); });
+    });
 
-render();
+    applyFilter();
+  }
+
+  /* ── filter buttons ── */
+  function setFilter(btn, filter) {
+    [btnAll, btnStock, btnCommande, btnPreco].forEach(function(b) {
+      b.className = b.className.replace(' active', '');
+    });
+    btn.className += ' active';
+    currentFilter = filter;
+    applyFilter();
+  }
+
+  btnAll.onclick      = function() { setFilter(btnAll,      'all'); };
+  btnStock.onclick    = function() { setFilter(btnStock,    'stock'); };
+  btnCommande.onclick = function() { setFilter(btnCommande, 'commande'); };
+  btnPreco.onclick    = function() { setFilter(btnPreco,    'precommande'); };
+
+  searchInput.oninput = applyFilter;
+  sortSelect.onchange = applySort;
+
+  applyFilter();
+})();
 </script>
 </body>
 </html>
