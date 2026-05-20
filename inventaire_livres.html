@@ -20,11 +20,11 @@
       font-size: .9rem; background: #fff; cursor: pointer;
     }
     .filter-btns { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; margin-bottom: 12px; }
-    .filter-btns button {
+    .filter-btn {
       padding: 8px 16px; border: 1px solid #ccc; background: #fff;
       border-radius: 8px; cursor: pointer; font-size: .9rem;
     }
-    .filter-btns button.active { background: #3498db; color: #fff; border-color: #3498db; }
+    .filter-btn.active { background: #3498db; color: #fff; border-color: #3498db; }
 
     #summary { text-align: center; margin-bottom: 16px; color: #666; font-size: .9rem; }
 
@@ -88,12 +88,13 @@
   </select>
 </div>
 <div class="filter-btns">
-  <button id="btn-all"         class="active">Tout</button>
-  <button id="btn-stock">En stock</button>
-  <button id="btn-commande">Command&#233;s</button>
-  <button id="btn-precommande">Pr&#233;commandes</button>
+  <button class="filter-btn active" data-filter="all">Tout</button>
+  <button class="filter-btn" data-filter="stock">En stock</button>
+  <button class="filter-btn" data-filter="commande">Command&#233;s</button>
+  <button class="filter-btn" data-filter="precommande">Pr&#233;commandes</button>
 </div>
-<div id="summary"></div>
+<div id="summary">121 livres affich&#233;s</div>
+<div id="js-status" style="display:none;text-align:center;color:#27ae60;font-size:.85rem;margin-bottom:8px;">&#10003; JavaScript actif &mdash; recherche, filtres et tri fonctionnels</div>
 
 <!-- ═══════════════════════════════════════════════════════ EN STOCK ═══ -->
 <div class="section-block" id="sec-stock">
@@ -1091,119 +1092,99 @@
 </div><!-- /sec-precommande -->
 
 <script>
-(function() {
-  var searchInput  = document.getElementById('searchInput');
-  var sortSelect   = document.getElementById('sortSelect');
-  var btnAll       = document.getElementById('btn-all');
-  var btnStock     = document.getElementById('btn-stock');
-  var btnCommande  = document.getElementById('btn-commande');
-  var btnPreco     = document.getElementById('btn-precommande');
-  var summary      = document.getElementById('summary');
+window.addEventListener('load', function() {
+  /* ── diagnostic visible ── */
+  var dbg = document.getElementById('js-status');
+  if (dbg) dbg.style.display = 'inline';
 
-  var sections = ['stock', 'commande', 'precommande'];
-  var currentFilter = 'all';
+  var searchInput = document.getElementById('searchInput');
+  var sortSelect  = document.getElementById('sortSelect');
+  var summary     = document.getElementById('summary');
+  var secIds      = ['stock', 'commande', 'precommande'];
+  var activeFilter = 'all';
 
-  /* ── helpers ── */
-  function getCards(secId) {
-    return Array.prototype.slice.call(
-      document.getElementById('grid-' + secId).querySelectorAll('.book-card')
-    );
+  function cards(secId) {
+    var grid = document.getElementById('grid-' + secId);
+    return grid ? Array.prototype.slice.call(grid.querySelectorAll('.book-card')) : [];
   }
 
-  function applyFilter() {
-    var query = searchInput.value.toLowerCase();
-    var total = 0;
+  function update() {
+    var q   = searchInput ? searchInput.value.toLowerCase() : '';
+    var srt = sortSelect  ? sortSelect.value                : 'default';
+    var tot = 0;
 
-    sections.forEach(function(id) {
-      var secBlock = document.getElementById('sec-' + id);
-      var emptyMsg = document.getElementById('empty-' + id);
-      var grid     = document.getElementById('grid-' + id);
+    secIds.forEach(function(id) {
+      var sec  = document.getElementById('sec-'   + id);
+      var grid = document.getElementById('grid-'  + id);
+      var emp  = document.getElementById('empty-' + id);
+      if (!sec || !grid) return;
 
-      /* hide entire section if filtered out */
-      var sectionVisible = (currentFilter === 'all' || currentFilter === id);
-      secBlock.style.display = sectionVisible ? '' : 'none';
-      if (!sectionVisible) return;
+      var show = (activeFilter === 'all' || activeFilter === id);
+      sec.style.display = show ? '' : 'none';
+      if (!show) return;
 
-      /* filter cards */
-      var cards = getCards(id);
-      var visible = 0;
-      cards.forEach(function(card) {
-        var match = !query
-          || (card.getAttribute('data-s') || '').indexOf(query) >= 0
-          || (card.getAttribute('data-a') || '').indexOf(query) >= 0
-          || (card.getAttribute('data-p') || '').indexOf(query) >= 0;
-        card.style.display = match ? '' : 'none';
-        if (match) visible++;
+      var list = cards(id);
+
+      /* sort */
+      if (srt !== 'default') {
+        list.sort(function(a, b) {
+          var as = a.getAttribute('data-s')     || '';
+          var bs = b.getAttribute('data-s')     || '';
+          var aa = a.getAttribute('data-a')     || '';
+          var ba = b.getAttribute('data-a')     || '';
+          var ap = a.getAttribute('data-p')     || '';
+          var bp = b.getAttribute('data-p')     || '';
+          var ad = a.getAttribute('data-date')  || '';
+          var bd = b.getAttribute('data-date')  || '';
+          var af = parseFloat(a.getAttribute('data-price')) || 0;
+          var bf = parseFloat(b.getAttribute('data-price')) || 0;
+          if (srt === 'title-az')    return as.localeCompare(bs);
+          if (srt === 'title-za')    return bs.localeCompare(as);
+          if (srt === 'author-az')   return aa.localeCompare(ba);
+          if (srt === 'pub-az')      return ap.localeCompare(bp);
+          if (srt === 'price-asc')   return af - bf;
+          if (srt === 'price-desc')  return bf - af;
+          if (srt === 'date-asc')    return ad < bd ? -1 : ad > bd ? 1 : 0;
+          if (srt === 'date-desc')   return bd < ad ? -1 : bd > ad ? 1 : 0;
+          return 0;
+        });
+        list.forEach(function(c) { grid.appendChild(c); });
+      }
+
+      /* search */
+      var cnt = 0;
+      list.forEach(function(card) {
+        var ok = !q
+          || (card.getAttribute('data-s') || '').indexOf(q) >= 0
+          || (card.getAttribute('data-a') || '').indexOf(q) >= 0
+          || (card.getAttribute('data-p') || '').indexOf(q) >= 0;
+        card.style.display = ok ? '' : 'none';
+        if (ok) cnt++;
       });
-
-      emptyMsg.style.display  = (visible === 0) ? 'block' : 'none';
-      grid.style.display      = (visible === 0) ? 'none'  : '';
-      total += visible;
+      if (emp) emp.style.display = cnt === 0 ? 'block' : 'none';
+      if (grid && cnt > 0) grid.style.display = '';
+      tot += cnt;
     });
 
-    summary.textContent = total + ' livre' + (total > 1 ? 's' : '') + ' affich' + (total > 1 ? 'es' : 'e');
+    if (summary) summary.textContent = tot + ' livre' + (tot > 1 ? 's' : '') + ' affich' + (tot > 1 ? 'es' : 'e');
   }
 
-  function applySort() {
-    var val = sortSelect.value;
-    if (val === 'default') { applyFilter(); return; }
-
-    sections.forEach(function(id) {
-      var grid  = document.getElementById('grid-' + id);
-      var cards = getCards(id);
-
-      cards.sort(function(a, b) {
-        var da, db;
-        switch (val) {
-          case 'title-az':
-            return (a.getAttribute('data-s') || '').localeCompare(b.getAttribute('data-s') || '');
-          case 'title-za':
-            return (b.getAttribute('data-s') || '').localeCompare(a.getAttribute('data-s') || '');
-          case 'author-az':
-            return (a.getAttribute('data-a') || '').localeCompare(b.getAttribute('data-a') || '');
-          case 'publisher-az':
-            return (a.getAttribute('data-p') || '').localeCompare(b.getAttribute('data-p') || '');
-          case 'price-asc':
-            return parseFloat(a.getAttribute('data-price')) - parseFloat(b.getAttribute('data-price'));
-          case 'price-desc':
-            return parseFloat(b.getAttribute('data-price')) - parseFloat(a.getAttribute('data-price'));
-          case 'date-asc':
-            da = a.getAttribute('data-date') || ''; db = b.getAttribute('data-date') || '';
-            return da < db ? -1 : da > db ? 1 : 0;
-          case 'date-desc':
-            da = a.getAttribute('data-date') || ''; db = b.getAttribute('data-date') || '';
-            return db < da ? -1 : db > da ? 1 : 0;
-          default: return 0;
-        }
-      });
-
-      /* re-insert in sorted order */
-      cards.forEach(function(card) { grid.appendChild(card); });
+  /* filter buttons */
+  var filterBtns = document.querySelectorAll('.filter-btn');
+  Array.prototype.forEach.call(filterBtns, function(btn) {
+    btn.addEventListener('click', function() {
+      Array.prototype.forEach.call(filterBtns, function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      activeFilter = btn.getAttribute('data-filter') || 'all';
+      update();
     });
+  });
 
-    applyFilter();
-  }
+  if (searchInput) searchInput.addEventListener('input',  update);
+  if (sortSelect)  sortSelect.addEventListener ('change', update);
 
-  /* ── filter buttons ── */
-  function setFilter(btn, filter) {
-    [btnAll, btnStock, btnCommande, btnPreco].forEach(function(b) {
-      b.className = b.className.replace(' active', '');
-    });
-    btn.className += ' active';
-    currentFilter = filter;
-    applyFilter();
-  }
-
-  btnAll.onclick      = function() { setFilter(btnAll,      'all'); };
-  btnStock.onclick    = function() { setFilter(btnStock,    'stock'); };
-  btnCommande.onclick = function() { setFilter(btnCommande, 'commande'); };
-  btnPreco.onclick    = function() { setFilter(btnPreco,    'precommande'); };
-
-  searchInput.oninput = applyFilter;
-  sortSelect.onchange = applySort;
-
-  applyFilter();
-})();
+  update();
+});
 </script>
 </body>
 </html>
