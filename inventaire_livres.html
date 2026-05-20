@@ -5,965 +5,637 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Inventaire Livres</title>
 <style>
-/* ── reset ── */
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f6f9;color:#333;padding:16px}
-h1{text-align:center;color:#2c3e50;font-size:1.6rem;margin-bottom:16px}
-
-/* ── hide radio inputs ── */
-input[name="sec"]{position:absolute;left:-9999px}
-
-/* ── filter bar ── */
-.bar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:20px}
-.bar label{
-  display:inline-block;padding:8px 18px;border:1px solid #ccc;
-  border-radius:8px;cursor:pointer;background:#fff;font-size:.9rem;
-  transition:background .15s
-}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f6f9;color:#333;padding:12px}
+h1{text-align:center;color:#2c3e50;font-size:1.5rem;margin-bottom:14px}
+input[name="sec"],input[name="srt"]{position:absolute;left:-9999px}
+.controls{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:10px}
+.bar{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.bar label{display:inline-block;padding:7px 14px;border:1px solid #ccc;border-radius:8px;cursor:pointer;background:#fff;font-size:.85rem}
 .bar label:hover{background:#eaf4fb}
-
-/* active label highlight */
-#f-all:checked      ~ .bar label[for="f-all"],
-#f-stock:checked    ~ .bar label[for="f-stock"],
-#f-commande:checked ~ .bar label[for="f-commande"],
-#f-preco:checked    ~ .bar label[for="f-preco"]
-{background:#3498db;color:#fff;border-color:#3498db}
-
-/* ── section title ── */
-.sec-head{
-  padding:10px 14px;color:#fff;font-weight:700;font-size:1rem;
-  border-radius:8px 8px 0 0;margin-top:24px
-}
-.head-stock{background:#2c3e50}
-.head-commande{background:#27ae60}
-.head-preco{background:#e67e22}
-
-/* ── table ── */
-table{width:100%;border-collapse:collapse;background:#fff;
-  border-radius:0 0 8px 8px;overflow:hidden;
-  box-shadow:0 1px 4px rgba(0,0,0,.08)}
-th{background:#ecf0f1;padding:8px 10px;text-align:left;font-size:.8rem;color:#555}
-td{padding:7px 10px;font-size:.82rem;border-bottom:1px solid #f0f0f0;vertical-align:top}
+#q{padding:8px 12px;border:1px solid #ccc;border-radius:8px;font-size:.9rem;width:260px}
+/* active filter label */
+#f-all:checked~.w label[for="f-all"],
+#f-stock:checked~.w label[for="f-stock"],
+#f-commande:checked~.w label[for="f-commande"],
+#f-preco:checked~.w label[for="f-preco"]{background:#3498db;color:#fff;border-color:#3498db}
+/* active sort label */
+#s-title:checked~.w label[for="s-title"],
+#s-author:checked~.w label[for="s-author"],
+#s-price:checked~.w label[for="s-price"],
+#s-date:checked~.w label[for="s-date"]{background:#8e44ad;color:#fff;border-color:#8e44ad}
+/* section visibility */
+.s-commande,.s-preco{display:block}
+#f-stock:checked~.w .s-commande,#f-stock:checked~.w .s-preco{display:none}
+#f-commande:checked~.w .s-stock,#f-commande:checked~.w .s-preco{display:none}
+#f-preco:checked~.w .s-stock,#f-preco:checked~.w .s-commande{display:none}
+/* sort visibility */
+.st-author,.st-price,.st-date{display:none}
+.st-title{display:table}
+#s-author:checked~.w .st-title{display:none}
+#s-author:checked~.w .st-author{display:table}
+#s-price:checked~.w .st-title{display:none}
+#s-price:checked~.w .st-price{display:table}
+#s-date:checked~.w .st-title{display:none}
+#s-date:checked~.w .st-date{display:table}
+/* table */
+.sec-head{padding:9px 14px;color:#fff;font-weight:700;border-radius:8px 8px 0 0;margin-top:20px;font-size:.95rem}
+table{width:100%;border-collapse:collapse;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+th{background:#ecf0f1;padding:7px 9px;text-align:left;font-size:.78rem;color:#555;white-space:nowrap}
+th.a{background:#d5e8d4;color:#27ae60}
+td{padding:6px 9px;font-size:.8rem;border-bottom:1px solid #f0f0f0;vertical-align:top}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:#f8fbff}
-td:first-child{font-weight:600;color:#2c3e50;width:35%}
-.isbn{color:#999;font-size:.75rem;white-space:nowrap}
+td:first-child{font-weight:600;color:#2c3e50;width:32%}
+.isbn{color:#aaa;font-size:.72rem;white-space:nowrap}
 .prix{font-weight:700;color:#2980b9;white-space:nowrap}
-.badge{
-  display:inline-block;font-size:.65rem;padding:1px 5px;border-radius:3px;
-  background:#fdebd0;color:#e67e22;font-weight:700;vertical-align:middle;margin-left:4px
-}
-
-/* ── section visibility ── */
-.sec-stock,.sec-commande,.sec-preco{display:block}
-
-#f-stock:checked    ~ .sec-commande,
-#f-stock:checked    ~ .sec-preco    {display:none}
-#f-commande:checked ~ .sec-stock,
-#f-commande:checked ~ .sec-preco    {display:none}
-#f-preco:checked    ~ .sec-stock,
-#f-preco:checked    ~ .sec-commande {display:none}
-
-/* ── responsive ── */
-@media(max-width:600px){
-  td:nth-child(3){display:none}
-  th:nth-child(3){display:none}
-}
+@media(max-width:600px){td:nth-child(3),th:nth-child(3){display:none}}
 </style>
 </head>
 <body>
-
-<!-- radios must be BEFORE everything else for CSS ~ sibling selector -->
-<input type="radio" name="sec" id="f-all"      checked>
+<input type="radio" name="sec" id="f-all" checked>
 <input type="radio" name="sec" id="f-stock">
 <input type="radio" name="sec" id="f-commande">
 <input type="radio" name="sec" id="f-preco">
+<input type="radio" name="srt" id="s-title" checked>
+<input type="radio" name="srt" id="s-author">
+<input type="radio" name="srt" id="s-price">
+<input type="radio" name="srt" id="s-date">
 
-<h1>&#128218; Inventaire Livres</h1>
+<h1>&#128218; Inventaire Livres &mdash; 121 titres</h1>
 
-<div class="bar">
-  <label for="f-all">Tout (121)</label>
-  <label for="f-stock">&#128230; En stock (105)</label>
-  <label for="f-commande">&#128666; Command&eacute;s (12)</label>
-  <label for="f-preco">&#9203; Pr&eacute;commandes (4)</label>
-</div>
+<div class="w">
+  <div class="controls">
+    <input type="text" id="q" placeholder="&#128269; Rechercher titre, auteur, &eacute;diteur&hellip;" oninput="var q=this.value.toLowerCase();var rows=document.querySelectorAll('tr.r');for(var i=0;i<rows.length;i++){var r=rows[i];var t=(r.getAttribute('data-s')||'')+(r.getAttribute('data-a')||'')+(r.getAttribute('data-p')||'');r.style.display=(!q||t.indexOf(q)>=0)?'':'none';}">
+  </div>
+  <div class="controls">
+    <div class="bar">
+      <label for="f-all">Tout (121)</label>
+      <label for="f-stock">&#128230; En stock (105)</label>
+      <label for="f-commande">&#128666; Command&eacute;s (12)</label>
+      <label for="f-preco">&#9203; Pr&eacute;commandes (4)</label>
+    </div>
+    <div class="bar">
+      <label for="s-title">Titre A&rarr;Z</label>
+      <label for="s-author">Auteur A&rarr;Z</label>
+      <label for="s-price">Prix &uarr;</label>
+      <label for="s-date">Date &darr;</label>
+    </div>
+  </div>
 
-<!-- ═══════ EN STOCK ═══════ -->
-<div class="sec-stock">
-  <div class="sec-head head-stock">&#128230; Articles en stock &mdash; Exp&eacute;di&eacute; du lundi au samedi</div>
-  <table>
-    <thead><tr><th>Titre</th><th>Auteur</th><th>Parution &middot; &Eacute;diteur</th><th>ISBN</th><th>Prix</th></tr></thead>
+<div class="sec s-stock">
+  <div class="sec-head" style="background:#2c3e50">&#128230; Articles en stock &mdash; Exp&eacute;di&eacute; du lundi au samedi</div>
+  <table class="t st-title">
+    <thead><tr><th class="a">Titre &uarr;</th><th>Auteur</th><th>Parution &middot; &Eacute;diteur</th><th>ISBN</th><th>Prix</th></tr></thead>
     <tbody>
-    <tr class="stock">
-      <td>56 jours</td>
-      <td>Catherine Ryan Howard</td>
-      <td>&#201;ditions de l'Archipel &middot; 08/01/2026</td>
-      <td class="isbn">9782809853179</td>
-      <td class="prix">20,93&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Aurore</td>
-      <td>Nicolas Leclerc</td>
-      <td>Le Seuil &middot; 06/02/2026</td>
-      <td class="isbn">9782021590371</td>
-      <td class="prix">19,93&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Baignades</td>
-      <td>Andr&#233;e A. Michaud</td>
-      <td>Rivages &middot; 20/08/2025</td>
-      <td class="isbn">9782743667948</td>
-      <td class="prix">19,11&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Bienvenue &#224; Dietland</td>
-      <td>Sarai Walker</td>
-      <td>Gallmeister &middot; 08/04/2026</td>
-      <td class="isbn">9782404081090</td>
-      <td class="prix">23,57&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Cavillore</td>
-      <td>J&#233;r&#233;mie Claes</td>
-      <td>&#201;ditions H&#233;lo&#239;se d'Ormesson &middot; 19/02/2026</td>
-      <td class="isbn">9782487819696</td>
-      <td class="prix">19,11&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Ces Lignes qui tracent mon corps</td>
-      <td>Mansoureh Kamari</td>
-      <td>Casterman &middot; 10/09/2025</td>
-      <td class="isbn">9782203290006</td>
-      <td class="prix">21,84&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Chiens fous</td>
-      <td>Max Monnehay</td>
-      <td>HarperCollins France &middot; 08/10/2025</td>
-      <td class="isbn">9791033919797</td>
-      <td class="prix">18,65&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Cl&#233;ment</td>
-      <td>Romain Lemire</td>
-      <td>Le Cherche Midi &middot; 09/04/2026</td>
-      <td class="isbn">9782749185705</td>
-      <td class="prix">20,02&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>D'autres printemps</td>
-      <td>Virginie Grimaldi</td>
-      <td>Flammarion &middot; 06/05/2026</td>
-      <td class="isbn">9782080510655</td>
-      <td class="prix">19,02&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Dans la jungle</td>
-      <td>Adeline Dieudonn&#233;</td>
-      <td>&#201;ditions de l'Iconoclaste &middot; 02/04/2026</td>
-      <td class="isbn">9782378805814</td>
-      <td class="prix">20,47&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Dans leurs yeux</td>
-      <td>Charlotte Letourneur</td>
-      <td>Fleuve &#201;ditions &middot; 05/03/2026</td>
-      <td class="isbn">9782265159372</td>
-      <td class="prix">19,97&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Danser sur les volcans</td>
-      <td>Laure Manel</td>
-      <td>Michel Lafon &middot; 26/03/2026</td>
-      <td class="isbn">9782749962061</td>
-      <td class="prix">19,06&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>D&#233;ferlante</td>
-      <td>C&#233;line Denjean</td>
-      <td>Michel Lafon &middot; 12/02/2026</td>
-      <td class="isbn">9782749964126</td>
-      <td class="prix">19,97&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Derni&#232;re chance dans les Pyr&#233;n&#233;es</td>
-      <td>Julia Chapman</td>
-      <td>Robert Laffont &middot; 29/01/2026</td>
-      <td class="isbn">9782221273012</td>
-      <td class="prix">17,29&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Du go&#251;t pour le bonheur</td>
-      <td>Lorraine Fouchet</td>
-      <td>&#201;ditions H&#233;lo&#239;se d'Ormesson &middot; 05/03/2026</td>
-      <td class="isbn">9782487819849</td>
-      <td class="prix">19,11&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Et la joie de vivre</td>
-      <td>Gis&#232;le Pelicot</td>
-      <td>Flammarion &middot; 17/02/2026</td>
-      <td class="isbn">9782080497260</td>
-      <td class="prix">20,47&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Fauves</td>
-      <td>M&#233;lissa Da Costa</td>
-      <td>Albin Michel &middot; 07/01/2026</td>
-      <td class="isbn">9782226483546</td>
-      <td class="prix">21,75&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Ici</td>
-      <td>Johana Gustawsson, Thomas Enger</td>
-      <td>Calmann-L&#233;vy &middot; 04/02/2026</td>
-      <td class="isbn">9782702194140</td>
-      <td class="prix">20,47&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Il faudrait leur dire</td>
-      <td>Car&#232;ne Ponte</td>
-      <td>Fleuve &#201;ditions &middot; 02/04/2026</td>
-      <td class="isbn">9782265158931</td>
-      <td class="prix">18,15&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Immersion</td>
-      <td>Nicolas Druart</td>
-      <td>Belfond &middot; 15/01/2026</td>
-      <td class="isbn">9782714405401</td>
-      <td class="prix">18,20&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Impossibles Cr&#233;atures&nbsp;: Le Roi Empoisonn&#233;</td>
-      <td>Katherine Rundell</td>
-      <td>Gallimard Jeunesse &middot; 05/02/2026</td>
-      <td class="isbn">9782075234047</td>
-      <td class="prix">15,01&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Je suis dr&#244;le</td>
-      <td>David Foenkinos</td>
-      <td>Gallimard &middot; 02/04/2026</td>
-      <td class="isbn">9782073152985</td>
-      <td class="prix">18,20&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Je suis Romane Monnier</td>
-      <td>Delphine de Vigan</td>
-      <td>Gallimard &middot; 15/01/2026</td>
-      <td class="isbn">9782073113252</td>
-      <td class="prix">20,02&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Je vais te d&#233;truire</td>
-      <td>Linwood Barclay</td>
-      <td>Belfond &middot; 05/02/2026</td>
-      <td class="isbn">9782714405043</td>
-      <td class="prix">20,93&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Juste apr&#232;s Dieu, il y a papa</td>
-      <td>Eric-Emmanuel Schmitt</td>
-      <td>Albin Michel &middot; 25/02/2026</td>
-      <td class="isbn">9782226488589</td>
-      <td class="prix">18,11&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Killing me softly</td>
-      <td>Jacky Schwartzmann</td>
-      <td>La Manufacture de Livres &middot; 08/01/2026</td>
-      <td class="isbn">9782385532185</td>
-      <td class="prix">14,47&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>L'autre moi</td>
-      <td>Franck Thilliez</td>
-      <td>Fleuve &#201;ditions &middot; 28/04/2026</td>
-      <td class="isbn">9782265159075</td>
-      <td class="prix">20,88&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>L'&#233;merveillement</td>
-      <td>Aur&#233;lie Valognes</td>
-      <td>JC Latt&#232;s &middot; 11/03/2026</td>
-      <td class="isbn">9782709676465</td>
-      <td class="prix">19,02&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>L'&#206;le aux jardins enchant&#233;s</td>
-      <td>Sarah Beth Durst, Lulu Chen</td>
-      <td>Bragelonne &middot; 11/02/2026</td>
-      <td class="isbn">9791028135492</td>
-      <td class="prix">20,02&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>L'intruse</td>
-      <td>Freida McFadden</td>
-      <td>City &#201;ditions &middot; 06/05/2026</td>
-      <td class="isbn">9782824625256</td>
-      <td class="prix">20,02&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>La Colline</td>
-      <td>Mathilde Beaussault</td>
-      <td>Le Seuil &middot; 06/03/2026</td>
-      <td class="isbn">9782021602302</td>
-      <td class="prix">18,11&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>La Correspondante</td>
-      <td>Virginia Evans</td>
-      <td>&#201;ditions de La Table Ronde &middot; 08/01/2026</td>
-      <td class="isbn">9791037114884</td>
-      <td class="prix">20,47&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>La Fabrique du mal</td>
-      <td>Ang&#233;lina Delcroix</td>
-      <td>Michel Lafon &middot; 13/05/2026</td>
-      <td class="isbn">9782749964003</td>
-      <td class="prix">19,97&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>La femme m&#233;decin de Galveston</td>
-      <td>Amanda Skenandore</td>
-      <td>Faubourg Marigny &middot; 06/11/2025</td>
-      <td class="isbn">9782384363827</td>
-      <td class="prix">22,75&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>La Ferme</td>
-      <td>Fran&#231;ois-Xavier Dillard</td>
-      <td>&#201;ditions R&#233;camier &middot; 02/04/2026</td>
-      <td class="isbn">9782385770532</td>
-      <td class="prix">19,11&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>La Fille des embruns</td>
-      <td>Marie-Haude M&#233;riguet</td>
-      <td>Charleston &middot; 12/03/2026</td>
-      <td class="isbn">9782385295004</td>
-      <td class="prix">18,11&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>La fin du voyage</td>
-      <td>Arnaldur Indridason</td>
-      <td>&#201;ditions M&#233;taili&#233; &middot; 06/02/2026</td>
-      <td class="isbn">9791022615051</td>
-      <td class="prix">19,11&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>La gardienne</td>
-      <td>Sonja Delzongle</td>
-      <td>Fleuve &#201;ditions &middot; 05/02/2026</td>
-      <td class="isbn">9782265159228</td>
-      <td class="prix">19,97&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>La locataire</td>
-      <td>Freida McFadden</td>
-      <td>City &#201;ditions &middot; 11/02/2026</td>
-      <td class="isbn">9782824626338</td>
-      <td class="prix">20,02&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>La mort en miroir</td>
-      <td>P&#233;tronille Rostagnat</td>
-      <td>&#201;ditions Belladone &middot; 19/03/2026</td>
-      <td class="isbn">9782488853002</td>
-      <td class="prix">19,02&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>La reine de mai</td>
-      <td>N&#233;O</td>
-      <td>Albin Michel &middot; 28/01/2026</td>
-      <td class="isbn">9782226498984</td>
-      <td class="prix">19,02&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>La saga des Haller T.2&nbsp;: La R&#233;volte d'Ida</td>
-      <td>Anne Jacobs</td>
-      <td>Charleston &middot; 12/03/2026</td>
-      <td class="isbn">9782385295059</td>
-      <td class="prix">20,84&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>La sage-femme et la rivi&#232;re</td>
-      <td>Ariel Lawhon</td>
-      <td>HarperCollins France &middot; 11/02/2026</td>
-      <td class="isbn">9791033919933</td>
-      <td class="prix">19,93&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Le Berger d'Alep</td>
-      <td>St&#233;phanie Perez</td>
-      <td>&#201;ditions R&#233;camier &middot; 12/03/2026</td>
-      <td class="isbn">9782385772062</td>
-      <td class="prix">19,11&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Le club des amateurs de romans policiers T.7&nbsp;: Le Crime de l'Indian Pacific</td>
-      <td>C. A. Larmer</td>
-      <td>Le Cherche Midi &middot; 12/03/2026</td>
-      <td class="isbn">9782749185408</td>
-      <td class="prix">14,47&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Le crime du paradis</td>
-      <td>Guillaume Musso</td>
-      <td>Calmann-L&#233;vy &middot; 03/03/2026</td>
-      <td class="isbn">9782702192979</td>
-      <td class="prix">20,84&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Le domaine aux secrets</td>
-      <td>Valentin Musso</td>
-      <td>&#201;ditions Julliard &middot; 07/05/2026</td>
-      <td class="isbn">9782260056744</td>
-      <td class="prix">19,56&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Le Gar&#231;on &#233;ternel</td>
-      <td>J&#233;r&#244;me Loubry</td>
-      <td>Calmann-L&#233;vy &middot; 02/01/2026</td>
-      <td class="isbn">9782702190753</td>
-      <td class="prix">19,93&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Le Groupe</td>
-      <td>Isabelle Lagarrigue</td>
-      <td>&#201;ditions R&#233;camier &middot; 09/04/2026</td>
-      <td class="isbn">9782385772406</td>
-      <td class="prix">19,02&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Le Hameau</td>
-      <td>Niko Tackian</td>
-      <td>Calmann-L&#233;vy &middot; 25/03/2026</td>
-      <td class="isbn">9782702191613</td>
-      <td class="prix">18,65&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Le livre de la culpabilit&#233;</td>
-      <td>Catherine Chidgey</td>
-      <td>Gallmeister &middot; 04/03/2026</td>
-      <td class="isbn">9782351783856</td>
-      <td class="prix">24,48&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Le Manoir des r&#234;ves perdus T.2&nbsp;: Vers la lumi&#232;re</td>
-      <td>Marie-Bernadette Dupuy</td>
-      <td>Calmann-L&#233;vy &middot; 04/02/2026</td>
-      <td class="isbn">9782702182383</td>
-      <td class="prix">21,75&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Le Parfum des fleurs sauvages T.2&nbsp;: La fille aux boutons d'or</td>
-      <td>Tessa Collins</td>
-      <td>Charleston &middot; 12/02/2026</td>
-      <td class="isbn">9782385294953</td>
-      <td class="prix">20,84&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Le Pi&#232;ge</td>
-      <td>Olivier Bal</td>
-      <td>XO &middot; 23/04/2026</td>
-      <td class="isbn">9782374489391</td>
-      <td class="prix">19,93&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Le poids du sang</td>
-      <td>Paul Cleave</td>
-      <td>HarperCollins France &middot; 18/03/2026</td>
-      <td class="isbn">9791033923893</td>
-      <td class="prix">20,47&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Le pot de d&#233;part</td>
-      <td>Julien Aime</td>
-      <td>Mazarine &middot; 08/04/2026</td>
-      <td class="isbn">9782213734323</td>
-      <td class="prix">18,11&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Le prieur de Bethl&#233;em</td>
-      <td>Yasmina Khadra</td>
-      <td>Flammarion &middot; 04/03/2026</td>
-      <td class="isbn">9782080149671</td>
-      <td class="prix">19,11&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Le secret des agapanthes T.3&nbsp;: Morgane et Juliette</td>
-      <td>Clarisse Sabard</td>
-      <td>Charleston &middot; 02/04/2026</td>
-      <td class="isbn">9782385295035</td>
-      <td class="prix">19,02&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Le silence est &#224; nous</td>
-      <td>Coline Pierr&#233;</td>
-      <td>Flammarion jeunesse &middot; 19/03/2025</td>
-      <td class="isbn">9782080480118</td>
-      <td class="prix">18,11&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Le visage de la nuit</td>
-      <td>C&#233;cile Coulon</td>
-      <td>&#201;ditions de l'Iconoclaste &middot; 08/01/2026</td>
-      <td class="isbn">9782378805715</td>
-      <td class="prix">19,93&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Les Amazones</td>
-      <td>Jim Fergus</td>
-      <td>Pocket &middot; 03/09/2020</td>
-      <td class="isbn">9782266298278</td>
-      <td class="prix">8,19&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Les Belles Promesses</td>
-      <td>Pierre Lemaitre</td>
-      <td>Calmann-L&#233;vy &middot; 06/01/2026</td>
-      <td class="isbn">9782702191477</td>
-      <td class="prix">21,75&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Les cheveux d'&#201;dith</td>
-      <td>Fabienne Blanchut, Catherine Locandro, Dawid</td>
-      <td>Dargaud &middot; 05/09/2025</td>
-      <td class="isbn">9782505120001</td>
-      <td class="prix">20,88&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Les c&#339;urs sont faits pour &#234;tre bris&#233;s</td>
-      <td>Tatiana de Rosnay</td>
-      <td>Albin Michel &middot; 11/03/2026</td>
-      <td class="isbn">9782226504555</td>
-      <td class="prix">19,93&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Les Cottages de la mer</td>
-      <td>Jenny Colgan</td>
-      <td>Charleston &middot; 10/04/2026</td>
-      <td class="isbn">9782385295042</td>
-      <td class="prix">18,11&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Les disparues de Willowbrook</td>
-      <td>Ellen Marie Wiseman</td>
-      <td>Faubourg Marigny &middot; 05/03/2026</td>
-      <td class="isbn">9782384363438</td>
-      <td class="prix">20,02&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Les enqu&#234;tes du d&#233;partement V T.11&nbsp;: Les morts ne chantent pas</td>
-      <td>Jussi Adler-Olsen, Line Holm, Stine Bolther</td>
-      <td>Albin Michel &middot; 04/03/2026</td>
-      <td class="isbn">9782226503732</td>
-      <td class="prix">20,84&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Les &#233;vad&#233;s du convoi 53</td>
-      <td>Benjamin Fogel</td>
-      <td>Gallimard &middot; 12/03/2026</td>
-      <td class="isbn">9782073129864</td>
-      <td class="prix">19,11&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Les fant&#244;mes de Shearwater</td>
-      <td>Charlotte McConaghy</td>
-      <td>Ga&#239;a &middot; 14/01/2026</td>
-      <td class="isbn">9782330216139</td>
-      <td class="prix">21,38&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Les Invisibles</td>
-      <td>Roger Jon Ellory</td>
-      <td>Sonatine &#201;ditions &middot; 02/04/2026</td>
-      <td class="isbn">9782383992691</td>
-      <td class="prix">22,29&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Les miroirs sourient &#224; ceux qui s'aiment</td>
-      <td>Rapha&#235;lle Giordano</td>
-      <td>&#201;ditions R&#233;camier &middot; 23/04/2026</td>
-      <td class="isbn">9782385771201</td>
-      <td class="prix">19,02&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Les Myst&#232;res d'Eversand T.3&nbsp;: L'&#201;pouse</td>
-      <td>Victor Dixen</td>
-      <td>Robert Laffont &middot; 13/05/2026</td>
-      <td class="isbn">9782221285701</td>
-      <td class="prix">13,56&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Les Myst&#232;res d'Eversand T.2&nbsp;: La promise</td>
-      <td>Victor Dixen</td>
-      <td>Robert Laffont &middot; 02/04/2026</td>
-      <td class="isbn">9782221285695</td>
-      <td class="prix">13,56&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Les Myst&#232;res d'Eversand T.1&nbsp;: La suivante</td>
-      <td>Victor Dixen</td>
-      <td>Robert Laffont &middot; 02/04/2026</td>
-      <td class="isbn">9782221285688</td>
-      <td class="prix">13,56&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Les myst&#232;res de Byton Cove&nbsp;: La nuit de la disparition</td>
-      <td>La&#235;titia Sivi</td>
-      <td>Fleurus &middot; 06/02/2026</td>
-      <td class="isbn">9782215200253</td>
-      <td class="prix">16,33&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Les Myst&#232;res de Byton Cove&nbsp;: Un secret &#224; d&#233;terrer</td>
-      <td>La&#235;titia Sivi</td>
-      <td>Fleurus &middot; 12/09/2025</td>
-      <td class="isbn">9782215194958</td>
-      <td class="prix">16,33&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Les Preuves</td>
-      <td>Suzie Miller</td>
-      <td>&#201;ditions de l'Archipel &middot; 26/02/2026</td>
-      <td class="isbn">9782809852981</td>
-      <td class="prix">20,93&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Les Silencieuses</td>
-      <td>Anna McPartlin</td>
-      <td>Le Cherche Midi &middot; 16/04/2026</td>
-      <td class="isbn">9782749185576</td>
-      <td class="prix">20,02&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Les S&#339;urs de la R&#233;sistance</td>
-      <td>Anna Stuart</td>
-      <td>City &#201;ditions &middot; 04/02/2026</td>
-      <td class="isbn">9782824626321</td>
-      <td class="prix">20,02&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Love, mom</td>
-      <td>Iliana Xander</td>
-      <td>Fleuve &#201;ditions &middot; 08/01/2026</td>
-      <td class="isbn">9782265159686</td>
-      <td class="prix">19,97&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Lucia T.3&nbsp;: Ruptures</td>
-      <td>Bernard Minier</td>
-      <td>XO &middot; 26/03/2026</td>
-      <td class="isbn">9782374489513</td>
-      <td class="prix">20,84&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>M comme meurtre&nbsp;?</td>
-      <td>Anthony Horowitz</td>
-      <td>Sonatine &#201;ditions &middot; 05/03/2026</td>
-      <td class="isbn">9782383993032</td>
-      <td class="prix">20,93&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Malgr&#233; tout ce qui nous s&#233;pare</td>
-      <td>Sophie Tal Men</td>
-      <td>Albin Michel &middot; 25/02/2026</td>
-      <td class="isbn">9782226507556</td>
-      <td class="prix">19,02&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Mes fr&#232;res, nos fant&#244;mes et moi</td>
-      <td>Julien Sandrel</td>
-      <td>Charleston &middot; 10/04/2026</td>
-      <td class="isbn">9782385295011</td>
-      <td class="prix">17,20&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Mon nom ne suffit pas</td>
-      <td>Jodi Picoult</td>
-      <td>Charleston &middot; 13/01/2026</td>
-      <td class="isbn">9782385294861</td>
-      <td class="prix">20,84&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Ne jamais trembler</td>
-      <td>Stephen King</td>
-      <td>Albin Michel &middot; 28/01/2026</td>
-      <td class="isbn">9782226501875</td>
-      <td class="prix">22,66&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Nous qui avons connu Solange</td>
-      <td>Marie Vareille</td>
-      <td>Flammarion &middot; 11/03/2026</td>
-      <td class="isbn">9782080476418</td>
-      <td class="prix">20,02&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Pas de fum&#233;e sans feu</td>
-      <td>M. J. Arlidge</td>
-      <td>&#201;ditions Les Escales &middot; 05/02/2026</td>
-      <td class="isbn">9782386980121</td>
-      <td class="prix">20,84&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Phobos T.4&nbsp;: La temp&#234;te des destins</td>
-      <td>Victor Dixen, Maria Francesca Perifano</td>
-      <td>Gl&#233;nat &middot; 22/04/2026</td>
-      <td class="isbn">9782344071588</td>
-      <td class="prix">14,56&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Que la mort nous fr&#244;le</td>
-      <td>Michel Bussi</td>
-      <td>Les Presses de la Cit&#233; &middot; 16/04/2026</td>
-      <td class="isbn">9782258214460</td>
-      <td class="prix">20,84&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Sales gosses</td>
-      <td>Mathieu Lecerf</td>
-      <td>HarperCollins France &middot; 01/04/2026</td>
-      <td class="isbn">9791033926139</td>
-      <td class="prix">19,02&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Sans &#226;me ni conscience</td>
-      <td>Michael Connelly</td>
-      <td>Calmann-L&#233;vy &middot; 14/01/2026</td>
-      <td class="isbn">9782702189054</td>
-      <td class="prix">20,84&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Sept jours avant la tombe</td>
-      <td>Holly Jackson</td>
-      <td>HarperCollins France &middot; 04/03/2026</td>
-      <td class="isbn">9791033922438</td>
-      <td class="prix">18,20&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Sp&#233;cimen</td>
-      <td>Pauline Clavi&#232;re</td>
-      <td>&#201;ditions Grasset &middot; 11/03/2026</td>
-      <td class="isbn">9782246846109</td>
-      <td class="prix">21,84&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Tous leurs secrets</td>
-      <td>John Marrs</td>
-      <td>City &#201;ditions &middot; 11/03/2026</td>
-      <td class="isbn">9782824625911</td>
-      <td class="prix">20,47&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Tous mes mensonges</td>
-      <td>Nelle Lamarr</td>
-      <td>City &#201;ditions &middot; 04/03/2026</td>
-      <td class="isbn">9782824625898</td>
-      <td class="prix">20,02&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Traqu&#233;</td>
-      <td>Frank Leduc</td>
-      <td>Belfond &middot; 19/03/2026</td>
-      <td class="isbn">9782714405708</td>
-      <td class="prix">19,56&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Un jour sans femme</td>
-      <td>Laetitia Colombani</td>
-      <td>&#201;ditions de l'Iconoclaste &middot; 07/05/2026</td>
-      <td class="isbn">9782378804978</td>
-      <td class="prix">19,02&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Une bonne &#233;pouse</td>
-      <td>Ingrid Desjours</td>
-      <td>HarperCollins France &middot; 11/03/2026</td>
-      <td class="isbn">9791033922711</td>
-      <td class="prix">19,02&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Une employ&#233;e mod&#232;le</td>
-      <td>Jean-Christophe Tixier</td>
-      <td>Albin Michel &middot; 11/02/2026</td>
-      <td class="isbn">9782226508096</td>
-      <td class="prix">19,93&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Une histoire qui finit mal</td>
-      <td>Evelyn Clarke</td>
-      <td>Verso &middot; 24/04/2026</td>
-      <td class="isbn">9782386432941</td>
-      <td class="prix">19,93&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Une jeune fille sans histoires</td>
-      <td>Shari Lapena</td>
-      <td>Les Presses de la Cit&#233; &middot; 22/01/2026</td>
-      <td class="isbn">9782258213425</td>
-      <td class="prix">20,93&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Une pension en Italie</td>
-      <td>Philippe Besson</td>
-      <td>&#201;ditions Julliard &middot; 08/01/2026</td>
-      <td class="isbn">9782260056782</td>
-      <td class="prix">19,11&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>Volare</td>
-      <td>Serena Giuliano</td>
-      <td>Calmann-L&#233;vy &middot; 18/03/2026</td>
-      <td class="isbn">9782702194423</td>
-      <td class="prix">17,20&nbsp;&euro;</td>
-    </tr>
-    <tr class="stock">
-      <td>XX</td>
-      <td>Sam Holland</td>
-      <td>HarperCollins France &middot; 08/04/2026</td>
-      <td class="isbn">9791033924715</td>
-      <td class="prix">20,47&nbsp;&euro;</td>
-    </tr>
+    <tr class="r" data-s="56 jours" data-a="catherine ryan howard" data-p="editions de l'archipel · 08/01/2026"><td>56 jours</td><td>Catherine Ryan Howard</td><td>&#201;ditions de l'Archipel &middot; 08/01/2026</td><td class="isbn">9782809853179</td><td class="prix">20,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="aurore" data-a="nicolas leclerc" data-p="le seuil · 06/02/2026"><td>Aurore</td><td>Nicolas Leclerc</td><td>Le Seuil &middot; 06/02/2026</td><td class="isbn">9782021590371</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="baignades" data-a="andree a. michaud" data-p="rivages · 20/08/2025"><td>Baignades</td><td>Andr&#233;e A. Michaud</td><td>Rivages &middot; 20/08/2025</td><td class="isbn">9782743667948</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="bienvenue a dietland" data-a="sarai walker" data-p="gallmeister · 08/04/2026"><td>Bienvenue &#224; Dietland</td><td>Sarai Walker</td><td>Gallmeister &middot; 08/04/2026</td><td class="isbn">9782404081090</td><td class="prix">23,57&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="cavillore" data-a="jeremie claes" data-p="editions heloise d'ormesson · 19/02/2026"><td>Cavillore</td><td>J&#233;r&#233;mie Claes</td><td>&#201;ditions H&#233;lo&#239;se d'Ormesson &middot; 19/02/2026</td><td class="isbn">9782487819696</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="ces lignes qui tracent mon corps" data-a="mansoureh kamari" data-p="casterman · 10/09/2025"><td>Ces Lignes qui tracent mon corps</td><td>Mansoureh Kamari</td><td>Casterman &middot; 10/09/2025</td><td class="isbn">9782203290006</td><td class="prix">21,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="chiens fous" data-a="max monnehay" data-p="harpercollins france · 08/10/2025"><td>Chiens fous</td><td>Max Monnehay</td><td>HarperCollins France &middot; 08/10/2025</td><td class="isbn">9791033919797</td><td class="prix">18,65&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="clement" data-a="romain lemire" data-p="le cherche midi · 09/04/2026"><td>Cl&#233;ment</td><td>Romain Lemire</td><td>Le Cherche Midi &middot; 09/04/2026</td><td class="isbn">9782749185705</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="d'autres printemps" data-a="virginie grimaldi" data-p="flammarion · 06/05/2026"><td>D'autres printemps</td><td>Virginie Grimaldi</td><td>Flammarion &middot; 06/05/2026</td><td class="isbn">9782080510655</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="dans la jungle" data-a="adeline dieudonne" data-p="editions de l'iconoclaste · 02/04/2026"><td>Dans la jungle</td><td>Adeline Dieudonn&#233;</td><td>&#201;ditions de l'Iconoclaste &middot; 02/04/2026</td><td class="isbn">9782378805814</td><td class="prix">20,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="dans leurs yeux" data-a="charlotte letourneur" data-p="fleuve editions · 05/03/2026"><td>Dans leurs yeux</td><td>Charlotte Letourneur</td><td>Fleuve &#201;ditions &middot; 05/03/2026</td><td class="isbn">9782265159372</td><td class="prix">19,97&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="danser sur les volcans" data-a="laure manel" data-p="michel lafon · 26/03/2026"><td>Danser sur les volcans</td><td>Laure Manel</td><td>Michel Lafon &middot; 26/03/2026</td><td class="isbn">9782749962061</td><td class="prix">19,06&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="derniere chance dans les pyrenees" data-a="julia chapman" data-p="robert laffont · 29/01/2026"><td>Derni&#232;re chance dans les Pyr&#233;n&#233;es</td><td>Julia Chapman</td><td>Robert Laffont &middot; 29/01/2026</td><td class="isbn">9782221273012</td><td class="prix">17,29&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="du gout pour le bonheur" data-a="lorraine fouchet" data-p="editions heloise d'ormesson · 05/03/2026"><td>Du go&#251;t pour le bonheur</td><td>Lorraine Fouchet</td><td>&#201;ditions H&#233;lo&#239;se d'Ormesson &middot; 05/03/2026</td><td class="isbn">9782487819849</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="deferlante" data-a="celine denjean" data-p="michel lafon · 12/02/2026"><td>D&#233;ferlante</td><td>C&#233;line Denjean</td><td>Michel Lafon &middot; 12/02/2026</td><td class="isbn">9782749964126</td><td class="prix">19,97&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="et la joie de vivre" data-a="gisele pelicot" data-p="flammarion · 17/02/2026"><td>Et la joie de vivre</td><td>Gis&#232;le Pelicot</td><td>Flammarion &middot; 17/02/2026</td><td class="isbn">9782080497260</td><td class="prix">20,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="fauves" data-a="melissa da costa" data-p="albin michel · 07/01/2026"><td>Fauves</td><td>M&#233;lissa Da Costa</td><td>Albin Michel &middot; 07/01/2026</td><td class="isbn">9782226483546</td><td class="prix">21,75&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="ici" data-a="johana gustawsson, thomas enger" data-p="calmann-levy · 04/02/2026"><td>Ici</td><td>Johana Gustawsson, Thomas Enger</td><td>Calmann-L&#233;vy &middot; 04/02/2026</td><td class="isbn">9782702194140</td><td class="prix">20,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="il faudrait leur dire" data-a="carene ponte" data-p="fleuve editions · 02/04/2026"><td>Il faudrait leur dire</td><td>Car&#232;ne Ponte</td><td>Fleuve &#201;ditions &middot; 02/04/2026</td><td class="isbn">9782265158931</td><td class="prix">18,15&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="immersion" data-a="nicolas druart" data-p="belfond · 15/01/2026"><td>Immersion</td><td>Nicolas Druart</td><td>Belfond &middot; 15/01/2026</td><td class="isbn">9782714405401</td><td class="prix">18,20&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="impossibles creatures : le roi empoisonne" data-a="katherine rundell" data-p="gallimard jeunesse · 05/02/2026"><td>Impossibles Cr&#233;atures&nbsp;: Le Roi Empoisonn&#233;</td><td>Katherine Rundell</td><td>Gallimard Jeunesse &middot; 05/02/2026</td><td class="isbn">9782075234047</td><td class="prix">15,01&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="je suis drole" data-a="david foenkinos" data-p="gallimard · 02/04/2026"><td>Je suis dr&#244;le</td><td>David Foenkinos</td><td>Gallimard &middot; 02/04/2026</td><td class="isbn">9782073152985</td><td class="prix">18,20&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="je suis romane monnier" data-a="delphine de vigan" data-p="gallimard · 15/01/2026"><td>Je suis Romane Monnier</td><td>Delphine de Vigan</td><td>Gallimard &middot; 15/01/2026</td><td class="isbn">9782073113252</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="je vais te detruire" data-a="linwood barclay" data-p="belfond · 05/02/2026"><td>Je vais te d&#233;truire</td><td>Linwood Barclay</td><td>Belfond &middot; 05/02/2026</td><td class="isbn">9782714405043</td><td class="prix">20,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="juste apres dieu, il y a papa" data-a="eric-emmanuel schmitt" data-p="albin michel · 25/02/2026"><td>Juste apr&#232;s Dieu, il y a papa</td><td>Eric-Emmanuel Schmitt</td><td>Albin Michel &middot; 25/02/2026</td><td class="isbn">9782226488589</td><td class="prix">18,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="killing me softly" data-a="jacky schwartzmann" data-p="la manufacture de livres · 08/01/2026"><td>Killing me softly</td><td>Jacky Schwartzmann</td><td>La Manufacture de Livres &middot; 08/01/2026</td><td class="isbn">9782385532185</td><td class="prix">14,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="l'autre moi" data-a="franck thilliez" data-p="fleuve editions · 28/04/2026"><td>L'autre moi</td><td>Franck Thilliez</td><td>Fleuve &#201;ditions &middot; 28/04/2026</td><td class="isbn">9782265159075</td><td class="prix">20,88&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="l'intruse" data-a="freida mcfadden" data-p="city editions · 06/05/2026"><td>L'intruse</td><td>Freida McFadden</td><td>City &#201;ditions &middot; 06/05/2026</td><td class="isbn">9782824625256</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="l'emerveillement" data-a="aurelie valognes" data-p="jc lattes · 11/03/2026"><td>L'&#233;merveillement</td><td>Aur&#233;lie Valognes</td><td>JC Latt&#232;s &middot; 11/03/2026</td><td class="isbn">9782709676465</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="l'ile aux jardins enchantes" data-a="sarah beth durst, lulu chen" data-p="bragelonne · 11/02/2026"><td>L'&#206;le aux jardins enchant&#233;s</td><td>Sarah Beth Durst, Lulu Chen</td><td>Bragelonne &middot; 11/02/2026</td><td class="isbn">9791028135492</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la colline" data-a="mathilde beaussault" data-p="le seuil · 06/03/2026"><td>La Colline</td><td>Mathilde Beaussault</td><td>Le Seuil &middot; 06/03/2026</td><td class="isbn">9782021602302</td><td class="prix">18,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la correspondante" data-a="virginia evans" data-p="editions de la table ronde · 08/01/2026"><td>La Correspondante</td><td>Virginia Evans</td><td>&#201;ditions de La Table Ronde &middot; 08/01/2026</td><td class="isbn">9791037114884</td><td class="prix">20,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la fabrique du mal" data-a="angelina delcroix" data-p="michel lafon · 13/05/2026"><td>La Fabrique du mal</td><td>Ang&#233;lina Delcroix</td><td>Michel Lafon &middot; 13/05/2026</td><td class="isbn">9782749964003</td><td class="prix">19,97&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la femme medecin de galveston" data-a="amanda skenandore" data-p="faubourg marigny · 06/11/2025"><td>La femme m&#233;decin de Galveston</td><td>Amanda Skenandore</td><td>Faubourg Marigny &middot; 06/11/2025</td><td class="isbn">9782384363827</td><td class="prix">22,75&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la ferme" data-a="francois-xavier dillard" data-p="editions recamier · 02/04/2026"><td>La Ferme</td><td>Fran&#231;ois-Xavier Dillard</td><td>&#201;ditions R&#233;camier &middot; 02/04/2026</td><td class="isbn">9782385770532</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la fille des embruns" data-a="marie-haude meriguet" data-p="charleston · 12/03/2026"><td>La Fille des embruns</td><td>Marie-Haude M&#233;riguet</td><td>Charleston &middot; 12/03/2026</td><td class="isbn">9782385295004</td><td class="prix">18,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la fin du voyage" data-a="arnaldur indridason" data-p="editions metailie · 06/02/2026"><td>La fin du voyage</td><td>Arnaldur Indridason</td><td>&#201;ditions M&#233;taili&#233; &middot; 06/02/2026</td><td class="isbn">9791022615051</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la gardienne" data-a="sonja delzongle" data-p="fleuve editions · 05/02/2026"><td>La gardienne</td><td>Sonja Delzongle</td><td>Fleuve &#201;ditions &middot; 05/02/2026</td><td class="isbn">9782265159228</td><td class="prix">19,97&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la locataire" data-a="freida mcfadden" data-p="city editions · 11/02/2026"><td>La locataire</td><td>Freida McFadden</td><td>City &#201;ditions &middot; 11/02/2026</td><td class="isbn">9782824626338</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la mort en miroir" data-a="petronille rostagnat" data-p="editions belladone · 19/03/2026"><td>La mort en miroir</td><td>P&#233;tronille Rostagnat</td><td>&#201;ditions Belladone &middot; 19/03/2026</td><td class="isbn">9782488853002</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la reine de mai" data-a="neo" data-p="albin michel · 28/01/2026"><td>La reine de mai</td><td>N&#233;O</td><td>Albin Michel &middot; 28/01/2026</td><td class="isbn">9782226498984</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la saga des haller t.2 : la revolte d'ida" data-a="anne jacobs" data-p="charleston · 12/03/2026"><td>La saga des Haller T.2&nbsp;: La R&#233;volte d'Ida</td><td>Anne Jacobs</td><td>Charleston &middot; 12/03/2026</td><td class="isbn">9782385295059</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la sage-femme et la riviere" data-a="ariel lawhon" data-p="harpercollins france · 11/02/2026"><td>La sage-femme et la rivi&#232;re</td><td>Ariel Lawhon</td><td>HarperCollins France &middot; 11/02/2026</td><td class="isbn">9791033919933</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le berger d'alep" data-a="stephanie perez" data-p="editions recamier · 12/03/2026"><td>Le Berger d'Alep</td><td>St&#233;phanie Perez</td><td>&#201;ditions R&#233;camier &middot; 12/03/2026</td><td class="isbn">9782385772062</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le club des amateurs de romans policiers t.7 : le crime de l'indian pacific" data-a="c. a. larmer" data-p="le cherche midi · 12/03/2026"><td>Le club des amateurs de romans policiers T.7&nbsp;: Le Crime de l'Indian Pacific</td><td>C. A. Larmer</td><td>Le Cherche Midi &middot; 12/03/2026</td><td class="isbn">9782749185408</td><td class="prix">14,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le crime du paradis" data-a="guillaume musso" data-p="calmann-levy · 03/03/2026"><td>Le crime du paradis</td><td>Guillaume Musso</td><td>Calmann-L&#233;vy &middot; 03/03/2026</td><td class="isbn">9782702192979</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le domaine aux secrets" data-a="valentin musso" data-p="editions julliard · 07/05/2026"><td>Le domaine aux secrets</td><td>Valentin Musso</td><td>&#201;ditions Julliard &middot; 07/05/2026</td><td class="isbn">9782260056744</td><td class="prix">19,56&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le garcon eternel" data-a="jerome loubry" data-p="calmann-levy · 02/01/2026"><td>Le Gar&#231;on &#233;ternel</td><td>J&#233;r&#244;me Loubry</td><td>Calmann-L&#233;vy &middot; 02/01/2026</td><td class="isbn">9782702190753</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le groupe" data-a="isabelle lagarrigue" data-p="editions recamier · 09/04/2026"><td>Le Groupe</td><td>Isabelle Lagarrigue</td><td>&#201;ditions R&#233;camier &middot; 09/04/2026</td><td class="isbn">9782385772406</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le hameau" data-a="niko tackian" data-p="calmann-levy · 25/03/2026"><td>Le Hameau</td><td>Niko Tackian</td><td>Calmann-L&#233;vy &middot; 25/03/2026</td><td class="isbn">9782702191613</td><td class="prix">18,65&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le livre de la culpabilite" data-a="catherine chidgey" data-p="gallmeister · 04/03/2026"><td>Le livre de la culpabilit&#233;</td><td>Catherine Chidgey</td><td>Gallmeister &middot; 04/03/2026</td><td class="isbn">9782351783856</td><td class="prix">24,48&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le manoir des reves perdus t.2 : vers la lumiere" data-a="marie-bernadette dupuy" data-p="calmann-levy · 04/02/2026"><td>Le Manoir des r&#234;ves perdus T.2&nbsp;: Vers la lumi&#232;re</td><td>Marie-Bernadette Dupuy</td><td>Calmann-L&#233;vy &middot; 04/02/2026</td><td class="isbn">9782702182383</td><td class="prix">21,75&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le parfum des fleurs sauvages t.2 : la fille aux boutons d'or" data-a="tessa collins" data-p="charleston · 12/02/2026"><td>Le Parfum des fleurs sauvages T.2&nbsp;: La fille aux boutons d'or</td><td>Tessa Collins</td><td>Charleston &middot; 12/02/2026</td><td class="isbn">9782385294953</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le piege" data-a="olivier bal" data-p="xo · 23/04/2026"><td>Le Pi&#232;ge</td><td>Olivier Bal</td><td>XO &middot; 23/04/2026</td><td class="isbn">9782374489391</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le poids du sang" data-a="paul cleave" data-p="harpercollins france · 18/03/2026"><td>Le poids du sang</td><td>Paul Cleave</td><td>HarperCollins France &middot; 18/03/2026</td><td class="isbn">9791033923893</td><td class="prix">20,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le pot de depart" data-a="julien aime" data-p="mazarine · 08/04/2026"><td>Le pot de d&#233;part</td><td>Julien Aime</td><td>Mazarine &middot; 08/04/2026</td><td class="isbn">9782213734323</td><td class="prix">18,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le prieur de bethleem" data-a="yasmina khadra" data-p="flammarion · 04/03/2026"><td>Le prieur de Bethl&#233;em</td><td>Yasmina Khadra</td><td>Flammarion &middot; 04/03/2026</td><td class="isbn">9782080149671</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le secret des agapanthes t.3 : morgane et juliette" data-a="clarisse sabard" data-p="charleston · 02/04/2026"><td>Le secret des agapanthes T.3&nbsp;: Morgane et Juliette</td><td>Clarisse Sabard</td><td>Charleston &middot; 02/04/2026</td><td class="isbn">9782385295035</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le silence est a nous" data-a="coline pierre" data-p="flammarion jeunesse · 19/03/2025"><td>Le silence est &#224; nous</td><td>Coline Pierr&#233;</td><td>Flammarion jeunesse &middot; 19/03/2025</td><td class="isbn">9782080480118</td><td class="prix">18,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le visage de la nuit" data-a="cecile coulon" data-p="editions de l'iconoclaste · 08/01/2026"><td>Le visage de la nuit</td><td>C&#233;cile Coulon</td><td>&#201;ditions de l'Iconoclaste &middot; 08/01/2026</td><td class="isbn">9782378805715</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les amazones" data-a="jim fergus" data-p="pocket · 03/09/2020"><td>Les Amazones</td><td>Jim Fergus</td><td>Pocket &middot; 03/09/2020</td><td class="isbn">9782266298278</td><td class="prix">8,19&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les belles promesses" data-a="pierre lemaitre" data-p="calmann-levy · 06/01/2026"><td>Les Belles Promesses</td><td>Pierre Lemaitre</td><td>Calmann-L&#233;vy &middot; 06/01/2026</td><td class="isbn">9782702191477</td><td class="prix">21,75&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les cheveux d'edith" data-a="fabienne blanchut, catherine locandro, dawid" data-p="dargaud · 05/09/2025"><td>Les cheveux d'&#201;dith</td><td>Fabienne Blanchut, Catherine Locandro, Dawid</td><td>Dargaud &middot; 05/09/2025</td><td class="isbn">9782505120001</td><td class="prix">20,88&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les cottages de la mer" data-a="jenny colgan" data-p="charleston · 10/04/2026"><td>Les Cottages de la mer</td><td>Jenny Colgan</td><td>Charleston &middot; 10/04/2026</td><td class="isbn">9782385295042</td><td class="prix">18,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les cœurs sont faits pour etre brises" data-a="tatiana de rosnay" data-p="albin michel · 11/03/2026"><td>Les c&#339;urs sont faits pour &#234;tre bris&#233;s</td><td>Tatiana de Rosnay</td><td>Albin Michel &middot; 11/03/2026</td><td class="isbn">9782226504555</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les disparues de willowbrook" data-a="ellen marie wiseman" data-p="faubourg marigny · 05/03/2026"><td>Les disparues de Willowbrook</td><td>Ellen Marie Wiseman</td><td>Faubourg Marigny &middot; 05/03/2026</td><td class="isbn">9782384363438</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les enquetes du departement v t.11 : les morts ne chantent pas" data-a="jussi adler-olsen, line holm, stine bolther" data-p="albin michel · 04/03/2026"><td>Les enqu&#234;tes du d&#233;partement V T.11&nbsp;: Les morts ne chantent pas</td><td>Jussi Adler-Olsen, Line Holm, Stine Bolther</td><td>Albin Michel &middot; 04/03/2026</td><td class="isbn">9782226503732</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les fantomes de shearwater" data-a="charlotte mcconaghy" data-p="gaia · 14/01/2026"><td>Les fant&#244;mes de Shearwater</td><td>Charlotte McConaghy</td><td>Ga&#239;a &middot; 14/01/2026</td><td class="isbn">9782330216139</td><td class="prix">21,38&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les invisibles" data-a="roger jon ellory" data-p="sonatine editions · 02/04/2026"><td>Les Invisibles</td><td>Roger Jon Ellory</td><td>Sonatine &#201;ditions &middot; 02/04/2026</td><td class="isbn">9782383992691</td><td class="prix">22,29&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les miroirs sourient a ceux qui s'aiment" data-a="raphaelle giordano" data-p="editions recamier · 23/04/2026"><td>Les miroirs sourient &#224; ceux qui s'aiment</td><td>Rapha&#235;lle Giordano</td><td>&#201;ditions R&#233;camier &middot; 23/04/2026</td><td class="isbn">9782385771201</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les mysteres d'eversand t.1 : la suivante" data-a="victor dixen" data-p="robert laffont · 02/04/2026"><td>Les Myst&#232;res d'Eversand T.1&nbsp;: La suivante</td><td>Victor Dixen</td><td>Robert Laffont &middot; 02/04/2026</td><td class="isbn">9782221285688</td><td class="prix">13,56&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les mysteres d'eversand t.2 : la promise" data-a="victor dixen" data-p="robert laffont · 02/04/2026"><td>Les Myst&#232;res d'Eversand T.2&nbsp;: La promise</td><td>Victor Dixen</td><td>Robert Laffont &middot; 02/04/2026</td><td class="isbn">9782221285695</td><td class="prix">13,56&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les mysteres d'eversand t.3 : l'epouse" data-a="victor dixen" data-p="robert laffont · 13/05/2026"><td>Les Myst&#232;res d'Eversand T.3&nbsp;: L'&#201;pouse</td><td>Victor Dixen</td><td>Robert Laffont &middot; 13/05/2026</td><td class="isbn">9782221285701</td><td class="prix">13,56&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les mysteres de byton cove : la nuit de la disparition" data-a="laetitia sivi" data-p="fleurus · 06/02/2026"><td>Les myst&#232;res de Byton Cove&nbsp;: La nuit de la disparition</td><td>La&#235;titia Sivi</td><td>Fleurus &middot; 06/02/2026</td><td class="isbn">9782215200253</td><td class="prix">16,33&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les mysteres de byton cove : un secret a deterrer" data-a="laetitia sivi" data-p="fleurus · 12/09/2025"><td>Les Myst&#232;res de Byton Cove&nbsp;: Un secret &#224; d&#233;terrer</td><td>La&#235;titia Sivi</td><td>Fleurus &middot; 12/09/2025</td><td class="isbn">9782215194958</td><td class="prix">16,33&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les preuves" data-a="suzie miller" data-p="editions de l'archipel · 26/02/2026"><td>Les Preuves</td><td>Suzie Miller</td><td>&#201;ditions de l'Archipel &middot; 26/02/2026</td><td class="isbn">9782809852981</td><td class="prix">20,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les silencieuses" data-a="anna mcpartlin" data-p="le cherche midi · 16/04/2026"><td>Les Silencieuses</td><td>Anna McPartlin</td><td>Le Cherche Midi &middot; 16/04/2026</td><td class="isbn">9782749185576</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les sœurs de la resistance" data-a="anna stuart" data-p="city editions · 04/02/2026"><td>Les S&#339;urs de la R&#233;sistance</td><td>Anna Stuart</td><td>City &#201;ditions &middot; 04/02/2026</td><td class="isbn">9782824626321</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les evades du convoi 53" data-a="benjamin fogel" data-p="gallimard · 12/03/2026"><td>Les &#233;vad&#233;s du convoi 53</td><td>Benjamin Fogel</td><td>Gallimard &middot; 12/03/2026</td><td class="isbn">9782073129864</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="love, mom" data-a="iliana xander" data-p="fleuve editions · 08/01/2026"><td>Love, mom</td><td>Iliana Xander</td><td>Fleuve &#201;ditions &middot; 08/01/2026</td><td class="isbn">9782265159686</td><td class="prix">19,97&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="lucia t.3 : ruptures" data-a="bernard minier" data-p="xo · 26/03/2026"><td>Lucia T.3&nbsp;: Ruptures</td><td>Bernard Minier</td><td>XO &middot; 26/03/2026</td><td class="isbn">9782374489513</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="m comme meurtre ?" data-a="anthony horowitz" data-p="sonatine editions · 05/03/2026"><td>M comme meurtre&nbsp;?</td><td>Anthony Horowitz</td><td>Sonatine &#201;ditions &middot; 05/03/2026</td><td class="isbn">9782383993032</td><td class="prix">20,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="malgre tout ce qui nous separe" data-a="sophie tal men" data-p="albin michel · 25/02/2026"><td>Malgr&#233; tout ce qui nous s&#233;pare</td><td>Sophie Tal Men</td><td>Albin Michel &middot; 25/02/2026</td><td class="isbn">9782226507556</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="mes freres, nos fantomes et moi" data-a="julien sandrel" data-p="charleston · 10/04/2026"><td>Mes fr&#232;res, nos fant&#244;mes et moi</td><td>Julien Sandrel</td><td>Charleston &middot; 10/04/2026</td><td class="isbn">9782385295011</td><td class="prix">17,20&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="mon nom ne suffit pas" data-a="jodi picoult" data-p="charleston · 13/01/2026"><td>Mon nom ne suffit pas</td><td>Jodi Picoult</td><td>Charleston &middot; 13/01/2026</td><td class="isbn">9782385294861</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="ne jamais trembler" data-a="stephen king" data-p="albin michel · 28/01/2026"><td>Ne jamais trembler</td><td>Stephen King</td><td>Albin Michel &middot; 28/01/2026</td><td class="isbn">9782226501875</td><td class="prix">22,66&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="nous qui avons connu solange" data-a="marie vareille" data-p="flammarion · 11/03/2026"><td>Nous qui avons connu Solange</td><td>Marie Vareille</td><td>Flammarion &middot; 11/03/2026</td><td class="isbn">9782080476418</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="pas de fumee sans feu" data-a="m. j. arlidge" data-p="editions les escales · 05/02/2026"><td>Pas de fum&#233;e sans feu</td><td>M. J. Arlidge</td><td>&#201;ditions Les Escales &middot; 05/02/2026</td><td class="isbn">9782386980121</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="phobos t.4 : la tempete des destins" data-a="victor dixen, maria francesca perifano" data-p="glenat · 22/04/2026"><td>Phobos T.4&nbsp;: La temp&#234;te des destins</td><td>Victor Dixen, Maria Francesca Perifano</td><td>Gl&#233;nat &middot; 22/04/2026</td><td class="isbn">9782344071588</td><td class="prix">14,56&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="que la mort nous frole" data-a="michel bussi" data-p="les presses de la cite · 16/04/2026"><td>Que la mort nous fr&#244;le</td><td>Michel Bussi</td><td>Les Presses de la Cit&#233; &middot; 16/04/2026</td><td class="isbn">9782258214460</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="sales gosses" data-a="mathieu lecerf" data-p="harpercollins france · 01/04/2026"><td>Sales gosses</td><td>Mathieu Lecerf</td><td>HarperCollins France &middot; 01/04/2026</td><td class="isbn">9791033926139</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="sans ame ni conscience" data-a="michael connelly" data-p="calmann-levy · 14/01/2026"><td>Sans &#226;me ni conscience</td><td>Michael Connelly</td><td>Calmann-L&#233;vy &middot; 14/01/2026</td><td class="isbn">9782702189054</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="sept jours avant la tombe" data-a="holly jackson" data-p="harpercollins france · 04/03/2026"><td>Sept jours avant la tombe</td><td>Holly Jackson</td><td>HarperCollins France &middot; 04/03/2026</td><td class="isbn">9791033922438</td><td class="prix">18,20&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="specimen" data-a="pauline claviere" data-p="editions grasset · 11/03/2026"><td>Sp&#233;cimen</td><td>Pauline Clavi&#232;re</td><td>&#201;ditions Grasset &middot; 11/03/2026</td><td class="isbn">9782246846109</td><td class="prix">21,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="tous leurs secrets" data-a="john marrs" data-p="city editions · 11/03/2026"><td>Tous leurs secrets</td><td>John Marrs</td><td>City &#201;ditions &middot; 11/03/2026</td><td class="isbn">9782824625911</td><td class="prix">20,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="tous mes mensonges" data-a="nelle lamarr" data-p="city editions · 04/03/2026"><td>Tous mes mensonges</td><td>Nelle Lamarr</td><td>City &#201;ditions &middot; 04/03/2026</td><td class="isbn">9782824625898</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="traque" data-a="frank leduc" data-p="belfond · 19/03/2026"><td>Traqu&#233;</td><td>Frank Leduc</td><td>Belfond &middot; 19/03/2026</td><td class="isbn">9782714405708</td><td class="prix">19,56&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="un jour sans femme" data-a="laetitia colombani" data-p="editions de l'iconoclaste · 07/05/2026"><td>Un jour sans femme</td><td>Laetitia Colombani</td><td>&#201;ditions de l'Iconoclaste &middot; 07/05/2026</td><td class="isbn">9782378804978</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="une bonne epouse" data-a="ingrid desjours" data-p="harpercollins france · 11/03/2026"><td>Une bonne &#233;pouse</td><td>Ingrid Desjours</td><td>HarperCollins France &middot; 11/03/2026</td><td class="isbn">9791033922711</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="une employee modele" data-a="jean-christophe tixier" data-p="albin michel · 11/02/2026"><td>Une employ&#233;e mod&#232;le</td><td>Jean-Christophe Tixier</td><td>Albin Michel &middot; 11/02/2026</td><td class="isbn">9782226508096</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="une histoire qui finit mal" data-a="evelyn clarke" data-p="verso · 24/04/2026"><td>Une histoire qui finit mal</td><td>Evelyn Clarke</td><td>Verso &middot; 24/04/2026</td><td class="isbn">9782386432941</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="une jeune fille sans histoires" data-a="shari lapena" data-p="les presses de la cite · 22/01/2026"><td>Une jeune fille sans histoires</td><td>Shari Lapena</td><td>Les Presses de la Cit&#233; &middot; 22/01/2026</td><td class="isbn">9782258213425</td><td class="prix">20,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="une pension en italie" data-a="philippe besson" data-p="editions julliard · 08/01/2026"><td>Une pension en Italie</td><td>Philippe Besson</td><td>&#201;ditions Julliard &middot; 08/01/2026</td><td class="isbn">9782260056782</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="volare" data-a="serena giuliano" data-p="calmann-levy · 18/03/2026"><td>Volare</td><td>Serena Giuliano</td><td>Calmann-L&#233;vy &middot; 18/03/2026</td><td class="isbn">9782702194423</td><td class="prix">17,20&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="xx" data-a="sam holland" data-p="harpercollins france · 08/04/2026"><td>XX</td><td>Sam Holland</td><td>HarperCollins France &middot; 08/04/2026</td><td class="isbn">9791033924715</td><td class="prix">20,47&nbsp;&euro;</td></tr>
+    </tbody>
+  </table>
+  <table class="t st-author">
+    <thead><tr><th>Titre</th><th class="a">Auteur &uarr;</th><th>Parution &middot; &Eacute;diteur</th><th>ISBN</th><th>Prix</th></tr></thead>
+    <tbody>
+    <tr class="r" data-s="dans la jungle" data-a="adeline dieudonne" data-p="editions de l'iconoclaste · 02/04/2026"><td>Dans la jungle</td><td>Adeline Dieudonn&#233;</td><td>&#201;ditions de l'Iconoclaste &middot; 02/04/2026</td><td class="isbn">9782378805814</td><td class="prix">20,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la femme medecin de galveston" data-a="amanda skenandore" data-p="faubourg marigny · 06/11/2025"><td>La femme m&#233;decin de Galveston</td><td>Amanda Skenandore</td><td>Faubourg Marigny &middot; 06/11/2025</td><td class="isbn">9782384363827</td><td class="prix">22,75&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="baignades" data-a="andree a. michaud" data-p="rivages · 20/08/2025"><td>Baignades</td><td>Andr&#233;e A. Michaud</td><td>Rivages &middot; 20/08/2025</td><td class="isbn">9782743667948</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la fabrique du mal" data-a="angelina delcroix" data-p="michel lafon · 13/05/2026"><td>La Fabrique du mal</td><td>Ang&#233;lina Delcroix</td><td>Michel Lafon &middot; 13/05/2026</td><td class="isbn">9782749964003</td><td class="prix">19,97&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les silencieuses" data-a="anna mcpartlin" data-p="le cherche midi · 16/04/2026"><td>Les Silencieuses</td><td>Anna McPartlin</td><td>Le Cherche Midi &middot; 16/04/2026</td><td class="isbn">9782749185576</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les sœurs de la resistance" data-a="anna stuart" data-p="city editions · 04/02/2026"><td>Les S&#339;urs de la R&#233;sistance</td><td>Anna Stuart</td><td>City &#201;ditions &middot; 04/02/2026</td><td class="isbn">9782824626321</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la saga des haller t.2 : la revolte d'ida" data-a="anne jacobs" data-p="charleston · 12/03/2026"><td>La saga des Haller T.2&nbsp;: La R&#233;volte d'Ida</td><td>Anne Jacobs</td><td>Charleston &middot; 12/03/2026</td><td class="isbn">9782385295059</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="m comme meurtre ?" data-a="anthony horowitz" data-p="sonatine editions · 05/03/2026"><td>M comme meurtre&nbsp;?</td><td>Anthony Horowitz</td><td>Sonatine &#201;ditions &middot; 05/03/2026</td><td class="isbn">9782383993032</td><td class="prix">20,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la sage-femme et la riviere" data-a="ariel lawhon" data-p="harpercollins france · 11/02/2026"><td>La sage-femme et la rivi&#232;re</td><td>Ariel Lawhon</td><td>HarperCollins France &middot; 11/02/2026</td><td class="isbn">9791033919933</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la fin du voyage" data-a="arnaldur indridason" data-p="editions metailie · 06/02/2026"><td>La fin du voyage</td><td>Arnaldur Indridason</td><td>&#201;ditions M&#233;taili&#233; &middot; 06/02/2026</td><td class="isbn">9791022615051</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="l'emerveillement" data-a="aurelie valognes" data-p="jc lattes · 11/03/2026"><td>L'&#233;merveillement</td><td>Aur&#233;lie Valognes</td><td>JC Latt&#232;s &middot; 11/03/2026</td><td class="isbn">9782709676465</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les evades du convoi 53" data-a="benjamin fogel" data-p="gallimard · 12/03/2026"><td>Les &#233;vad&#233;s du convoi 53</td><td>Benjamin Fogel</td><td>Gallimard &middot; 12/03/2026</td><td class="isbn">9782073129864</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="lucia t.3 : ruptures" data-a="bernard minier" data-p="xo · 26/03/2026"><td>Lucia T.3&nbsp;: Ruptures</td><td>Bernard Minier</td><td>XO &middot; 26/03/2026</td><td class="isbn">9782374489513</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le club des amateurs de romans policiers t.7 : le crime de l'indian pacific" data-a="c. a. larmer" data-p="le cherche midi · 12/03/2026"><td>Le club des amateurs de romans policiers T.7&nbsp;: Le Crime de l'Indian Pacific</td><td>C. A. Larmer</td><td>Le Cherche Midi &middot; 12/03/2026</td><td class="isbn">9782749185408</td><td class="prix">14,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="il faudrait leur dire" data-a="carene ponte" data-p="fleuve editions · 02/04/2026"><td>Il faudrait leur dire</td><td>Car&#232;ne Ponte</td><td>Fleuve &#201;ditions &middot; 02/04/2026</td><td class="isbn">9782265158931</td><td class="prix">18,15&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le livre de la culpabilite" data-a="catherine chidgey" data-p="gallmeister · 04/03/2026"><td>Le livre de la culpabilit&#233;</td><td>Catherine Chidgey</td><td>Gallmeister &middot; 04/03/2026</td><td class="isbn">9782351783856</td><td class="prix">24,48&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="56 jours" data-a="catherine ryan howard" data-p="editions de l'archipel · 08/01/2026"><td>56 jours</td><td>Catherine Ryan Howard</td><td>&#201;ditions de l'Archipel &middot; 08/01/2026</td><td class="isbn">9782809853179</td><td class="prix">20,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="dans leurs yeux" data-a="charlotte letourneur" data-p="fleuve editions · 05/03/2026"><td>Dans leurs yeux</td><td>Charlotte Letourneur</td><td>Fleuve &#201;ditions &middot; 05/03/2026</td><td class="isbn">9782265159372</td><td class="prix">19,97&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les fantomes de shearwater" data-a="charlotte mcconaghy" data-p="gaia · 14/01/2026"><td>Les fant&#244;mes de Shearwater</td><td>Charlotte McConaghy</td><td>Ga&#239;a &middot; 14/01/2026</td><td class="isbn">9782330216139</td><td class="prix">21,38&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le secret des agapanthes t.3 : morgane et juliette" data-a="clarisse sabard" data-p="charleston · 02/04/2026"><td>Le secret des agapanthes T.3&nbsp;: Morgane et Juliette</td><td>Clarisse Sabard</td><td>Charleston &middot; 02/04/2026</td><td class="isbn">9782385295035</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le silence est a nous" data-a="coline pierre" data-p="flammarion jeunesse · 19/03/2025"><td>Le silence est &#224; nous</td><td>Coline Pierr&#233;</td><td>Flammarion jeunesse &middot; 19/03/2025</td><td class="isbn">9782080480118</td><td class="prix">18,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le visage de la nuit" data-a="cecile coulon" data-p="editions de l'iconoclaste · 08/01/2026"><td>Le visage de la nuit</td><td>C&#233;cile Coulon</td><td>&#201;ditions de l'Iconoclaste &middot; 08/01/2026</td><td class="isbn">9782378805715</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="deferlante" data-a="celine denjean" data-p="michel lafon · 12/02/2026"><td>D&#233;ferlante</td><td>C&#233;line Denjean</td><td>Michel Lafon &middot; 12/02/2026</td><td class="isbn">9782749964126</td><td class="prix">19,97&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="je suis drole" data-a="david foenkinos" data-p="gallimard · 02/04/2026"><td>Je suis dr&#244;le</td><td>David Foenkinos</td><td>Gallimard &middot; 02/04/2026</td><td class="isbn">9782073152985</td><td class="prix">18,20&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="je suis romane monnier" data-a="delphine de vigan" data-p="gallimard · 15/01/2026"><td>Je suis Romane Monnier</td><td>Delphine de Vigan</td><td>Gallimard &middot; 15/01/2026</td><td class="isbn">9782073113252</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les disparues de willowbrook" data-a="ellen marie wiseman" data-p="faubourg marigny · 05/03/2026"><td>Les disparues de Willowbrook</td><td>Ellen Marie Wiseman</td><td>Faubourg Marigny &middot; 05/03/2026</td><td class="isbn">9782384363438</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="juste apres dieu, il y a papa" data-a="eric-emmanuel schmitt" data-p="albin michel · 25/02/2026"><td>Juste apr&#232;s Dieu, il y a papa</td><td>Eric-Emmanuel Schmitt</td><td>Albin Michel &middot; 25/02/2026</td><td class="isbn">9782226488589</td><td class="prix">18,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="une histoire qui finit mal" data-a="evelyn clarke" data-p="verso · 24/04/2026"><td>Une histoire qui finit mal</td><td>Evelyn Clarke</td><td>Verso &middot; 24/04/2026</td><td class="isbn">9782386432941</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les cheveux d'edith" data-a="fabienne blanchut, catherine locandro, dawid" data-p="dargaud · 05/09/2025"><td>Les cheveux d'&#201;dith</td><td>Fabienne Blanchut, Catherine Locandro, Dawid</td><td>Dargaud &middot; 05/09/2025</td><td class="isbn">9782505120001</td><td class="prix">20,88&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="l'autre moi" data-a="franck thilliez" data-p="fleuve editions · 28/04/2026"><td>L'autre moi</td><td>Franck Thilliez</td><td>Fleuve &#201;ditions &middot; 28/04/2026</td><td class="isbn">9782265159075</td><td class="prix">20,88&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="traque" data-a="frank leduc" data-p="belfond · 19/03/2026"><td>Traqu&#233;</td><td>Frank Leduc</td><td>Belfond &middot; 19/03/2026</td><td class="isbn">9782714405708</td><td class="prix">19,56&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la ferme" data-a="francois-xavier dillard" data-p="editions recamier · 02/04/2026"><td>La Ferme</td><td>Fran&#231;ois-Xavier Dillard</td><td>&#201;ditions R&#233;camier &middot; 02/04/2026</td><td class="isbn">9782385770532</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="l'intruse" data-a="freida mcfadden" data-p="city editions · 06/05/2026"><td>L'intruse</td><td>Freida McFadden</td><td>City &#201;ditions &middot; 06/05/2026</td><td class="isbn">9782824625256</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la locataire" data-a="freida mcfadden" data-p="city editions · 11/02/2026"><td>La locataire</td><td>Freida McFadden</td><td>City &#201;ditions &middot; 11/02/2026</td><td class="isbn">9782824626338</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="et la joie de vivre" data-a="gisele pelicot" data-p="flammarion · 17/02/2026"><td>Et la joie de vivre</td><td>Gis&#232;le Pelicot</td><td>Flammarion &middot; 17/02/2026</td><td class="isbn">9782080497260</td><td class="prix">20,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le crime du paradis" data-a="guillaume musso" data-p="calmann-levy · 03/03/2026"><td>Le crime du paradis</td><td>Guillaume Musso</td><td>Calmann-L&#233;vy &middot; 03/03/2026</td><td class="isbn">9782702192979</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="sept jours avant la tombe" data-a="holly jackson" data-p="harpercollins france · 04/03/2026"><td>Sept jours avant la tombe</td><td>Holly Jackson</td><td>HarperCollins France &middot; 04/03/2026</td><td class="isbn">9791033922438</td><td class="prix">18,20&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="love, mom" data-a="iliana xander" data-p="fleuve editions · 08/01/2026"><td>Love, mom</td><td>Iliana Xander</td><td>Fleuve &#201;ditions &middot; 08/01/2026</td><td class="isbn">9782265159686</td><td class="prix">19,97&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="une bonne epouse" data-a="ingrid desjours" data-p="harpercollins france · 11/03/2026"><td>Une bonne &#233;pouse</td><td>Ingrid Desjours</td><td>HarperCollins France &middot; 11/03/2026</td><td class="isbn">9791033922711</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le groupe" data-a="isabelle lagarrigue" data-p="editions recamier · 09/04/2026"><td>Le Groupe</td><td>Isabelle Lagarrigue</td><td>&#201;ditions R&#233;camier &middot; 09/04/2026</td><td class="isbn">9782385772406</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="killing me softly" data-a="jacky schwartzmann" data-p="la manufacture de livres · 08/01/2026"><td>Killing me softly</td><td>Jacky Schwartzmann</td><td>La Manufacture de Livres &middot; 08/01/2026</td><td class="isbn">9782385532185</td><td class="prix">14,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="une employee modele" data-a="jean-christophe tixier" data-p="albin michel · 11/02/2026"><td>Une employ&#233;e mod&#232;le</td><td>Jean-Christophe Tixier</td><td>Albin Michel &middot; 11/02/2026</td><td class="isbn">9782226508096</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les cottages de la mer" data-a="jenny colgan" data-p="charleston · 10/04/2026"><td>Les Cottages de la mer</td><td>Jenny Colgan</td><td>Charleston &middot; 10/04/2026</td><td class="isbn">9782385295042</td><td class="prix">18,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les amazones" data-a="jim fergus" data-p="pocket · 03/09/2020"><td>Les Amazones</td><td>Jim Fergus</td><td>Pocket &middot; 03/09/2020</td><td class="isbn">9782266298278</td><td class="prix">8,19&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="mon nom ne suffit pas" data-a="jodi picoult" data-p="charleston · 13/01/2026"><td>Mon nom ne suffit pas</td><td>Jodi Picoult</td><td>Charleston &middot; 13/01/2026</td><td class="isbn">9782385294861</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="ici" data-a="johana gustawsson, thomas enger" data-p="calmann-levy · 04/02/2026"><td>Ici</td><td>Johana Gustawsson, Thomas Enger</td><td>Calmann-L&#233;vy &middot; 04/02/2026</td><td class="isbn">9782702194140</td><td class="prix">20,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="tous leurs secrets" data-a="john marrs" data-p="city editions · 11/03/2026"><td>Tous leurs secrets</td><td>John Marrs</td><td>City &#201;ditions &middot; 11/03/2026</td><td class="isbn">9782824625911</td><td class="prix">20,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="derniere chance dans les pyrenees" data-a="julia chapman" data-p="robert laffont · 29/01/2026"><td>Derni&#232;re chance dans les Pyr&#233;n&#233;es</td><td>Julia Chapman</td><td>Robert Laffont &middot; 29/01/2026</td><td class="isbn">9782221273012</td><td class="prix">17,29&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le pot de depart" data-a="julien aime" data-p="mazarine · 08/04/2026"><td>Le pot de d&#233;part</td><td>Julien Aime</td><td>Mazarine &middot; 08/04/2026</td><td class="isbn">9782213734323</td><td class="prix">18,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="mes freres, nos fantomes et moi" data-a="julien sandrel" data-p="charleston · 10/04/2026"><td>Mes fr&#232;res, nos fant&#244;mes et moi</td><td>Julien Sandrel</td><td>Charleston &middot; 10/04/2026</td><td class="isbn">9782385295011</td><td class="prix">17,20&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les enquetes du departement v t.11 : les morts ne chantent pas" data-a="jussi adler-olsen, line holm, stine bolther" data-p="albin michel · 04/03/2026"><td>Les enqu&#234;tes du d&#233;partement V T.11&nbsp;: Les morts ne chantent pas</td><td>Jussi Adler-Olsen, Line Holm, Stine Bolther</td><td>Albin Michel &middot; 04/03/2026</td><td class="isbn">9782226503732</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="cavillore" data-a="jeremie claes" data-p="editions heloise d'ormesson · 19/02/2026"><td>Cavillore</td><td>J&#233;r&#233;mie Claes</td><td>&#201;ditions H&#233;lo&#239;se d'Ormesson &middot; 19/02/2026</td><td class="isbn">9782487819696</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le garcon eternel" data-a="jerome loubry" data-p="calmann-levy · 02/01/2026"><td>Le Gar&#231;on &#233;ternel</td><td>J&#233;r&#244;me Loubry</td><td>Calmann-L&#233;vy &middot; 02/01/2026</td><td class="isbn">9782702190753</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="impossibles creatures : le roi empoisonne" data-a="katherine rundell" data-p="gallimard jeunesse · 05/02/2026"><td>Impossibles Cr&#233;atures&nbsp;: Le Roi Empoisonn&#233;</td><td>Katherine Rundell</td><td>Gallimard Jeunesse &middot; 05/02/2026</td><td class="isbn">9782075234047</td><td class="prix">15,01&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="un jour sans femme" data-a="laetitia colombani" data-p="editions de l'iconoclaste · 07/05/2026"><td>Un jour sans femme</td><td>Laetitia Colombani</td><td>&#201;ditions de l'Iconoclaste &middot; 07/05/2026</td><td class="isbn">9782378804978</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="danser sur les volcans" data-a="laure manel" data-p="michel lafon · 26/03/2026"><td>Danser sur les volcans</td><td>Laure Manel</td><td>Michel Lafon &middot; 26/03/2026</td><td class="isbn">9782749962061</td><td class="prix">19,06&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les mysteres de byton cove : la nuit de la disparition" data-a="laetitia sivi" data-p="fleurus · 06/02/2026"><td>Les myst&#232;res de Byton Cove&nbsp;: La nuit de la disparition</td><td>La&#235;titia Sivi</td><td>Fleurus &middot; 06/02/2026</td><td class="isbn">9782215200253</td><td class="prix">16,33&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les mysteres de byton cove : un secret a deterrer" data-a="laetitia sivi" data-p="fleurus · 12/09/2025"><td>Les Myst&#232;res de Byton Cove&nbsp;: Un secret &#224; d&#233;terrer</td><td>La&#235;titia Sivi</td><td>Fleurus &middot; 12/09/2025</td><td class="isbn">9782215194958</td><td class="prix">16,33&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="je vais te detruire" data-a="linwood barclay" data-p="belfond · 05/02/2026"><td>Je vais te d&#233;truire</td><td>Linwood Barclay</td><td>Belfond &middot; 05/02/2026</td><td class="isbn">9782714405043</td><td class="prix">20,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="du gout pour le bonheur" data-a="lorraine fouchet" data-p="editions heloise d'ormesson · 05/03/2026"><td>Du go&#251;t pour le bonheur</td><td>Lorraine Fouchet</td><td>&#201;ditions H&#233;lo&#239;se d'Ormesson &middot; 05/03/2026</td><td class="isbn">9782487819849</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="pas de fumee sans feu" data-a="m. j. arlidge" data-p="editions les escales · 05/02/2026"><td>Pas de fum&#233;e sans feu</td><td>M. J. Arlidge</td><td>&#201;ditions Les Escales &middot; 05/02/2026</td><td class="isbn">9782386980121</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="ces lignes qui tracent mon corps" data-a="mansoureh kamari" data-p="casterman · 10/09/2025"><td>Ces Lignes qui tracent mon corps</td><td>Mansoureh Kamari</td><td>Casterman &middot; 10/09/2025</td><td class="isbn">9782203290006</td><td class="prix">21,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="nous qui avons connu solange" data-a="marie vareille" data-p="flammarion · 11/03/2026"><td>Nous qui avons connu Solange</td><td>Marie Vareille</td><td>Flammarion &middot; 11/03/2026</td><td class="isbn">9782080476418</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le manoir des reves perdus t.2 : vers la lumiere" data-a="marie-bernadette dupuy" data-p="calmann-levy · 04/02/2026"><td>Le Manoir des r&#234;ves perdus T.2&nbsp;: Vers la lumi&#232;re</td><td>Marie-Bernadette Dupuy</td><td>Calmann-L&#233;vy &middot; 04/02/2026</td><td class="isbn">9782702182383</td><td class="prix">21,75&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la fille des embruns" data-a="marie-haude meriguet" data-p="charleston · 12/03/2026"><td>La Fille des embruns</td><td>Marie-Haude M&#233;riguet</td><td>Charleston &middot; 12/03/2026</td><td class="isbn">9782385295004</td><td class="prix">18,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="sales gosses" data-a="mathieu lecerf" data-p="harpercollins france · 01/04/2026"><td>Sales gosses</td><td>Mathieu Lecerf</td><td>HarperCollins France &middot; 01/04/2026</td><td class="isbn">9791033926139</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la colline" data-a="mathilde beaussault" data-p="le seuil · 06/03/2026"><td>La Colline</td><td>Mathilde Beaussault</td><td>Le Seuil &middot; 06/03/2026</td><td class="isbn">9782021602302</td><td class="prix">18,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="chiens fous" data-a="max monnehay" data-p="harpercollins france · 08/10/2025"><td>Chiens fous</td><td>Max Monnehay</td><td>HarperCollins France &middot; 08/10/2025</td><td class="isbn">9791033919797</td><td class="prix">18,65&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="sans ame ni conscience" data-a="michael connelly" data-p="calmann-levy · 14/01/2026"><td>Sans &#226;me ni conscience</td><td>Michael Connelly</td><td>Calmann-L&#233;vy &middot; 14/01/2026</td><td class="isbn">9782702189054</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="que la mort nous frole" data-a="michel bussi" data-p="les presses de la cite · 16/04/2026"><td>Que la mort nous fr&#244;le</td><td>Michel Bussi</td><td>Les Presses de la Cit&#233; &middot; 16/04/2026</td><td class="isbn">9782258214460</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="fauves" data-a="melissa da costa" data-p="albin michel · 07/01/2026"><td>Fauves</td><td>M&#233;lissa Da Costa</td><td>Albin Michel &middot; 07/01/2026</td><td class="isbn">9782226483546</td><td class="prix">21,75&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="tous mes mensonges" data-a="nelle lamarr" data-p="city editions · 04/03/2026"><td>Tous mes mensonges</td><td>Nelle Lamarr</td><td>City &#201;ditions &middot; 04/03/2026</td><td class="isbn">9782824625898</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="immersion" data-a="nicolas druart" data-p="belfond · 15/01/2026"><td>Immersion</td><td>Nicolas Druart</td><td>Belfond &middot; 15/01/2026</td><td class="isbn">9782714405401</td><td class="prix">18,20&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="aurore" data-a="nicolas leclerc" data-p="le seuil · 06/02/2026"><td>Aurore</td><td>Nicolas Leclerc</td><td>Le Seuil &middot; 06/02/2026</td><td class="isbn">9782021590371</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le hameau" data-a="niko tackian" data-p="calmann-levy · 25/03/2026"><td>Le Hameau</td><td>Niko Tackian</td><td>Calmann-L&#233;vy &middot; 25/03/2026</td><td class="isbn">9782702191613</td><td class="prix">18,65&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la reine de mai" data-a="neo" data-p="albin michel · 28/01/2026"><td>La reine de mai</td><td>N&#233;O</td><td>Albin Michel &middot; 28/01/2026</td><td class="isbn">9782226498984</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le piege" data-a="olivier bal" data-p="xo · 23/04/2026"><td>Le Pi&#232;ge</td><td>Olivier Bal</td><td>XO &middot; 23/04/2026</td><td class="isbn">9782374489391</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le poids du sang" data-a="paul cleave" data-p="harpercollins france · 18/03/2026"><td>Le poids du sang</td><td>Paul Cleave</td><td>HarperCollins France &middot; 18/03/2026</td><td class="isbn">9791033923893</td><td class="prix">20,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="specimen" data-a="pauline claviere" data-p="editions grasset · 11/03/2026"><td>Sp&#233;cimen</td><td>Pauline Clavi&#232;re</td><td>&#201;ditions Grasset &middot; 11/03/2026</td><td class="isbn">9782246846109</td><td class="prix">21,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="une pension en italie" data-a="philippe besson" data-p="editions julliard · 08/01/2026"><td>Une pension en Italie</td><td>Philippe Besson</td><td>&#201;ditions Julliard &middot; 08/01/2026</td><td class="isbn">9782260056782</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les belles promesses" data-a="pierre lemaitre" data-p="calmann-levy · 06/01/2026"><td>Les Belles Promesses</td><td>Pierre Lemaitre</td><td>Calmann-L&#233;vy &middot; 06/01/2026</td><td class="isbn">9782702191477</td><td class="prix">21,75&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la mort en miroir" data-a="petronille rostagnat" data-p="editions belladone · 19/03/2026"><td>La mort en miroir</td><td>P&#233;tronille Rostagnat</td><td>&#201;ditions Belladone &middot; 19/03/2026</td><td class="isbn">9782488853002</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les miroirs sourient a ceux qui s'aiment" data-a="raphaelle giordano" data-p="editions recamier · 23/04/2026"><td>Les miroirs sourient &#224; ceux qui s'aiment</td><td>Rapha&#235;lle Giordano</td><td>&#201;ditions R&#233;camier &middot; 23/04/2026</td><td class="isbn">9782385771201</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les invisibles" data-a="roger jon ellory" data-p="sonatine editions · 02/04/2026"><td>Les Invisibles</td><td>Roger Jon Ellory</td><td>Sonatine &#201;ditions &middot; 02/04/2026</td><td class="isbn">9782383992691</td><td class="prix">22,29&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="clement" data-a="romain lemire" data-p="le cherche midi · 09/04/2026"><td>Cl&#233;ment</td><td>Romain Lemire</td><td>Le Cherche Midi &middot; 09/04/2026</td><td class="isbn">9782749185705</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="xx" data-a="sam holland" data-p="harpercollins france · 08/04/2026"><td>XX</td><td>Sam Holland</td><td>HarperCollins France &middot; 08/04/2026</td><td class="isbn">9791033924715</td><td class="prix">20,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="l'ile aux jardins enchantes" data-a="sarah beth durst, lulu chen" data-p="bragelonne · 11/02/2026"><td>L'&#206;le aux jardins enchant&#233;s</td><td>Sarah Beth Durst, Lulu Chen</td><td>Bragelonne &middot; 11/02/2026</td><td class="isbn">9791028135492</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="bienvenue a dietland" data-a="sarai walker" data-p="gallmeister · 08/04/2026"><td>Bienvenue &#224; Dietland</td><td>Sarai Walker</td><td>Gallmeister &middot; 08/04/2026</td><td class="isbn">9782404081090</td><td class="prix">23,57&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="volare" data-a="serena giuliano" data-p="calmann-levy · 18/03/2026"><td>Volare</td><td>Serena Giuliano</td><td>Calmann-L&#233;vy &middot; 18/03/2026</td><td class="isbn">9782702194423</td><td class="prix">17,20&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="une jeune fille sans histoires" data-a="shari lapena" data-p="les presses de la cite · 22/01/2026"><td>Une jeune fille sans histoires</td><td>Shari Lapena</td><td>Les Presses de la Cit&#233; &middot; 22/01/2026</td><td class="isbn">9782258213425</td><td class="prix">20,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la gardienne" data-a="sonja delzongle" data-p="fleuve editions · 05/02/2026"><td>La gardienne</td><td>Sonja Delzongle</td><td>Fleuve &#201;ditions &middot; 05/02/2026</td><td class="isbn">9782265159228</td><td class="prix">19,97&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="malgre tout ce qui nous separe" data-a="sophie tal men" data-p="albin michel · 25/02/2026"><td>Malgr&#233; tout ce qui nous s&#233;pare</td><td>Sophie Tal Men</td><td>Albin Michel &middot; 25/02/2026</td><td class="isbn">9782226507556</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="ne jamais trembler" data-a="stephen king" data-p="albin michel · 28/01/2026"><td>Ne jamais trembler</td><td>Stephen King</td><td>Albin Michel &middot; 28/01/2026</td><td class="isbn">9782226501875</td><td class="prix">22,66&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le berger d'alep" data-a="stephanie perez" data-p="editions recamier · 12/03/2026"><td>Le Berger d'Alep</td><td>St&#233;phanie Perez</td><td>&#201;ditions R&#233;camier &middot; 12/03/2026</td><td class="isbn">9782385772062</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les preuves" data-a="suzie miller" data-p="editions de l'archipel · 26/02/2026"><td>Les Preuves</td><td>Suzie Miller</td><td>&#201;ditions de l'Archipel &middot; 26/02/2026</td><td class="isbn">9782809852981</td><td class="prix">20,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les cœurs sont faits pour etre brises" data-a="tatiana de rosnay" data-p="albin michel · 11/03/2026"><td>Les c&#339;urs sont faits pour &#234;tre bris&#233;s</td><td>Tatiana de Rosnay</td><td>Albin Michel &middot; 11/03/2026</td><td class="isbn">9782226504555</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le parfum des fleurs sauvages t.2 : la fille aux boutons d'or" data-a="tessa collins" data-p="charleston · 12/02/2026"><td>Le Parfum des fleurs sauvages T.2&nbsp;: La fille aux boutons d'or</td><td>Tessa Collins</td><td>Charleston &middot; 12/02/2026</td><td class="isbn">9782385294953</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le domaine aux secrets" data-a="valentin musso" data-p="editions julliard · 07/05/2026"><td>Le domaine aux secrets</td><td>Valentin Musso</td><td>&#201;ditions Julliard &middot; 07/05/2026</td><td class="isbn">9782260056744</td><td class="prix">19,56&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les mysteres d'eversand t.3 : l'epouse" data-a="victor dixen" data-p="robert laffont · 13/05/2026"><td>Les Myst&#232;res d'Eversand T.3&nbsp;: L'&#201;pouse</td><td>Victor Dixen</td><td>Robert Laffont &middot; 13/05/2026</td><td class="isbn">9782221285701</td><td class="prix">13,56&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les mysteres d'eversand t.2 : la promise" data-a="victor dixen" data-p="robert laffont · 02/04/2026"><td>Les Myst&#232;res d'Eversand T.2&nbsp;: La promise</td><td>Victor Dixen</td><td>Robert Laffont &middot; 02/04/2026</td><td class="isbn">9782221285695</td><td class="prix">13,56&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les mysteres d'eversand t.1 : la suivante" data-a="victor dixen" data-p="robert laffont · 02/04/2026"><td>Les Myst&#232;res d'Eversand T.1&nbsp;: La suivante</td><td>Victor Dixen</td><td>Robert Laffont &middot; 02/04/2026</td><td class="isbn">9782221285688</td><td class="prix">13,56&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="phobos t.4 : la tempete des destins" data-a="victor dixen, maria francesca perifano" data-p="glenat · 22/04/2026"><td>Phobos T.4&nbsp;: La temp&#234;te des destins</td><td>Victor Dixen, Maria Francesca Perifano</td><td>Gl&#233;nat &middot; 22/04/2026</td><td class="isbn">9782344071588</td><td class="prix">14,56&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la correspondante" data-a="virginia evans" data-p="editions de la table ronde · 08/01/2026"><td>La Correspondante</td><td>Virginia Evans</td><td>&#201;ditions de La Table Ronde &middot; 08/01/2026</td><td class="isbn">9791037114884</td><td class="prix">20,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="d'autres printemps" data-a="virginie grimaldi" data-p="flammarion · 06/05/2026"><td>D'autres printemps</td><td>Virginie Grimaldi</td><td>Flammarion &middot; 06/05/2026</td><td class="isbn">9782080510655</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le prieur de bethleem" data-a="yasmina khadra" data-p="flammarion · 04/03/2026"><td>Le prieur de Bethl&#233;em</td><td>Yasmina Khadra</td><td>Flammarion &middot; 04/03/2026</td><td class="isbn">9782080149671</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    </tbody>
+  </table>
+  <table class="t st-price">
+    <thead><tr><th>Titre</th><th>Auteur</th><th>Parution &middot; &Eacute;diteur</th><th>ISBN</th><th class="a">Prix &uarr;</th></tr></thead>
+    <tbody>
+    <tr class="r" data-s="les amazones" data-a="jim fergus" data-p="pocket · 03/09/2020"><td>Les Amazones</td><td>Jim Fergus</td><td>Pocket &middot; 03/09/2020</td><td class="isbn">9782266298278</td><td class="prix">8,19&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les mysteres d'eversand t.3 : l'epouse" data-a="victor dixen" data-p="robert laffont · 13/05/2026"><td>Les Myst&#232;res d'Eversand T.3&nbsp;: L'&#201;pouse</td><td>Victor Dixen</td><td>Robert Laffont &middot; 13/05/2026</td><td class="isbn">9782221285701</td><td class="prix">13,56&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les mysteres d'eversand t.2 : la promise" data-a="victor dixen" data-p="robert laffont · 02/04/2026"><td>Les Myst&#232;res d'Eversand T.2&nbsp;: La promise</td><td>Victor Dixen</td><td>Robert Laffont &middot; 02/04/2026</td><td class="isbn">9782221285695</td><td class="prix">13,56&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les mysteres d'eversand t.1 : la suivante" data-a="victor dixen" data-p="robert laffont · 02/04/2026"><td>Les Myst&#232;res d'Eversand T.1&nbsp;: La suivante</td><td>Victor Dixen</td><td>Robert Laffont &middot; 02/04/2026</td><td class="isbn">9782221285688</td><td class="prix">13,56&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="killing me softly" data-a="jacky schwartzmann" data-p="la manufacture de livres · 08/01/2026"><td>Killing me softly</td><td>Jacky Schwartzmann</td><td>La Manufacture de Livres &middot; 08/01/2026</td><td class="isbn">9782385532185</td><td class="prix">14,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le club des amateurs de romans policiers t.7 : le crime de l'indian pacific" data-a="c. a. larmer" data-p="le cherche midi · 12/03/2026"><td>Le club des amateurs de romans policiers T.7&nbsp;: Le Crime de l'Indian Pacific</td><td>C. A. Larmer</td><td>Le Cherche Midi &middot; 12/03/2026</td><td class="isbn">9782749185408</td><td class="prix">14,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="phobos t.4 : la tempete des destins" data-a="victor dixen, maria francesca perifano" data-p="glenat · 22/04/2026"><td>Phobos T.4&nbsp;: La temp&#234;te des destins</td><td>Victor Dixen, Maria Francesca Perifano</td><td>Gl&#233;nat &middot; 22/04/2026</td><td class="isbn">9782344071588</td><td class="prix">14,56&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="impossibles creatures : le roi empoisonne" data-a="katherine rundell" data-p="gallimard jeunesse · 05/02/2026"><td>Impossibles Cr&#233;atures&nbsp;: Le Roi Empoisonn&#233;</td><td>Katherine Rundell</td><td>Gallimard Jeunesse &middot; 05/02/2026</td><td class="isbn">9782075234047</td><td class="prix">15,01&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les mysteres de byton cove : la nuit de la disparition" data-a="laetitia sivi" data-p="fleurus · 06/02/2026"><td>Les myst&#232;res de Byton Cove&nbsp;: La nuit de la disparition</td><td>La&#235;titia Sivi</td><td>Fleurus &middot; 06/02/2026</td><td class="isbn">9782215200253</td><td class="prix">16,33&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les mysteres de byton cove : un secret a deterrer" data-a="laetitia sivi" data-p="fleurus · 12/09/2025"><td>Les Myst&#232;res de Byton Cove&nbsp;: Un secret &#224; d&#233;terrer</td><td>La&#235;titia Sivi</td><td>Fleurus &middot; 12/09/2025</td><td class="isbn">9782215194958</td><td class="prix">16,33&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="mes freres, nos fantomes et moi" data-a="julien sandrel" data-p="charleston · 10/04/2026"><td>Mes fr&#232;res, nos fant&#244;mes et moi</td><td>Julien Sandrel</td><td>Charleston &middot; 10/04/2026</td><td class="isbn">9782385295011</td><td class="prix">17,20&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="volare" data-a="serena giuliano" data-p="calmann-levy · 18/03/2026"><td>Volare</td><td>Serena Giuliano</td><td>Calmann-L&#233;vy &middot; 18/03/2026</td><td class="isbn">9782702194423</td><td class="prix">17,20&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="derniere chance dans les pyrenees" data-a="julia chapman" data-p="robert laffont · 29/01/2026"><td>Derni&#232;re chance dans les Pyr&#233;n&#233;es</td><td>Julia Chapman</td><td>Robert Laffont &middot; 29/01/2026</td><td class="isbn">9782221273012</td><td class="prix">17,29&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="juste apres dieu, il y a papa" data-a="eric-emmanuel schmitt" data-p="albin michel · 25/02/2026"><td>Juste apr&#232;s Dieu, il y a papa</td><td>Eric-Emmanuel Schmitt</td><td>Albin Michel &middot; 25/02/2026</td><td class="isbn">9782226488589</td><td class="prix">18,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la colline" data-a="mathilde beaussault" data-p="le seuil · 06/03/2026"><td>La Colline</td><td>Mathilde Beaussault</td><td>Le Seuil &middot; 06/03/2026</td><td class="isbn">9782021602302</td><td class="prix">18,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la fille des embruns" data-a="marie-haude meriguet" data-p="charleston · 12/03/2026"><td>La Fille des embruns</td><td>Marie-Haude M&#233;riguet</td><td>Charleston &middot; 12/03/2026</td><td class="isbn">9782385295004</td><td class="prix">18,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le pot de depart" data-a="julien aime" data-p="mazarine · 08/04/2026"><td>Le pot de d&#233;part</td><td>Julien Aime</td><td>Mazarine &middot; 08/04/2026</td><td class="isbn">9782213734323</td><td class="prix">18,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le silence est a nous" data-a="coline pierre" data-p="flammarion jeunesse · 19/03/2025"><td>Le silence est &#224; nous</td><td>Coline Pierr&#233;</td><td>Flammarion jeunesse &middot; 19/03/2025</td><td class="isbn">9782080480118</td><td class="prix">18,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les cottages de la mer" data-a="jenny colgan" data-p="charleston · 10/04/2026"><td>Les Cottages de la mer</td><td>Jenny Colgan</td><td>Charleston &middot; 10/04/2026</td><td class="isbn">9782385295042</td><td class="prix">18,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="il faudrait leur dire" data-a="carene ponte" data-p="fleuve editions · 02/04/2026"><td>Il faudrait leur dire</td><td>Car&#232;ne Ponte</td><td>Fleuve &#201;ditions &middot; 02/04/2026</td><td class="isbn">9782265158931</td><td class="prix">18,15&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="immersion" data-a="nicolas druart" data-p="belfond · 15/01/2026"><td>Immersion</td><td>Nicolas Druart</td><td>Belfond &middot; 15/01/2026</td><td class="isbn">9782714405401</td><td class="prix">18,20&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="je suis drole" data-a="david foenkinos" data-p="gallimard · 02/04/2026"><td>Je suis dr&#244;le</td><td>David Foenkinos</td><td>Gallimard &middot; 02/04/2026</td><td class="isbn">9782073152985</td><td class="prix">18,20&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="sept jours avant la tombe" data-a="holly jackson" data-p="harpercollins france · 04/03/2026"><td>Sept jours avant la tombe</td><td>Holly Jackson</td><td>HarperCollins France &middot; 04/03/2026</td><td class="isbn">9791033922438</td><td class="prix">18,20&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="chiens fous" data-a="max monnehay" data-p="harpercollins france · 08/10/2025"><td>Chiens fous</td><td>Max Monnehay</td><td>HarperCollins France &middot; 08/10/2025</td><td class="isbn">9791033919797</td><td class="prix">18,65&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le hameau" data-a="niko tackian" data-p="calmann-levy · 25/03/2026"><td>Le Hameau</td><td>Niko Tackian</td><td>Calmann-L&#233;vy &middot; 25/03/2026</td><td class="isbn">9782702191613</td><td class="prix">18,65&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="d'autres printemps" data-a="virginie grimaldi" data-p="flammarion · 06/05/2026"><td>D'autres printemps</td><td>Virginie Grimaldi</td><td>Flammarion &middot; 06/05/2026</td><td class="isbn">9782080510655</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="l'emerveillement" data-a="aurelie valognes" data-p="jc lattes · 11/03/2026"><td>L'&#233;merveillement</td><td>Aur&#233;lie Valognes</td><td>JC Latt&#232;s &middot; 11/03/2026</td><td class="isbn">9782709676465</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la mort en miroir" data-a="petronille rostagnat" data-p="editions belladone · 19/03/2026"><td>La mort en miroir</td><td>P&#233;tronille Rostagnat</td><td>&#201;ditions Belladone &middot; 19/03/2026</td><td class="isbn">9782488853002</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la reine de mai" data-a="neo" data-p="albin michel · 28/01/2026"><td>La reine de mai</td><td>N&#233;O</td><td>Albin Michel &middot; 28/01/2026</td><td class="isbn">9782226498984</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le groupe" data-a="isabelle lagarrigue" data-p="editions recamier · 09/04/2026"><td>Le Groupe</td><td>Isabelle Lagarrigue</td><td>&#201;ditions R&#233;camier &middot; 09/04/2026</td><td class="isbn">9782385772406</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le secret des agapanthes t.3 : morgane et juliette" data-a="clarisse sabard" data-p="charleston · 02/04/2026"><td>Le secret des agapanthes T.3&nbsp;: Morgane et Juliette</td><td>Clarisse Sabard</td><td>Charleston &middot; 02/04/2026</td><td class="isbn">9782385295035</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les miroirs sourient a ceux qui s'aiment" data-a="raphaelle giordano" data-p="editions recamier · 23/04/2026"><td>Les miroirs sourient &#224; ceux qui s'aiment</td><td>Rapha&#235;lle Giordano</td><td>&#201;ditions R&#233;camier &middot; 23/04/2026</td><td class="isbn">9782385771201</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="malgre tout ce qui nous separe" data-a="sophie tal men" data-p="albin michel · 25/02/2026"><td>Malgr&#233; tout ce qui nous s&#233;pare</td><td>Sophie Tal Men</td><td>Albin Michel &middot; 25/02/2026</td><td class="isbn">9782226507556</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="sales gosses" data-a="mathieu lecerf" data-p="harpercollins france · 01/04/2026"><td>Sales gosses</td><td>Mathieu Lecerf</td><td>HarperCollins France &middot; 01/04/2026</td><td class="isbn">9791033926139</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="un jour sans femme" data-a="laetitia colombani" data-p="editions de l'iconoclaste · 07/05/2026"><td>Un jour sans femme</td><td>Laetitia Colombani</td><td>&#201;ditions de l'Iconoclaste &middot; 07/05/2026</td><td class="isbn">9782378804978</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="une bonne epouse" data-a="ingrid desjours" data-p="harpercollins france · 11/03/2026"><td>Une bonne &#233;pouse</td><td>Ingrid Desjours</td><td>HarperCollins France &middot; 11/03/2026</td><td class="isbn">9791033922711</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="danser sur les volcans" data-a="laure manel" data-p="michel lafon · 26/03/2026"><td>Danser sur les volcans</td><td>Laure Manel</td><td>Michel Lafon &middot; 26/03/2026</td><td class="isbn">9782749962061</td><td class="prix">19,06&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="baignades" data-a="andree a. michaud" data-p="rivages · 20/08/2025"><td>Baignades</td><td>Andr&#233;e A. Michaud</td><td>Rivages &middot; 20/08/2025</td><td class="isbn">9782743667948</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="cavillore" data-a="jeremie claes" data-p="editions heloise d'ormesson · 19/02/2026"><td>Cavillore</td><td>J&#233;r&#233;mie Claes</td><td>&#201;ditions H&#233;lo&#239;se d'Ormesson &middot; 19/02/2026</td><td class="isbn">9782487819696</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="du gout pour le bonheur" data-a="lorraine fouchet" data-p="editions heloise d'ormesson · 05/03/2026"><td>Du go&#251;t pour le bonheur</td><td>Lorraine Fouchet</td><td>&#201;ditions H&#233;lo&#239;se d'Ormesson &middot; 05/03/2026</td><td class="isbn">9782487819849</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la ferme" data-a="francois-xavier dillard" data-p="editions recamier · 02/04/2026"><td>La Ferme</td><td>Fran&#231;ois-Xavier Dillard</td><td>&#201;ditions R&#233;camier &middot; 02/04/2026</td><td class="isbn">9782385770532</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la fin du voyage" data-a="arnaldur indridason" data-p="editions metailie · 06/02/2026"><td>La fin du voyage</td><td>Arnaldur Indridason</td><td>&#201;ditions M&#233;taili&#233; &middot; 06/02/2026</td><td class="isbn">9791022615051</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le berger d'alep" data-a="stephanie perez" data-p="editions recamier · 12/03/2026"><td>Le Berger d'Alep</td><td>St&#233;phanie Perez</td><td>&#201;ditions R&#233;camier &middot; 12/03/2026</td><td class="isbn">9782385772062</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le prieur de bethleem" data-a="yasmina khadra" data-p="flammarion · 04/03/2026"><td>Le prieur de Bethl&#233;em</td><td>Yasmina Khadra</td><td>Flammarion &middot; 04/03/2026</td><td class="isbn">9782080149671</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les evades du convoi 53" data-a="benjamin fogel" data-p="gallimard · 12/03/2026"><td>Les &#233;vad&#233;s du convoi 53</td><td>Benjamin Fogel</td><td>Gallimard &middot; 12/03/2026</td><td class="isbn">9782073129864</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="une pension en italie" data-a="philippe besson" data-p="editions julliard · 08/01/2026"><td>Une pension en Italie</td><td>Philippe Besson</td><td>&#201;ditions Julliard &middot; 08/01/2026</td><td class="isbn">9782260056782</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le domaine aux secrets" data-a="valentin musso" data-p="editions julliard · 07/05/2026"><td>Le domaine aux secrets</td><td>Valentin Musso</td><td>&#201;ditions Julliard &middot; 07/05/2026</td><td class="isbn">9782260056744</td><td class="prix">19,56&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="traque" data-a="frank leduc" data-p="belfond · 19/03/2026"><td>Traqu&#233;</td><td>Frank Leduc</td><td>Belfond &middot; 19/03/2026</td><td class="isbn">9782714405708</td><td class="prix">19,56&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="aurore" data-a="nicolas leclerc" data-p="le seuil · 06/02/2026"><td>Aurore</td><td>Nicolas Leclerc</td><td>Le Seuil &middot; 06/02/2026</td><td class="isbn">9782021590371</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la sage-femme et la riviere" data-a="ariel lawhon" data-p="harpercollins france · 11/02/2026"><td>La sage-femme et la rivi&#232;re</td><td>Ariel Lawhon</td><td>HarperCollins France &middot; 11/02/2026</td><td class="isbn">9791033919933</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le garcon eternel" data-a="jerome loubry" data-p="calmann-levy · 02/01/2026"><td>Le Gar&#231;on &#233;ternel</td><td>J&#233;r&#244;me Loubry</td><td>Calmann-L&#233;vy &middot; 02/01/2026</td><td class="isbn">9782702190753</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le piege" data-a="olivier bal" data-p="xo · 23/04/2026"><td>Le Pi&#232;ge</td><td>Olivier Bal</td><td>XO &middot; 23/04/2026</td><td class="isbn">9782374489391</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le visage de la nuit" data-a="cecile coulon" data-p="editions de l'iconoclaste · 08/01/2026"><td>Le visage de la nuit</td><td>C&#233;cile Coulon</td><td>&#201;ditions de l'Iconoclaste &middot; 08/01/2026</td><td class="isbn">9782378805715</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les cœurs sont faits pour etre brises" data-a="tatiana de rosnay" data-p="albin michel · 11/03/2026"><td>Les c&#339;urs sont faits pour &#234;tre bris&#233;s</td><td>Tatiana de Rosnay</td><td>Albin Michel &middot; 11/03/2026</td><td class="isbn">9782226504555</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="une employee modele" data-a="jean-christophe tixier" data-p="albin michel · 11/02/2026"><td>Une employ&#233;e mod&#232;le</td><td>Jean-Christophe Tixier</td><td>Albin Michel &middot; 11/02/2026</td><td class="isbn">9782226508096</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="une histoire qui finit mal" data-a="evelyn clarke" data-p="verso · 24/04/2026"><td>Une histoire qui finit mal</td><td>Evelyn Clarke</td><td>Verso &middot; 24/04/2026</td><td class="isbn">9782386432941</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="dans leurs yeux" data-a="charlotte letourneur" data-p="fleuve editions · 05/03/2026"><td>Dans leurs yeux</td><td>Charlotte Letourneur</td><td>Fleuve &#201;ditions &middot; 05/03/2026</td><td class="isbn">9782265159372</td><td class="prix">19,97&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="deferlante" data-a="celine denjean" data-p="michel lafon · 12/02/2026"><td>D&#233;ferlante</td><td>C&#233;line Denjean</td><td>Michel Lafon &middot; 12/02/2026</td><td class="isbn">9782749964126</td><td class="prix">19,97&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la fabrique du mal" data-a="angelina delcroix" data-p="michel lafon · 13/05/2026"><td>La Fabrique du mal</td><td>Ang&#233;lina Delcroix</td><td>Michel Lafon &middot; 13/05/2026</td><td class="isbn">9782749964003</td><td class="prix">19,97&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la gardienne" data-a="sonja delzongle" data-p="fleuve editions · 05/02/2026"><td>La gardienne</td><td>Sonja Delzongle</td><td>Fleuve &#201;ditions &middot; 05/02/2026</td><td class="isbn">9782265159228</td><td class="prix">19,97&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="love, mom" data-a="iliana xander" data-p="fleuve editions · 08/01/2026"><td>Love, mom</td><td>Iliana Xander</td><td>Fleuve &#201;ditions &middot; 08/01/2026</td><td class="isbn">9782265159686</td><td class="prix">19,97&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="clement" data-a="romain lemire" data-p="le cherche midi · 09/04/2026"><td>Cl&#233;ment</td><td>Romain Lemire</td><td>Le Cherche Midi &middot; 09/04/2026</td><td class="isbn">9782749185705</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="je suis romane monnier" data-a="delphine de vigan" data-p="gallimard · 15/01/2026"><td>Je suis Romane Monnier</td><td>Delphine de Vigan</td><td>Gallimard &middot; 15/01/2026</td><td class="isbn">9782073113252</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="l'ile aux jardins enchantes" data-a="sarah beth durst, lulu chen" data-p="bragelonne · 11/02/2026"><td>L'&#206;le aux jardins enchant&#233;s</td><td>Sarah Beth Durst, Lulu Chen</td><td>Bragelonne &middot; 11/02/2026</td><td class="isbn">9791028135492</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="l'intruse" data-a="freida mcfadden" data-p="city editions · 06/05/2026"><td>L'intruse</td><td>Freida McFadden</td><td>City &#201;ditions &middot; 06/05/2026</td><td class="isbn">9782824625256</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la locataire" data-a="freida mcfadden" data-p="city editions · 11/02/2026"><td>La locataire</td><td>Freida McFadden</td><td>City &#201;ditions &middot; 11/02/2026</td><td class="isbn">9782824626338</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les disparues de willowbrook" data-a="ellen marie wiseman" data-p="faubourg marigny · 05/03/2026"><td>Les disparues de Willowbrook</td><td>Ellen Marie Wiseman</td><td>Faubourg Marigny &middot; 05/03/2026</td><td class="isbn">9782384363438</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les silencieuses" data-a="anna mcpartlin" data-p="le cherche midi · 16/04/2026"><td>Les Silencieuses</td><td>Anna McPartlin</td><td>Le Cherche Midi &middot; 16/04/2026</td><td class="isbn">9782749185576</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les sœurs de la resistance" data-a="anna stuart" data-p="city editions · 04/02/2026"><td>Les S&#339;urs de la R&#233;sistance</td><td>Anna Stuart</td><td>City &#201;ditions &middot; 04/02/2026</td><td class="isbn">9782824626321</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="nous qui avons connu solange" data-a="marie vareille" data-p="flammarion · 11/03/2026"><td>Nous qui avons connu Solange</td><td>Marie Vareille</td><td>Flammarion &middot; 11/03/2026</td><td class="isbn">9782080476418</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="tous mes mensonges" data-a="nelle lamarr" data-p="city editions · 04/03/2026"><td>Tous mes mensonges</td><td>Nelle Lamarr</td><td>City &#201;ditions &middot; 04/03/2026</td><td class="isbn">9782824625898</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="dans la jungle" data-a="adeline dieudonne" data-p="editions de l'iconoclaste · 02/04/2026"><td>Dans la jungle</td><td>Adeline Dieudonn&#233;</td><td>&#201;ditions de l'Iconoclaste &middot; 02/04/2026</td><td class="isbn">9782378805814</td><td class="prix">20,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="et la joie de vivre" data-a="gisele pelicot" data-p="flammarion · 17/02/2026"><td>Et la joie de vivre</td><td>Gis&#232;le Pelicot</td><td>Flammarion &middot; 17/02/2026</td><td class="isbn">9782080497260</td><td class="prix">20,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="ici" data-a="johana gustawsson, thomas enger" data-p="calmann-levy · 04/02/2026"><td>Ici</td><td>Johana Gustawsson, Thomas Enger</td><td>Calmann-L&#233;vy &middot; 04/02/2026</td><td class="isbn">9782702194140</td><td class="prix">20,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la correspondante" data-a="virginia evans" data-p="editions de la table ronde · 08/01/2026"><td>La Correspondante</td><td>Virginia Evans</td><td>&#201;ditions de La Table Ronde &middot; 08/01/2026</td><td class="isbn">9791037114884</td><td class="prix">20,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le poids du sang" data-a="paul cleave" data-p="harpercollins france · 18/03/2026"><td>Le poids du sang</td><td>Paul Cleave</td><td>HarperCollins France &middot; 18/03/2026</td><td class="isbn">9791033923893</td><td class="prix">20,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="tous leurs secrets" data-a="john marrs" data-p="city editions · 11/03/2026"><td>Tous leurs secrets</td><td>John Marrs</td><td>City &#201;ditions &middot; 11/03/2026</td><td class="isbn">9782824625911</td><td class="prix">20,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="xx" data-a="sam holland" data-p="harpercollins france · 08/04/2026"><td>XX</td><td>Sam Holland</td><td>HarperCollins France &middot; 08/04/2026</td><td class="isbn">9791033924715</td><td class="prix">20,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la saga des haller t.2 : la revolte d'ida" data-a="anne jacobs" data-p="charleston · 12/03/2026"><td>La saga des Haller T.2&nbsp;: La R&#233;volte d'Ida</td><td>Anne Jacobs</td><td>Charleston &middot; 12/03/2026</td><td class="isbn">9782385295059</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le crime du paradis" data-a="guillaume musso" data-p="calmann-levy · 03/03/2026"><td>Le crime du paradis</td><td>Guillaume Musso</td><td>Calmann-L&#233;vy &middot; 03/03/2026</td><td class="isbn">9782702192979</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le parfum des fleurs sauvages t.2 : la fille aux boutons d'or" data-a="tessa collins" data-p="charleston · 12/02/2026"><td>Le Parfum des fleurs sauvages T.2&nbsp;: La fille aux boutons d'or</td><td>Tessa Collins</td><td>Charleston &middot; 12/02/2026</td><td class="isbn">9782385294953</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les enquetes du departement v t.11 : les morts ne chantent pas" data-a="jussi adler-olsen, line holm, stine bolther" data-p="albin michel · 04/03/2026"><td>Les enqu&#234;tes du d&#233;partement V T.11&nbsp;: Les morts ne chantent pas</td><td>Jussi Adler-Olsen, Line Holm, Stine Bolther</td><td>Albin Michel &middot; 04/03/2026</td><td class="isbn">9782226503732</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="lucia t.3 : ruptures" data-a="bernard minier" data-p="xo · 26/03/2026"><td>Lucia T.3&nbsp;: Ruptures</td><td>Bernard Minier</td><td>XO &middot; 26/03/2026</td><td class="isbn">9782374489513</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="mon nom ne suffit pas" data-a="jodi picoult" data-p="charleston · 13/01/2026"><td>Mon nom ne suffit pas</td><td>Jodi Picoult</td><td>Charleston &middot; 13/01/2026</td><td class="isbn">9782385294861</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="pas de fumee sans feu" data-a="m. j. arlidge" data-p="editions les escales · 05/02/2026"><td>Pas de fum&#233;e sans feu</td><td>M. J. Arlidge</td><td>&#201;ditions Les Escales &middot; 05/02/2026</td><td class="isbn">9782386980121</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="que la mort nous frole" data-a="michel bussi" data-p="les presses de la cite · 16/04/2026"><td>Que la mort nous fr&#244;le</td><td>Michel Bussi</td><td>Les Presses de la Cit&#233; &middot; 16/04/2026</td><td class="isbn">9782258214460</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="sans ame ni conscience" data-a="michael connelly" data-p="calmann-levy · 14/01/2026"><td>Sans &#226;me ni conscience</td><td>Michael Connelly</td><td>Calmann-L&#233;vy &middot; 14/01/2026</td><td class="isbn">9782702189054</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="l'autre moi" data-a="franck thilliez" data-p="fleuve editions · 28/04/2026"><td>L'autre moi</td><td>Franck Thilliez</td><td>Fleuve &#201;ditions &middot; 28/04/2026</td><td class="isbn">9782265159075</td><td class="prix">20,88&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les cheveux d'edith" data-a="fabienne blanchut, catherine locandro, dawid" data-p="dargaud · 05/09/2025"><td>Les cheveux d'&#201;dith</td><td>Fabienne Blanchut, Catherine Locandro, Dawid</td><td>Dargaud &middot; 05/09/2025</td><td class="isbn">9782505120001</td><td class="prix">20,88&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="56 jours" data-a="catherine ryan howard" data-p="editions de l'archipel · 08/01/2026"><td>56 jours</td><td>Catherine Ryan Howard</td><td>&#201;ditions de l'Archipel &middot; 08/01/2026</td><td class="isbn">9782809853179</td><td class="prix">20,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="je vais te detruire" data-a="linwood barclay" data-p="belfond · 05/02/2026"><td>Je vais te d&#233;truire</td><td>Linwood Barclay</td><td>Belfond &middot; 05/02/2026</td><td class="isbn">9782714405043</td><td class="prix">20,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les preuves" data-a="suzie miller" data-p="editions de l'archipel · 26/02/2026"><td>Les Preuves</td><td>Suzie Miller</td><td>&#201;ditions de l'Archipel &middot; 26/02/2026</td><td class="isbn">9782809852981</td><td class="prix">20,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="m comme meurtre ?" data-a="anthony horowitz" data-p="sonatine editions · 05/03/2026"><td>M comme meurtre&nbsp;?</td><td>Anthony Horowitz</td><td>Sonatine &#201;ditions &middot; 05/03/2026</td><td class="isbn">9782383993032</td><td class="prix">20,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="une jeune fille sans histoires" data-a="shari lapena" data-p="les presses de la cite · 22/01/2026"><td>Une jeune fille sans histoires</td><td>Shari Lapena</td><td>Les Presses de la Cit&#233; &middot; 22/01/2026</td><td class="isbn">9782258213425</td><td class="prix">20,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les fantomes de shearwater" data-a="charlotte mcconaghy" data-p="gaia · 14/01/2026"><td>Les fant&#244;mes de Shearwater</td><td>Charlotte McConaghy</td><td>Ga&#239;a &middot; 14/01/2026</td><td class="isbn">9782330216139</td><td class="prix">21,38&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="fauves" data-a="melissa da costa" data-p="albin michel · 07/01/2026"><td>Fauves</td><td>M&#233;lissa Da Costa</td><td>Albin Michel &middot; 07/01/2026</td><td class="isbn">9782226483546</td><td class="prix">21,75&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le manoir des reves perdus t.2 : vers la lumiere" data-a="marie-bernadette dupuy" data-p="calmann-levy · 04/02/2026"><td>Le Manoir des r&#234;ves perdus T.2&nbsp;: Vers la lumi&#232;re</td><td>Marie-Bernadette Dupuy</td><td>Calmann-L&#233;vy &middot; 04/02/2026</td><td class="isbn">9782702182383</td><td class="prix">21,75&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les belles promesses" data-a="pierre lemaitre" data-p="calmann-levy · 06/01/2026"><td>Les Belles Promesses</td><td>Pierre Lemaitre</td><td>Calmann-L&#233;vy &middot; 06/01/2026</td><td class="isbn">9782702191477</td><td class="prix">21,75&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="ces lignes qui tracent mon corps" data-a="mansoureh kamari" data-p="casterman · 10/09/2025"><td>Ces Lignes qui tracent mon corps</td><td>Mansoureh Kamari</td><td>Casterman &middot; 10/09/2025</td><td class="isbn">9782203290006</td><td class="prix">21,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="specimen" data-a="pauline claviere" data-p="editions grasset · 11/03/2026"><td>Sp&#233;cimen</td><td>Pauline Clavi&#232;re</td><td>&#201;ditions Grasset &middot; 11/03/2026</td><td class="isbn">9782246846109</td><td class="prix">21,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les invisibles" data-a="roger jon ellory" data-p="sonatine editions · 02/04/2026"><td>Les Invisibles</td><td>Roger Jon Ellory</td><td>Sonatine &#201;ditions &middot; 02/04/2026</td><td class="isbn">9782383992691</td><td class="prix">22,29&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="ne jamais trembler" data-a="stephen king" data-p="albin michel · 28/01/2026"><td>Ne jamais trembler</td><td>Stephen King</td><td>Albin Michel &middot; 28/01/2026</td><td class="isbn">9782226501875</td><td class="prix">22,66&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la femme medecin de galveston" data-a="amanda skenandore" data-p="faubourg marigny · 06/11/2025"><td>La femme m&#233;decin de Galveston</td><td>Amanda Skenandore</td><td>Faubourg Marigny &middot; 06/11/2025</td><td class="isbn">9782384363827</td><td class="prix">22,75&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="bienvenue a dietland" data-a="sarai walker" data-p="gallmeister · 08/04/2026"><td>Bienvenue &#224; Dietland</td><td>Sarai Walker</td><td>Gallmeister &middot; 08/04/2026</td><td class="isbn">9782404081090</td><td class="prix">23,57&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le livre de la culpabilite" data-a="catherine chidgey" data-p="gallmeister · 04/03/2026"><td>Le livre de la culpabilit&#233;</td><td>Catherine Chidgey</td><td>Gallmeister &middot; 04/03/2026</td><td class="isbn">9782351783856</td><td class="prix">24,48&nbsp;&euro;</td></tr>
+    </tbody>
+  </table>
+  <table class="t st-date">
+    <thead><tr><th>Titre</th><th>Auteur</th><th class="a">Parution &darr; &middot; &Eacute;diteur</th><th>ISBN</th><th>Prix</th></tr></thead>
+    <tbody>
+    <tr class="r" data-s="la fabrique du mal" data-a="angelina delcroix" data-p="michel lafon · 13/05/2026"><td>La Fabrique du mal</td><td>Ang&#233;lina Delcroix</td><td>Michel Lafon &middot; 13/05/2026</td><td class="isbn">9782749964003</td><td class="prix">19,97&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les mysteres d'eversand t.3 : l'epouse" data-a="victor dixen" data-p="robert laffont · 13/05/2026"><td>Les Myst&#232;res d'Eversand T.3&nbsp;: L'&#201;pouse</td><td>Victor Dixen</td><td>Robert Laffont &middot; 13/05/2026</td><td class="isbn">9782221285701</td><td class="prix">13,56&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le domaine aux secrets" data-a="valentin musso" data-p="editions julliard · 07/05/2026"><td>Le domaine aux secrets</td><td>Valentin Musso</td><td>&#201;ditions Julliard &middot; 07/05/2026</td><td class="isbn">9782260056744</td><td class="prix">19,56&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="un jour sans femme" data-a="laetitia colombani" data-p="editions de l'iconoclaste · 07/05/2026"><td>Un jour sans femme</td><td>Laetitia Colombani</td><td>&#201;ditions de l'Iconoclaste &middot; 07/05/2026</td><td class="isbn">9782378804978</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="d'autres printemps" data-a="virginie grimaldi" data-p="flammarion · 06/05/2026"><td>D'autres printemps</td><td>Virginie Grimaldi</td><td>Flammarion &middot; 06/05/2026</td><td class="isbn">9782080510655</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="l'intruse" data-a="freida mcfadden" data-p="city editions · 06/05/2026"><td>L'intruse</td><td>Freida McFadden</td><td>City &#201;ditions &middot; 06/05/2026</td><td class="isbn">9782824625256</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="l'autre moi" data-a="franck thilliez" data-p="fleuve editions · 28/04/2026"><td>L'autre moi</td><td>Franck Thilliez</td><td>Fleuve &#201;ditions &middot; 28/04/2026</td><td class="isbn">9782265159075</td><td class="prix">20,88&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="une histoire qui finit mal" data-a="evelyn clarke" data-p="verso · 24/04/2026"><td>Une histoire qui finit mal</td><td>Evelyn Clarke</td><td>Verso &middot; 24/04/2026</td><td class="isbn">9782386432941</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le piege" data-a="olivier bal" data-p="xo · 23/04/2026"><td>Le Pi&#232;ge</td><td>Olivier Bal</td><td>XO &middot; 23/04/2026</td><td class="isbn">9782374489391</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les miroirs sourient a ceux qui s'aiment" data-a="raphaelle giordano" data-p="editions recamier · 23/04/2026"><td>Les miroirs sourient &#224; ceux qui s'aiment</td><td>Rapha&#235;lle Giordano</td><td>&#201;ditions R&#233;camier &middot; 23/04/2026</td><td class="isbn">9782385771201</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="phobos t.4 : la tempete des destins" data-a="victor dixen, maria francesca perifano" data-p="glenat · 22/04/2026"><td>Phobos T.4&nbsp;: La temp&#234;te des destins</td><td>Victor Dixen, Maria Francesca Perifano</td><td>Gl&#233;nat &middot; 22/04/2026</td><td class="isbn">9782344071588</td><td class="prix">14,56&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les silencieuses" data-a="anna mcpartlin" data-p="le cherche midi · 16/04/2026"><td>Les Silencieuses</td><td>Anna McPartlin</td><td>Le Cherche Midi &middot; 16/04/2026</td><td class="isbn">9782749185576</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="que la mort nous frole" data-a="michel bussi" data-p="les presses de la cite · 16/04/2026"><td>Que la mort nous fr&#244;le</td><td>Michel Bussi</td><td>Les Presses de la Cit&#233; &middot; 16/04/2026</td><td class="isbn">9782258214460</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les cottages de la mer" data-a="jenny colgan" data-p="charleston · 10/04/2026"><td>Les Cottages de la mer</td><td>Jenny Colgan</td><td>Charleston &middot; 10/04/2026</td><td class="isbn">9782385295042</td><td class="prix">18,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="mes freres, nos fantomes et moi" data-a="julien sandrel" data-p="charleston · 10/04/2026"><td>Mes fr&#232;res, nos fant&#244;mes et moi</td><td>Julien Sandrel</td><td>Charleston &middot; 10/04/2026</td><td class="isbn">9782385295011</td><td class="prix">17,20&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="clement" data-a="romain lemire" data-p="le cherche midi · 09/04/2026"><td>Cl&#233;ment</td><td>Romain Lemire</td><td>Le Cherche Midi &middot; 09/04/2026</td><td class="isbn">9782749185705</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le groupe" data-a="isabelle lagarrigue" data-p="editions recamier · 09/04/2026"><td>Le Groupe</td><td>Isabelle Lagarrigue</td><td>&#201;ditions R&#233;camier &middot; 09/04/2026</td><td class="isbn">9782385772406</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="bienvenue a dietland" data-a="sarai walker" data-p="gallmeister · 08/04/2026"><td>Bienvenue &#224; Dietland</td><td>Sarai Walker</td><td>Gallmeister &middot; 08/04/2026</td><td class="isbn">9782404081090</td><td class="prix">23,57&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le pot de depart" data-a="julien aime" data-p="mazarine · 08/04/2026"><td>Le pot de d&#233;part</td><td>Julien Aime</td><td>Mazarine &middot; 08/04/2026</td><td class="isbn">9782213734323</td><td class="prix">18,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="xx" data-a="sam holland" data-p="harpercollins france · 08/04/2026"><td>XX</td><td>Sam Holland</td><td>HarperCollins France &middot; 08/04/2026</td><td class="isbn">9791033924715</td><td class="prix">20,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="dans la jungle" data-a="adeline dieudonne" data-p="editions de l'iconoclaste · 02/04/2026"><td>Dans la jungle</td><td>Adeline Dieudonn&#233;</td><td>&#201;ditions de l'Iconoclaste &middot; 02/04/2026</td><td class="isbn">9782378805814</td><td class="prix">20,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="il faudrait leur dire" data-a="carene ponte" data-p="fleuve editions · 02/04/2026"><td>Il faudrait leur dire</td><td>Car&#232;ne Ponte</td><td>Fleuve &#201;ditions &middot; 02/04/2026</td><td class="isbn">9782265158931</td><td class="prix">18,15&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="je suis drole" data-a="david foenkinos" data-p="gallimard · 02/04/2026"><td>Je suis dr&#244;le</td><td>David Foenkinos</td><td>Gallimard &middot; 02/04/2026</td><td class="isbn">9782073152985</td><td class="prix">18,20&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la ferme" data-a="francois-xavier dillard" data-p="editions recamier · 02/04/2026"><td>La Ferme</td><td>Fran&#231;ois-Xavier Dillard</td><td>&#201;ditions R&#233;camier &middot; 02/04/2026</td><td class="isbn">9782385770532</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le secret des agapanthes t.3 : morgane et juliette" data-a="clarisse sabard" data-p="charleston · 02/04/2026"><td>Le secret des agapanthes T.3&nbsp;: Morgane et Juliette</td><td>Clarisse Sabard</td><td>Charleston &middot; 02/04/2026</td><td class="isbn">9782385295035</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les invisibles" data-a="roger jon ellory" data-p="sonatine editions · 02/04/2026"><td>Les Invisibles</td><td>Roger Jon Ellory</td><td>Sonatine &#201;ditions &middot; 02/04/2026</td><td class="isbn">9782383992691</td><td class="prix">22,29&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les mysteres d'eversand t.2 : la promise" data-a="victor dixen" data-p="robert laffont · 02/04/2026"><td>Les Myst&#232;res d'Eversand T.2&nbsp;: La promise</td><td>Victor Dixen</td><td>Robert Laffont &middot; 02/04/2026</td><td class="isbn">9782221285695</td><td class="prix">13,56&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les mysteres d'eversand t.1 : la suivante" data-a="victor dixen" data-p="robert laffont · 02/04/2026"><td>Les Myst&#232;res d'Eversand T.1&nbsp;: La suivante</td><td>Victor Dixen</td><td>Robert Laffont &middot; 02/04/2026</td><td class="isbn">9782221285688</td><td class="prix">13,56&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="sales gosses" data-a="mathieu lecerf" data-p="harpercollins france · 01/04/2026"><td>Sales gosses</td><td>Mathieu Lecerf</td><td>HarperCollins France &middot; 01/04/2026</td><td class="isbn">9791033926139</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="danser sur les volcans" data-a="laure manel" data-p="michel lafon · 26/03/2026"><td>Danser sur les volcans</td><td>Laure Manel</td><td>Michel Lafon &middot; 26/03/2026</td><td class="isbn">9782749962061</td><td class="prix">19,06&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="lucia t.3 : ruptures" data-a="bernard minier" data-p="xo · 26/03/2026"><td>Lucia T.3&nbsp;: Ruptures</td><td>Bernard Minier</td><td>XO &middot; 26/03/2026</td><td class="isbn">9782374489513</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le hameau" data-a="niko tackian" data-p="calmann-levy · 25/03/2026"><td>Le Hameau</td><td>Niko Tackian</td><td>Calmann-L&#233;vy &middot; 25/03/2026</td><td class="isbn">9782702191613</td><td class="prix">18,65&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la mort en miroir" data-a="petronille rostagnat" data-p="editions belladone · 19/03/2026"><td>La mort en miroir</td><td>P&#233;tronille Rostagnat</td><td>&#201;ditions Belladone &middot; 19/03/2026</td><td class="isbn">9782488853002</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="traque" data-a="frank leduc" data-p="belfond · 19/03/2026"><td>Traqu&#233;</td><td>Frank Leduc</td><td>Belfond &middot; 19/03/2026</td><td class="isbn">9782714405708</td><td class="prix">19,56&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le poids du sang" data-a="paul cleave" data-p="harpercollins france · 18/03/2026"><td>Le poids du sang</td><td>Paul Cleave</td><td>HarperCollins France &middot; 18/03/2026</td><td class="isbn">9791033923893</td><td class="prix">20,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="volare" data-a="serena giuliano" data-p="calmann-levy · 18/03/2026"><td>Volare</td><td>Serena Giuliano</td><td>Calmann-L&#233;vy &middot; 18/03/2026</td><td class="isbn">9782702194423</td><td class="prix">17,20&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la fille des embruns" data-a="marie-haude meriguet" data-p="charleston · 12/03/2026"><td>La Fille des embruns</td><td>Marie-Haude M&#233;riguet</td><td>Charleston &middot; 12/03/2026</td><td class="isbn">9782385295004</td><td class="prix">18,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la saga des haller t.2 : la revolte d'ida" data-a="anne jacobs" data-p="charleston · 12/03/2026"><td>La saga des Haller T.2&nbsp;: La R&#233;volte d'Ida</td><td>Anne Jacobs</td><td>Charleston &middot; 12/03/2026</td><td class="isbn">9782385295059</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le berger d'alep" data-a="stephanie perez" data-p="editions recamier · 12/03/2026"><td>Le Berger d'Alep</td><td>St&#233;phanie Perez</td><td>&#201;ditions R&#233;camier &middot; 12/03/2026</td><td class="isbn">9782385772062</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le club des amateurs de romans policiers t.7 : le crime de l'indian pacific" data-a="c. a. larmer" data-p="le cherche midi · 12/03/2026"><td>Le club des amateurs de romans policiers T.7&nbsp;: Le Crime de l'Indian Pacific</td><td>C. A. Larmer</td><td>Le Cherche Midi &middot; 12/03/2026</td><td class="isbn">9782749185408</td><td class="prix">14,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les evades du convoi 53" data-a="benjamin fogel" data-p="gallimard · 12/03/2026"><td>Les &#233;vad&#233;s du convoi 53</td><td>Benjamin Fogel</td><td>Gallimard &middot; 12/03/2026</td><td class="isbn">9782073129864</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="l'emerveillement" data-a="aurelie valognes" data-p="jc lattes · 11/03/2026"><td>L'&#233;merveillement</td><td>Aur&#233;lie Valognes</td><td>JC Latt&#232;s &middot; 11/03/2026</td><td class="isbn">9782709676465</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les cœurs sont faits pour etre brises" data-a="tatiana de rosnay" data-p="albin michel · 11/03/2026"><td>Les c&#339;urs sont faits pour &#234;tre bris&#233;s</td><td>Tatiana de Rosnay</td><td>Albin Michel &middot; 11/03/2026</td><td class="isbn">9782226504555</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="nous qui avons connu solange" data-a="marie vareille" data-p="flammarion · 11/03/2026"><td>Nous qui avons connu Solange</td><td>Marie Vareille</td><td>Flammarion &middot; 11/03/2026</td><td class="isbn">9782080476418</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="specimen" data-a="pauline claviere" data-p="editions grasset · 11/03/2026"><td>Sp&#233;cimen</td><td>Pauline Clavi&#232;re</td><td>&#201;ditions Grasset &middot; 11/03/2026</td><td class="isbn">9782246846109</td><td class="prix">21,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="tous leurs secrets" data-a="john marrs" data-p="city editions · 11/03/2026"><td>Tous leurs secrets</td><td>John Marrs</td><td>City &#201;ditions &middot; 11/03/2026</td><td class="isbn">9782824625911</td><td class="prix">20,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="une bonne epouse" data-a="ingrid desjours" data-p="harpercollins france · 11/03/2026"><td>Une bonne &#233;pouse</td><td>Ingrid Desjours</td><td>HarperCollins France &middot; 11/03/2026</td><td class="isbn">9791033922711</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la colline" data-a="mathilde beaussault" data-p="le seuil · 06/03/2026"><td>La Colline</td><td>Mathilde Beaussault</td><td>Le Seuil &middot; 06/03/2026</td><td class="isbn">9782021602302</td><td class="prix">18,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="dans leurs yeux" data-a="charlotte letourneur" data-p="fleuve editions · 05/03/2026"><td>Dans leurs yeux</td><td>Charlotte Letourneur</td><td>Fleuve &#201;ditions &middot; 05/03/2026</td><td class="isbn">9782265159372</td><td class="prix">19,97&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="du gout pour le bonheur" data-a="lorraine fouchet" data-p="editions heloise d'ormesson · 05/03/2026"><td>Du go&#251;t pour le bonheur</td><td>Lorraine Fouchet</td><td>&#201;ditions H&#233;lo&#239;se d'Ormesson &middot; 05/03/2026</td><td class="isbn">9782487819849</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les disparues de willowbrook" data-a="ellen marie wiseman" data-p="faubourg marigny · 05/03/2026"><td>Les disparues de Willowbrook</td><td>Ellen Marie Wiseman</td><td>Faubourg Marigny &middot; 05/03/2026</td><td class="isbn">9782384363438</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="m comme meurtre ?" data-a="anthony horowitz" data-p="sonatine editions · 05/03/2026"><td>M comme meurtre&nbsp;?</td><td>Anthony Horowitz</td><td>Sonatine &#201;ditions &middot; 05/03/2026</td><td class="isbn">9782383993032</td><td class="prix">20,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le livre de la culpabilite" data-a="catherine chidgey" data-p="gallmeister · 04/03/2026"><td>Le livre de la culpabilit&#233;</td><td>Catherine Chidgey</td><td>Gallmeister &middot; 04/03/2026</td><td class="isbn">9782351783856</td><td class="prix">24,48&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le prieur de bethleem" data-a="yasmina khadra" data-p="flammarion · 04/03/2026"><td>Le prieur de Bethl&#233;em</td><td>Yasmina Khadra</td><td>Flammarion &middot; 04/03/2026</td><td class="isbn">9782080149671</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les enquetes du departement v t.11 : les morts ne chantent pas" data-a="jussi adler-olsen, line holm, stine bolther" data-p="albin michel · 04/03/2026"><td>Les enqu&#234;tes du d&#233;partement V T.11&nbsp;: Les morts ne chantent pas</td><td>Jussi Adler-Olsen, Line Holm, Stine Bolther</td><td>Albin Michel &middot; 04/03/2026</td><td class="isbn">9782226503732</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="sept jours avant la tombe" data-a="holly jackson" data-p="harpercollins france · 04/03/2026"><td>Sept jours avant la tombe</td><td>Holly Jackson</td><td>HarperCollins France &middot; 04/03/2026</td><td class="isbn">9791033922438</td><td class="prix">18,20&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="tous mes mensonges" data-a="nelle lamarr" data-p="city editions · 04/03/2026"><td>Tous mes mensonges</td><td>Nelle Lamarr</td><td>City &#201;ditions &middot; 04/03/2026</td><td class="isbn">9782824625898</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le crime du paradis" data-a="guillaume musso" data-p="calmann-levy · 03/03/2026"><td>Le crime du paradis</td><td>Guillaume Musso</td><td>Calmann-L&#233;vy &middot; 03/03/2026</td><td class="isbn">9782702192979</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les preuves" data-a="suzie miller" data-p="editions de l'archipel · 26/02/2026"><td>Les Preuves</td><td>Suzie Miller</td><td>&#201;ditions de l'Archipel &middot; 26/02/2026</td><td class="isbn">9782809852981</td><td class="prix">20,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="juste apres dieu, il y a papa" data-a="eric-emmanuel schmitt" data-p="albin michel · 25/02/2026"><td>Juste apr&#232;s Dieu, il y a papa</td><td>Eric-Emmanuel Schmitt</td><td>Albin Michel &middot; 25/02/2026</td><td class="isbn">9782226488589</td><td class="prix">18,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="malgre tout ce qui nous separe" data-a="sophie tal men" data-p="albin michel · 25/02/2026"><td>Malgr&#233; tout ce qui nous s&#233;pare</td><td>Sophie Tal Men</td><td>Albin Michel &middot; 25/02/2026</td><td class="isbn">9782226507556</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="cavillore" data-a="jeremie claes" data-p="editions heloise d'ormesson · 19/02/2026"><td>Cavillore</td><td>J&#233;r&#233;mie Claes</td><td>&#201;ditions H&#233;lo&#239;se d'Ormesson &middot; 19/02/2026</td><td class="isbn">9782487819696</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="et la joie de vivre" data-a="gisele pelicot" data-p="flammarion · 17/02/2026"><td>Et la joie de vivre</td><td>Gis&#232;le Pelicot</td><td>Flammarion &middot; 17/02/2026</td><td class="isbn">9782080497260</td><td class="prix">20,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="deferlante" data-a="celine denjean" data-p="michel lafon · 12/02/2026"><td>D&#233;ferlante</td><td>C&#233;line Denjean</td><td>Michel Lafon &middot; 12/02/2026</td><td class="isbn">9782749964126</td><td class="prix">19,97&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le parfum des fleurs sauvages t.2 : la fille aux boutons d'or" data-a="tessa collins" data-p="charleston · 12/02/2026"><td>Le Parfum des fleurs sauvages T.2&nbsp;: La fille aux boutons d'or</td><td>Tessa Collins</td><td>Charleston &middot; 12/02/2026</td><td class="isbn">9782385294953</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="l'ile aux jardins enchantes" data-a="sarah beth durst, lulu chen" data-p="bragelonne · 11/02/2026"><td>L'&#206;le aux jardins enchant&#233;s</td><td>Sarah Beth Durst, Lulu Chen</td><td>Bragelonne &middot; 11/02/2026</td><td class="isbn">9791028135492</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la locataire" data-a="freida mcfadden" data-p="city editions · 11/02/2026"><td>La locataire</td><td>Freida McFadden</td><td>City &#201;ditions &middot; 11/02/2026</td><td class="isbn">9782824626338</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la sage-femme et la riviere" data-a="ariel lawhon" data-p="harpercollins france · 11/02/2026"><td>La sage-femme et la rivi&#232;re</td><td>Ariel Lawhon</td><td>HarperCollins France &middot; 11/02/2026</td><td class="isbn">9791033919933</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="une employee modele" data-a="jean-christophe tixier" data-p="albin michel · 11/02/2026"><td>Une employ&#233;e mod&#232;le</td><td>Jean-Christophe Tixier</td><td>Albin Michel &middot; 11/02/2026</td><td class="isbn">9782226508096</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="aurore" data-a="nicolas leclerc" data-p="le seuil · 06/02/2026"><td>Aurore</td><td>Nicolas Leclerc</td><td>Le Seuil &middot; 06/02/2026</td><td class="isbn">9782021590371</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la fin du voyage" data-a="arnaldur indridason" data-p="editions metailie · 06/02/2026"><td>La fin du voyage</td><td>Arnaldur Indridason</td><td>&#201;ditions M&#233;taili&#233; &middot; 06/02/2026</td><td class="isbn">9791022615051</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les mysteres de byton cove : la nuit de la disparition" data-a="laetitia sivi" data-p="fleurus · 06/02/2026"><td>Les myst&#232;res de Byton Cove&nbsp;: La nuit de la disparition</td><td>La&#235;titia Sivi</td><td>Fleurus &middot; 06/02/2026</td><td class="isbn">9782215200253</td><td class="prix">16,33&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="impossibles creatures : le roi empoisonne" data-a="katherine rundell" data-p="gallimard jeunesse · 05/02/2026"><td>Impossibles Cr&#233;atures&nbsp;: Le Roi Empoisonn&#233;</td><td>Katherine Rundell</td><td>Gallimard Jeunesse &middot; 05/02/2026</td><td class="isbn">9782075234047</td><td class="prix">15,01&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="je vais te detruire" data-a="linwood barclay" data-p="belfond · 05/02/2026"><td>Je vais te d&#233;truire</td><td>Linwood Barclay</td><td>Belfond &middot; 05/02/2026</td><td class="isbn">9782714405043</td><td class="prix">20,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la gardienne" data-a="sonja delzongle" data-p="fleuve editions · 05/02/2026"><td>La gardienne</td><td>Sonja Delzongle</td><td>Fleuve &#201;ditions &middot; 05/02/2026</td><td class="isbn">9782265159228</td><td class="prix">19,97&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="pas de fumee sans feu" data-a="m. j. arlidge" data-p="editions les escales · 05/02/2026"><td>Pas de fum&#233;e sans feu</td><td>M. J. Arlidge</td><td>&#201;ditions Les Escales &middot; 05/02/2026</td><td class="isbn">9782386980121</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="ici" data-a="johana gustawsson, thomas enger" data-p="calmann-levy · 04/02/2026"><td>Ici</td><td>Johana Gustawsson, Thomas Enger</td><td>Calmann-L&#233;vy &middot; 04/02/2026</td><td class="isbn">9782702194140</td><td class="prix">20,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le manoir des reves perdus t.2 : vers la lumiere" data-a="marie-bernadette dupuy" data-p="calmann-levy · 04/02/2026"><td>Le Manoir des r&#234;ves perdus T.2&nbsp;: Vers la lumi&#232;re</td><td>Marie-Bernadette Dupuy</td><td>Calmann-L&#233;vy &middot; 04/02/2026</td><td class="isbn">9782702182383</td><td class="prix">21,75&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les sœurs de la resistance" data-a="anna stuart" data-p="city editions · 04/02/2026"><td>Les S&#339;urs de la R&#233;sistance</td><td>Anna Stuart</td><td>City &#201;ditions &middot; 04/02/2026</td><td class="isbn">9782824626321</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="derniere chance dans les pyrenees" data-a="julia chapman" data-p="robert laffont · 29/01/2026"><td>Derni&#232;re chance dans les Pyr&#233;n&#233;es</td><td>Julia Chapman</td><td>Robert Laffont &middot; 29/01/2026</td><td class="isbn">9782221273012</td><td class="prix">17,29&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la reine de mai" data-a="neo" data-p="albin michel · 28/01/2026"><td>La reine de mai</td><td>N&#233;O</td><td>Albin Michel &middot; 28/01/2026</td><td class="isbn">9782226498984</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="ne jamais trembler" data-a="stephen king" data-p="albin michel · 28/01/2026"><td>Ne jamais trembler</td><td>Stephen King</td><td>Albin Michel &middot; 28/01/2026</td><td class="isbn">9782226501875</td><td class="prix">22,66&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="une jeune fille sans histoires" data-a="shari lapena" data-p="les presses de la cite · 22/01/2026"><td>Une jeune fille sans histoires</td><td>Shari Lapena</td><td>Les Presses de la Cit&#233; &middot; 22/01/2026</td><td class="isbn">9782258213425</td><td class="prix">20,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="immersion" data-a="nicolas druart" data-p="belfond · 15/01/2026"><td>Immersion</td><td>Nicolas Druart</td><td>Belfond &middot; 15/01/2026</td><td class="isbn">9782714405401</td><td class="prix">18,20&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="je suis romane monnier" data-a="delphine de vigan" data-p="gallimard · 15/01/2026"><td>Je suis Romane Monnier</td><td>Delphine de Vigan</td><td>Gallimard &middot; 15/01/2026</td><td class="isbn">9782073113252</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les fantomes de shearwater" data-a="charlotte mcconaghy" data-p="gaia · 14/01/2026"><td>Les fant&#244;mes de Shearwater</td><td>Charlotte McConaghy</td><td>Ga&#239;a &middot; 14/01/2026</td><td class="isbn">9782330216139</td><td class="prix">21,38&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="sans ame ni conscience" data-a="michael connelly" data-p="calmann-levy · 14/01/2026"><td>Sans &#226;me ni conscience</td><td>Michael Connelly</td><td>Calmann-L&#233;vy &middot; 14/01/2026</td><td class="isbn">9782702189054</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="mon nom ne suffit pas" data-a="jodi picoult" data-p="charleston · 13/01/2026"><td>Mon nom ne suffit pas</td><td>Jodi Picoult</td><td>Charleston &middot; 13/01/2026</td><td class="isbn">9782385294861</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="56 jours" data-a="catherine ryan howard" data-p="editions de l'archipel · 08/01/2026"><td>56 jours</td><td>Catherine Ryan Howard</td><td>&#201;ditions de l'Archipel &middot; 08/01/2026</td><td class="isbn">9782809853179</td><td class="prix">20,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="killing me softly" data-a="jacky schwartzmann" data-p="la manufacture de livres · 08/01/2026"><td>Killing me softly</td><td>Jacky Schwartzmann</td><td>La Manufacture de Livres &middot; 08/01/2026</td><td class="isbn">9782385532185</td><td class="prix">14,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la correspondante" data-a="virginia evans" data-p="editions de la table ronde · 08/01/2026"><td>La Correspondante</td><td>Virginia Evans</td><td>&#201;ditions de La Table Ronde &middot; 08/01/2026</td><td class="isbn">9791037114884</td><td class="prix">20,47&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le visage de la nuit" data-a="cecile coulon" data-p="editions de l'iconoclaste · 08/01/2026"><td>Le visage de la nuit</td><td>C&#233;cile Coulon</td><td>&#201;ditions de l'Iconoclaste &middot; 08/01/2026</td><td class="isbn">9782378805715</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="love, mom" data-a="iliana xander" data-p="fleuve editions · 08/01/2026"><td>Love, mom</td><td>Iliana Xander</td><td>Fleuve &#201;ditions &middot; 08/01/2026</td><td class="isbn">9782265159686</td><td class="prix">19,97&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="une pension en italie" data-a="philippe besson" data-p="editions julliard · 08/01/2026"><td>Une pension en Italie</td><td>Philippe Besson</td><td>&#201;ditions Julliard &middot; 08/01/2026</td><td class="isbn">9782260056782</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="fauves" data-a="melissa da costa" data-p="albin michel · 07/01/2026"><td>Fauves</td><td>M&#233;lissa Da Costa</td><td>Albin Michel &middot; 07/01/2026</td><td class="isbn">9782226483546</td><td class="prix">21,75&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les belles promesses" data-a="pierre lemaitre" data-p="calmann-levy · 06/01/2026"><td>Les Belles Promesses</td><td>Pierre Lemaitre</td><td>Calmann-L&#233;vy &middot; 06/01/2026</td><td class="isbn">9782702191477</td><td class="prix">21,75&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le garcon eternel" data-a="jerome loubry" data-p="calmann-levy · 02/01/2026"><td>Le Gar&#231;on &#233;ternel</td><td>J&#233;r&#244;me Loubry</td><td>Calmann-L&#233;vy &middot; 02/01/2026</td><td class="isbn">9782702190753</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la femme medecin de galveston" data-a="amanda skenandore" data-p="faubourg marigny · 06/11/2025"><td>La femme m&#233;decin de Galveston</td><td>Amanda Skenandore</td><td>Faubourg Marigny &middot; 06/11/2025</td><td class="isbn">9782384363827</td><td class="prix">22,75&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="chiens fous" data-a="max monnehay" data-p="harpercollins france · 08/10/2025"><td>Chiens fous</td><td>Max Monnehay</td><td>HarperCollins France &middot; 08/10/2025</td><td class="isbn">9791033919797</td><td class="prix">18,65&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les mysteres de byton cove : un secret a deterrer" data-a="laetitia sivi" data-p="fleurus · 12/09/2025"><td>Les Myst&#232;res de Byton Cove&nbsp;: Un secret &#224; d&#233;terrer</td><td>La&#235;titia Sivi</td><td>Fleurus &middot; 12/09/2025</td><td class="isbn">9782215194958</td><td class="prix">16,33&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="ces lignes qui tracent mon corps" data-a="mansoureh kamari" data-p="casterman · 10/09/2025"><td>Ces Lignes qui tracent mon corps</td><td>Mansoureh Kamari</td><td>Casterman &middot; 10/09/2025</td><td class="isbn">9782203290006</td><td class="prix">21,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les cheveux d'edith" data-a="fabienne blanchut, catherine locandro, dawid" data-p="dargaud · 05/09/2025"><td>Les cheveux d'&#201;dith</td><td>Fabienne Blanchut, Catherine Locandro, Dawid</td><td>Dargaud &middot; 05/09/2025</td><td class="isbn">9782505120001</td><td class="prix">20,88&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="baignades" data-a="andree a. michaud" data-p="rivages · 20/08/2025"><td>Baignades</td><td>Andr&#233;e A. Michaud</td><td>Rivages &middot; 20/08/2025</td><td class="isbn">9782743667948</td><td class="prix">19,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le silence est a nous" data-a="coline pierre" data-p="flammarion jeunesse · 19/03/2025"><td>Le silence est &#224; nous</td><td>Coline Pierr&#233;</td><td>Flammarion jeunesse &middot; 19/03/2025</td><td class="isbn">9782080480118</td><td class="prix">18,11&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les amazones" data-a="jim fergus" data-p="pocket · 03/09/2020"><td>Les Amazones</td><td>Jim Fergus</td><td>Pocket &middot; 03/09/2020</td><td class="isbn">9782266298278</td><td class="prix">8,19&nbsp;&euro;</td></tr>
     </tbody>
   </table>
 </div>
-
-<!-- ═══════ COMMAND&Eacute;S ═══════ -->
-<div class="sec-commande">
-  <div class="sec-head head-commande">&#128666; Articles command&eacute;s &mdash; Exp&eacute;di&eacute; sous 4 &agrave; 15 jours</div>
-  <table>
-    <thead><tr><th>Titre</th><th>Auteur</th><th>Parution &middot; &Eacute;diteur</th><th>ISBN</th><th>Prix</th></tr></thead>
+<div class="sec s-commande">
+  <div class="sec-head" style="background:#27ae60">&#128666; Articles command&eacute;s &mdash; Exp&eacute;di&eacute; sous 4 &agrave; 15 jours</div>
+  <table class="t st-title">
+    <thead><tr><th class="a">Titre &uarr;</th><th>Auteur</th><th>Parution &middot; &Eacute;diteur</th><th>ISBN</th><th>Prix</th></tr></thead>
     <tbody>
-    <tr class="commande">
-      <td>Commandant Solane</td>
-      <td>J&#233;r&#233;mie Claes</td>
-      <td>&#201;ditions H&#233;lo&#239;se d'Ormesson &middot; 06/02/2025</td>
-      <td class="isbn">9782350879918</td>
-      <td class="prix">20,02&nbsp;&euro;</td>
-    </tr>
-    <tr class="commande">
-      <td>Et avec votre esprit</td>
-      <td>Alexis Laipsker</td>
-      <td>Michel Lafon &middot; 27/02/2020</td>
-      <td class="isbn">9782749941325</td>
-      <td class="prix">17,24&nbsp;&euro;</td>
-    </tr>
-    <tr class="commande">
-      <td>L'h&#233;riti&#232;re du lotus rose</td>
-      <td>Kate McAlistair</td>
-      <td>Archipoche &middot; 07/10/2021</td>
-      <td class="isbn">9791039200363</td>
-      <td class="prix">9,05&nbsp;&euro;</td>
-    </tr>
-    <tr class="commande">
-      <td>L'horloger</td>
-      <td>J&#233;r&#233;mie Claes</td>
-      <td>&#201;ditions H&#233;lo&#239;se d'Ormesson &middot; 08/02/2024</td>
-      <td class="isbn">9782350879291</td>
-      <td class="prix">20,84&nbsp;&euro;</td>
-    </tr>
-    <tr class="commande">
-      <td>La cit&#233; du lotus rose</td>
-      <td>Kate McAlistair</td>
-      <td>Archipoche &middot; 01/10/2020</td>
-      <td class="isbn">9782377358250</td>
-      <td class="prix">9,05&nbsp;&euro;</td>
-    </tr>
-    <tr class="commande">
-      <td>La vall&#233;e du lotus rose</td>
-      <td>Kate McAlistair</td>
-      <td>Archipoche &middot; 02/10/2019</td>
-      <td class="isbn">9782377353590</td>
-      <td class="prix">9,05&nbsp;&euro;</td>
-    </tr>
-    <tr class="commande">
-      <td>La vengeance des m&#232;res</td>
-      <td>Jim Fergus</td>
-      <td>Le Cherche Midi &middot; 22/09/2016</td>
-      <td class="isbn">9782749143293</td>
-      <td class="prix">21,75&nbsp;&euro;</td>
-    </tr>
-    <tr class="commande">
-      <td>Le magicien</td>
-      <td>Jean-Marc Souvira</td>
-      <td>Fleuve &#201;ditions &middot; 21/02/2008</td>
-      <td class="isbn">9782265086142</td>
-      <td class="prix">19,93&nbsp;&euro;</td>
-    </tr>
-    <tr class="commande">
-      <td>Le vent t'emportera</td>
-      <td>Jean-Marc Souvira</td>
-      <td>Fleuve &#201;ditions &middot; 12/05/2010</td>
-      <td class="isbn">9782265089181</td>
-      <td class="prix">19,93&nbsp;&euro;</td>
-    </tr>
-    <tr class="commande">
-      <td>Les oiseaux ne se retournent pas</td>
-      <td>Nadia Nakhl&#233;</td>
-      <td>Delcourt &middot; 18/03/2020</td>
-      <td class="isbn">9782413027652</td>
-      <td class="prix">23,61&nbsp;&euro;</td>
-    </tr>
-    <tr class="commande">
-      <td>Les sir&#232;nes noires</td>
-      <td>Jean-Marc Souvira</td>
-      <td>Fleuve &#201;ditions &middot; 12/11/2015</td>
-      <td class="isbn">9782265099302</td>
-      <td class="prix">19,93&nbsp;&euro;</td>
-    </tr>
-    <tr class="commande">
-      <td>Mille femmes blanches</td>
-      <td>Jim Fergus</td>
-      <td>Le Cherche Midi &middot; 02/05/2013</td>
-      <td class="isbn">9782749121079</td>
-      <td class="prix">19,02&nbsp;&euro;</td>
-    </tr>
+    <tr class="r" data-s="commandant solane" data-a="jeremie claes" data-p="editions heloise d'ormesson · 06/02/2025"><td>Commandant Solane</td><td>J&#233;r&#233;mie Claes</td><td>&#201;ditions H&#233;lo&#239;se d'Ormesson &middot; 06/02/2025</td><td class="isbn">9782350879918</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="et avec votre esprit" data-a="alexis laipsker" data-p="michel lafon · 27/02/2020"><td>Et avec votre esprit</td><td>Alexis Laipsker</td><td>Michel Lafon &middot; 27/02/2020</td><td class="isbn">9782749941325</td><td class="prix">17,24&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="l'horloger" data-a="jeremie claes" data-p="editions heloise d'ormesson · 08/02/2024"><td>L'horloger</td><td>J&#233;r&#233;mie Claes</td><td>&#201;ditions H&#233;lo&#239;se d'Ormesson &middot; 08/02/2024</td><td class="isbn">9782350879291</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="l'heritiere du lotus rose" data-a="kate mcalistair" data-p="archipoche · 07/10/2021"><td>L'h&#233;riti&#232;re du lotus rose</td><td>Kate McAlistair</td><td>Archipoche &middot; 07/10/2021</td><td class="isbn">9791039200363</td><td class="prix">9,05&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la cite du lotus rose" data-a="kate mcalistair" data-p="archipoche · 01/10/2020"><td>La cit&#233; du lotus rose</td><td>Kate McAlistair</td><td>Archipoche &middot; 01/10/2020</td><td class="isbn">9782377358250</td><td class="prix">9,05&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la vallee du lotus rose" data-a="kate mcalistair" data-p="archipoche · 02/10/2019"><td>La vall&#233;e du lotus rose</td><td>Kate McAlistair</td><td>Archipoche &middot; 02/10/2019</td><td class="isbn">9782377353590</td><td class="prix">9,05&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la vengeance des meres" data-a="jim fergus" data-p="le cherche midi · 22/09/2016"><td>La vengeance des m&#232;res</td><td>Jim Fergus</td><td>Le Cherche Midi &middot; 22/09/2016</td><td class="isbn">9782749143293</td><td class="prix">21,75&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le magicien" data-a="jean-marc souvira" data-p="fleuve editions · 21/02/2008"><td>Le magicien</td><td>Jean-Marc Souvira</td><td>Fleuve &#201;ditions &middot; 21/02/2008</td><td class="isbn">9782265086142</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le vent t'emportera" data-a="jean-marc souvira" data-p="fleuve editions · 12/05/2010"><td>Le vent t'emportera</td><td>Jean-Marc Souvira</td><td>Fleuve &#201;ditions &middot; 12/05/2010</td><td class="isbn">9782265089181</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les oiseaux ne se retournent pas" data-a="nadia nakhle" data-p="delcourt · 18/03/2020"><td>Les oiseaux ne se retournent pas</td><td>Nadia Nakhl&#233;</td><td>Delcourt &middot; 18/03/2020</td><td class="isbn">9782413027652</td><td class="prix">23,61&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les sirenes noires" data-a="jean-marc souvira" data-p="fleuve editions · 12/11/2015"><td>Les sir&#232;nes noires</td><td>Jean-Marc Souvira</td><td>Fleuve &#201;ditions &middot; 12/11/2015</td><td class="isbn">9782265099302</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="mille femmes blanches" data-a="jim fergus" data-p="le cherche midi · 02/05/2013"><td>Mille femmes blanches</td><td>Jim Fergus</td><td>Le Cherche Midi &middot; 02/05/2013</td><td class="isbn">9782749121079</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    </tbody>
+  </table>
+  <table class="t st-author">
+    <thead><tr><th>Titre</th><th class="a">Auteur &uarr;</th><th>Parution &middot; &Eacute;diteur</th><th>ISBN</th><th>Prix</th></tr></thead>
+    <tbody>
+    <tr class="r" data-s="et avec votre esprit" data-a="alexis laipsker" data-p="michel lafon · 27/02/2020"><td>Et avec votre esprit</td><td>Alexis Laipsker</td><td>Michel Lafon &middot; 27/02/2020</td><td class="isbn">9782749941325</td><td class="prix">17,24&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le magicien" data-a="jean-marc souvira" data-p="fleuve editions · 21/02/2008"><td>Le magicien</td><td>Jean-Marc Souvira</td><td>Fleuve &#201;ditions &middot; 21/02/2008</td><td class="isbn">9782265086142</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le vent t'emportera" data-a="jean-marc souvira" data-p="fleuve editions · 12/05/2010"><td>Le vent t'emportera</td><td>Jean-Marc Souvira</td><td>Fleuve &#201;ditions &middot; 12/05/2010</td><td class="isbn">9782265089181</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les sirenes noires" data-a="jean-marc souvira" data-p="fleuve editions · 12/11/2015"><td>Les sir&#232;nes noires</td><td>Jean-Marc Souvira</td><td>Fleuve &#201;ditions &middot; 12/11/2015</td><td class="isbn">9782265099302</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la vengeance des meres" data-a="jim fergus" data-p="le cherche midi · 22/09/2016"><td>La vengeance des m&#232;res</td><td>Jim Fergus</td><td>Le Cherche Midi &middot; 22/09/2016</td><td class="isbn">9782749143293</td><td class="prix">21,75&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="mille femmes blanches" data-a="jim fergus" data-p="le cherche midi · 02/05/2013"><td>Mille femmes blanches</td><td>Jim Fergus</td><td>Le Cherche Midi &middot; 02/05/2013</td><td class="isbn">9782749121079</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="commandant solane" data-a="jeremie claes" data-p="editions heloise d'ormesson · 06/02/2025"><td>Commandant Solane</td><td>J&#233;r&#233;mie Claes</td><td>&#201;ditions H&#233;lo&#239;se d'Ormesson &middot; 06/02/2025</td><td class="isbn">9782350879918</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="l'horloger" data-a="jeremie claes" data-p="editions heloise d'ormesson · 08/02/2024"><td>L'horloger</td><td>J&#233;r&#233;mie Claes</td><td>&#201;ditions H&#233;lo&#239;se d'Ormesson &middot; 08/02/2024</td><td class="isbn">9782350879291</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="l'heritiere du lotus rose" data-a="kate mcalistair" data-p="archipoche · 07/10/2021"><td>L'h&#233;riti&#232;re du lotus rose</td><td>Kate McAlistair</td><td>Archipoche &middot; 07/10/2021</td><td class="isbn">9791039200363</td><td class="prix">9,05&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la cite du lotus rose" data-a="kate mcalistair" data-p="archipoche · 01/10/2020"><td>La cit&#233; du lotus rose</td><td>Kate McAlistair</td><td>Archipoche &middot; 01/10/2020</td><td class="isbn">9782377358250</td><td class="prix">9,05&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la vallee du lotus rose" data-a="kate mcalistair" data-p="archipoche · 02/10/2019"><td>La vall&#233;e du lotus rose</td><td>Kate McAlistair</td><td>Archipoche &middot; 02/10/2019</td><td class="isbn">9782377353590</td><td class="prix">9,05&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les oiseaux ne se retournent pas" data-a="nadia nakhle" data-p="delcourt · 18/03/2020"><td>Les oiseaux ne se retournent pas</td><td>Nadia Nakhl&#233;</td><td>Delcourt &middot; 18/03/2020</td><td class="isbn">9782413027652</td><td class="prix">23,61&nbsp;&euro;</td></tr>
+    </tbody>
+  </table>
+  <table class="t st-price">
+    <thead><tr><th>Titre</th><th>Auteur</th><th>Parution &middot; &Eacute;diteur</th><th>ISBN</th><th class="a">Prix &uarr;</th></tr></thead>
+    <tbody>
+    <tr class="r" data-s="l'heritiere du lotus rose" data-a="kate mcalistair" data-p="archipoche · 07/10/2021"><td>L'h&#233;riti&#232;re du lotus rose</td><td>Kate McAlistair</td><td>Archipoche &middot; 07/10/2021</td><td class="isbn">9791039200363</td><td class="prix">9,05&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la cite du lotus rose" data-a="kate mcalistair" data-p="archipoche · 01/10/2020"><td>La cit&#233; du lotus rose</td><td>Kate McAlistair</td><td>Archipoche &middot; 01/10/2020</td><td class="isbn">9782377358250</td><td class="prix">9,05&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la vallee du lotus rose" data-a="kate mcalistair" data-p="archipoche · 02/10/2019"><td>La vall&#233;e du lotus rose</td><td>Kate McAlistair</td><td>Archipoche &middot; 02/10/2019</td><td class="isbn">9782377353590</td><td class="prix">9,05&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="et avec votre esprit" data-a="alexis laipsker" data-p="michel lafon · 27/02/2020"><td>Et avec votre esprit</td><td>Alexis Laipsker</td><td>Michel Lafon &middot; 27/02/2020</td><td class="isbn">9782749941325</td><td class="prix">17,24&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="mille femmes blanches" data-a="jim fergus" data-p="le cherche midi · 02/05/2013"><td>Mille femmes blanches</td><td>Jim Fergus</td><td>Le Cherche Midi &middot; 02/05/2013</td><td class="isbn">9782749121079</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le magicien" data-a="jean-marc souvira" data-p="fleuve editions · 21/02/2008"><td>Le magicien</td><td>Jean-Marc Souvira</td><td>Fleuve &#201;ditions &middot; 21/02/2008</td><td class="isbn">9782265086142</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le vent t'emportera" data-a="jean-marc souvira" data-p="fleuve editions · 12/05/2010"><td>Le vent t'emportera</td><td>Jean-Marc Souvira</td><td>Fleuve &#201;ditions &middot; 12/05/2010</td><td class="isbn">9782265089181</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les sirenes noires" data-a="jean-marc souvira" data-p="fleuve editions · 12/11/2015"><td>Les sir&#232;nes noires</td><td>Jean-Marc Souvira</td><td>Fleuve &#201;ditions &middot; 12/11/2015</td><td class="isbn">9782265099302</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="commandant solane" data-a="jeremie claes" data-p="editions heloise d'ormesson · 06/02/2025"><td>Commandant Solane</td><td>J&#233;r&#233;mie Claes</td><td>&#201;ditions H&#233;lo&#239;se d'Ormesson &middot; 06/02/2025</td><td class="isbn">9782350879918</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="l'horloger" data-a="jeremie claes" data-p="editions heloise d'ormesson · 08/02/2024"><td>L'horloger</td><td>J&#233;r&#233;mie Claes</td><td>&#201;ditions H&#233;lo&#239;se d'Ormesson &middot; 08/02/2024</td><td class="isbn">9782350879291</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la vengeance des meres" data-a="jim fergus" data-p="le cherche midi · 22/09/2016"><td>La vengeance des m&#232;res</td><td>Jim Fergus</td><td>Le Cherche Midi &middot; 22/09/2016</td><td class="isbn">9782749143293</td><td class="prix">21,75&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les oiseaux ne se retournent pas" data-a="nadia nakhle" data-p="delcourt · 18/03/2020"><td>Les oiseaux ne se retournent pas</td><td>Nadia Nakhl&#233;</td><td>Delcourt &middot; 18/03/2020</td><td class="isbn">9782413027652</td><td class="prix">23,61&nbsp;&euro;</td></tr>
+    </tbody>
+  </table>
+  <table class="t st-date">
+    <thead><tr><th>Titre</th><th>Auteur</th><th class="a">Parution &darr; &middot; &Eacute;diteur</th><th>ISBN</th><th>Prix</th></tr></thead>
+    <tbody>
+    <tr class="r" data-s="commandant solane" data-a="jeremie claes" data-p="editions heloise d'ormesson · 06/02/2025"><td>Commandant Solane</td><td>J&#233;r&#233;mie Claes</td><td>&#201;ditions H&#233;lo&#239;se d'Ormesson &middot; 06/02/2025</td><td class="isbn">9782350879918</td><td class="prix">20,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="l'horloger" data-a="jeremie claes" data-p="editions heloise d'ormesson · 08/02/2024"><td>L'horloger</td><td>J&#233;r&#233;mie Claes</td><td>&#201;ditions H&#233;lo&#239;se d'Ormesson &middot; 08/02/2024</td><td class="isbn">9782350879291</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="l'heritiere du lotus rose" data-a="kate mcalistair" data-p="archipoche · 07/10/2021"><td>L'h&#233;riti&#232;re du lotus rose</td><td>Kate McAlistair</td><td>Archipoche &middot; 07/10/2021</td><td class="isbn">9791039200363</td><td class="prix">9,05&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la cite du lotus rose" data-a="kate mcalistair" data-p="archipoche · 01/10/2020"><td>La cit&#233; du lotus rose</td><td>Kate McAlistair</td><td>Archipoche &middot; 01/10/2020</td><td class="isbn">9782377358250</td><td class="prix">9,05&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les oiseaux ne se retournent pas" data-a="nadia nakhle" data-p="delcourt · 18/03/2020"><td>Les oiseaux ne se retournent pas</td><td>Nadia Nakhl&#233;</td><td>Delcourt &middot; 18/03/2020</td><td class="isbn">9782413027652</td><td class="prix">23,61&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="et avec votre esprit" data-a="alexis laipsker" data-p="michel lafon · 27/02/2020"><td>Et avec votre esprit</td><td>Alexis Laipsker</td><td>Michel Lafon &middot; 27/02/2020</td><td class="isbn">9782749941325</td><td class="prix">17,24&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la vallee du lotus rose" data-a="kate mcalistair" data-p="archipoche · 02/10/2019"><td>La vall&#233;e du lotus rose</td><td>Kate McAlistair</td><td>Archipoche &middot; 02/10/2019</td><td class="isbn">9782377353590</td><td class="prix">9,05&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="la vengeance des meres" data-a="jim fergus" data-p="le cherche midi · 22/09/2016"><td>La vengeance des m&#232;res</td><td>Jim Fergus</td><td>Le Cherche Midi &middot; 22/09/2016</td><td class="isbn">9782749143293</td><td class="prix">21,75&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les sirenes noires" data-a="jean-marc souvira" data-p="fleuve editions · 12/11/2015"><td>Les sir&#232;nes noires</td><td>Jean-Marc Souvira</td><td>Fleuve &#201;ditions &middot; 12/11/2015</td><td class="isbn">9782265099302</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="mille femmes blanches" data-a="jim fergus" data-p="le cherche midi · 02/05/2013"><td>Mille femmes blanches</td><td>Jim Fergus</td><td>Le Cherche Midi &middot; 02/05/2013</td><td class="isbn">9782749121079</td><td class="prix">19,02&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le vent t'emportera" data-a="jean-marc souvira" data-p="fleuve editions · 12/05/2010"><td>Le vent t'emportera</td><td>Jean-Marc Souvira</td><td>Fleuve &#201;ditions &middot; 12/05/2010</td><td class="isbn">9782265089181</td><td class="prix">19,93&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le magicien" data-a="jean-marc souvira" data-p="fleuve editions · 21/02/2008"><td>Le magicien</td><td>Jean-Marc Souvira</td><td>Fleuve &#201;ditions &middot; 21/02/2008</td><td class="isbn">9782265086142</td><td class="prix">19,93&nbsp;&euro;</td></tr>
     </tbody>
   </table>
 </div>
-
-<!-- ═══════ PR&Eacute;COMMANDES ═══════ -->
-<div class="sec-preco">
-  <div class="sec-head head-preco">&#9203; Pr&eacute;commandes</div>
-  <table>
-    <thead><tr><th>Titre</th><th>Auteur</th><th>Parution &middot; &Eacute;diteur</th><th>ISBN</th><th>Prix</th></tr></thead>
+<div class="sec s-preco">
+  <div class="sec-head" style="background:#e67e22">&#9203; Pr&eacute;commandes</div>
+  <table class="t st-title">
+    <thead><tr><th class="a">Titre &uarr;</th><th>Auteur</th><th>Parution &middot; &Eacute;diteur</th><th>ISBN</th><th>Prix</th></tr></thead>
     <tbody>
-    <tr class="preco">
-      <td>Le Calamity Club <span class="badge">Pr&#233;co</span></td>
-      <td>Kathryn Stockett</td>
-      <td>Robert Laffont &middot; 28/05/2026</td>
-      <td class="isbn">9782221284131</td>
-      <td class="prix">22,66&nbsp;&euro;</td>
-    </tr> <span class="badge">Pr&eacute;co</span>
-    <tr class="preco">
-      <td>Le serment des Deverill &#8211; Filles d'Irlande T.5 <span class="badge">Pr&#233;co</span></td>
-      <td>Montefiore Santa</td>
-      <td>Verso &middot; 05/06/2026</td>
-      <td class="isbn">9782386433382</td>
-      <td class="prix">20,84&nbsp;&euro;</td>
-    </tr> <span class="badge">Pr&eacute;co</span>
-    <tr class="preco">
-      <td>Les enfants de la r&#233;sistance T.10&nbsp;: La guerre n'est pas finie <span class="badge">Pr&#233;co</span></td>
-      <td>Ers, Dugomier</td>
-      <td>&#201;ditions du Lombard &middot; 12/06/2026</td>
-      <td class="isbn">9782808216937</td>
-      <td class="prix">12,24&nbsp;&euro;</td>
-    </tr> <span class="badge">Pr&eacute;co</span>
-    <tr class="preco">
-      <td>Les Myst&#232;res d'Eversand T.4&nbsp;: L'H&#233;r&#233;tique <span class="badge">Pr&#233;co</span></td>
-      <td>Victor Dixen</td>
-      <td>Robert Laffont &middot; 11/06/2026</td>
-      <td class="isbn">9782221285718</td>
-      <td class="prix">13,56&nbsp;&euro;</td>
-    </tr> <span class="badge">Pr&eacute;co</span>
+    <tr class="r" data-s="le calamity club preco" data-a="kathryn stockett" data-p="robert laffont · 28/05/2026"><td>Le Calamity Club <span class="badge">Pr&#233;co</span></td><td>Kathryn Stockett</td><td>Robert Laffont &middot; 28/05/2026</td><td class="isbn">9782221284131</td><td class="prix">22,66&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le serment des deverill – filles d'irlande t.5 preco" data-a="montefiore santa" data-p="verso · 05/06/2026"><td>Le serment des Deverill &#8211; Filles d'Irlande T.5 <span class="badge">Pr&#233;co</span></td><td>Montefiore Santa</td><td>Verso &middot; 05/06/2026</td><td class="isbn">9782386433382</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les enfants de la resistance t.10 : la guerre n'est pas finie preco" data-a="ers, dugomier" data-p="editions du lombard · 12/06/2026"><td>Les enfants de la r&#233;sistance T.10&nbsp;: La guerre n'est pas finie <span class="badge">Pr&#233;co</span></td><td>Ers, Dugomier</td><td>&#201;ditions du Lombard &middot; 12/06/2026</td><td class="isbn">9782808216937</td><td class="prix">12,24&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les mysteres d'eversand t.4 : l'heretique preco" data-a="victor dixen" data-p="robert laffont · 11/06/2026"><td>Les Myst&#232;res d'Eversand T.4&nbsp;: L'H&#233;r&#233;tique <span class="badge">Pr&#233;co</span></td><td>Victor Dixen</td><td>Robert Laffont &middot; 11/06/2026</td><td class="isbn">9782221285718</td><td class="prix">13,56&nbsp;&euro;</td></tr>
+    </tbody>
+  </table>
+  <table class="t st-author">
+    <thead><tr><th>Titre</th><th class="a">Auteur &uarr;</th><th>Parution &middot; &Eacute;diteur</th><th>ISBN</th><th>Prix</th></tr></thead>
+    <tbody>
+    <tr class="r" data-s="les enfants de la resistance t.10 : la guerre n'est pas finie preco" data-a="ers, dugomier" data-p="editions du lombard · 12/06/2026"><td>Les enfants de la r&#233;sistance T.10&nbsp;: La guerre n'est pas finie <span class="badge">Pr&#233;co</span></td><td>Ers, Dugomier</td><td>&#201;ditions du Lombard &middot; 12/06/2026</td><td class="isbn">9782808216937</td><td class="prix">12,24&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le calamity club preco" data-a="kathryn stockett" data-p="robert laffont · 28/05/2026"><td>Le Calamity Club <span class="badge">Pr&#233;co</span></td><td>Kathryn Stockett</td><td>Robert Laffont &middot; 28/05/2026</td><td class="isbn">9782221284131</td><td class="prix">22,66&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le serment des deverill – filles d'irlande t.5 preco" data-a="montefiore santa" data-p="verso · 05/06/2026"><td>Le serment des Deverill &#8211; Filles d'Irlande T.5 <span class="badge">Pr&#233;co</span></td><td>Montefiore Santa</td><td>Verso &middot; 05/06/2026</td><td class="isbn">9782386433382</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les mysteres d'eversand t.4 : l'heretique preco" data-a="victor dixen" data-p="robert laffont · 11/06/2026"><td>Les Myst&#232;res d'Eversand T.4&nbsp;: L'H&#233;r&#233;tique <span class="badge">Pr&#233;co</span></td><td>Victor Dixen</td><td>Robert Laffont &middot; 11/06/2026</td><td class="isbn">9782221285718</td><td class="prix">13,56&nbsp;&euro;</td></tr>
+    </tbody>
+  </table>
+  <table class="t st-price">
+    <thead><tr><th>Titre</th><th>Auteur</th><th>Parution &middot; &Eacute;diteur</th><th>ISBN</th><th class="a">Prix &uarr;</th></tr></thead>
+    <tbody>
+    <tr class="r" data-s="les enfants de la resistance t.10 : la guerre n'est pas finie preco" data-a="ers, dugomier" data-p="editions du lombard · 12/06/2026"><td>Les enfants de la r&#233;sistance T.10&nbsp;: La guerre n'est pas finie <span class="badge">Pr&#233;co</span></td><td>Ers, Dugomier</td><td>&#201;ditions du Lombard &middot; 12/06/2026</td><td class="isbn">9782808216937</td><td class="prix">12,24&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les mysteres d'eversand t.4 : l'heretique preco" data-a="victor dixen" data-p="robert laffont · 11/06/2026"><td>Les Myst&#232;res d'Eversand T.4&nbsp;: L'H&#233;r&#233;tique <span class="badge">Pr&#233;co</span></td><td>Victor Dixen</td><td>Robert Laffont &middot; 11/06/2026</td><td class="isbn">9782221285718</td><td class="prix">13,56&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le serment des deverill – filles d'irlande t.5 preco" data-a="montefiore santa" data-p="verso · 05/06/2026"><td>Le serment des Deverill &#8211; Filles d'Irlande T.5 <span class="badge">Pr&#233;co</span></td><td>Montefiore Santa</td><td>Verso &middot; 05/06/2026</td><td class="isbn">9782386433382</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le calamity club preco" data-a="kathryn stockett" data-p="robert laffont · 28/05/2026"><td>Le Calamity Club <span class="badge">Pr&#233;co</span></td><td>Kathryn Stockett</td><td>Robert Laffont &middot; 28/05/2026</td><td class="isbn">9782221284131</td><td class="prix">22,66&nbsp;&euro;</td></tr>
+    </tbody>
+  </table>
+  <table class="t st-date">
+    <thead><tr><th>Titre</th><th>Auteur</th><th class="a">Parution &darr; &middot; &Eacute;diteur</th><th>ISBN</th><th>Prix</th></tr></thead>
+    <tbody>
+    <tr class="r" data-s="les enfants de la resistance t.10 : la guerre n'est pas finie preco" data-a="ers, dugomier" data-p="editions du lombard · 12/06/2026"><td>Les enfants de la r&#233;sistance T.10&nbsp;: La guerre n'est pas finie <span class="badge">Pr&#233;co</span></td><td>Ers, Dugomier</td><td>&#201;ditions du Lombard &middot; 12/06/2026</td><td class="isbn">9782808216937</td><td class="prix">12,24&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="les mysteres d'eversand t.4 : l'heretique preco" data-a="victor dixen" data-p="robert laffont · 11/06/2026"><td>Les Myst&#232;res d'Eversand T.4&nbsp;: L'H&#233;r&#233;tique <span class="badge">Pr&#233;co</span></td><td>Victor Dixen</td><td>Robert Laffont &middot; 11/06/2026</td><td class="isbn">9782221285718</td><td class="prix">13,56&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le serment des deverill – filles d'irlande t.5 preco" data-a="montefiore santa" data-p="verso · 05/06/2026"><td>Le serment des Deverill &#8211; Filles d'Irlande T.5 <span class="badge">Pr&#233;co</span></td><td>Montefiore Santa</td><td>Verso &middot; 05/06/2026</td><td class="isbn">9782386433382</td><td class="prix">20,84&nbsp;&euro;</td></tr>
+    <tr class="r" data-s="le calamity club preco" data-a="kathryn stockett" data-p="robert laffont · 28/05/2026"><td>Le Calamity Club <span class="badge">Pr&#233;co</span></td><td>Kathryn Stockett</td><td>Robert Laffont &middot; 28/05/2026</td><td class="isbn">9782221284131</td><td class="prix">22,66&nbsp;&euro;</td></tr>
     </tbody>
   </table>
 </div>
-
+</div>
 </body>
 </html>
