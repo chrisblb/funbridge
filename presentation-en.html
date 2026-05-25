@@ -198,7 +198,7 @@ footer a:hover { color: #e8c97a; }
 
 <header>
   <h1>🃏 Our Bridge Tournaments</h1>
-  <p class="tagline">Trio Quotidien · Les Cadors · Les Petits Cadors · Super Cadors</p>
+  <p class="tagline">Trio Quotidien · SergeLive · Les Cadors · Les Petits Cadors · Super Cadors</p>
 </header>
 
 <div style="text-align:center;padding:30px 20px 10px;">
@@ -219,6 +219,14 @@ footer a:hover { color: #e8c97a; }
        style="display:inline-block;background:rgba(45,138,106,0.15);border:1px solid rgba(45,138,106,0.35);color:#6ee7b7;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:500;padding:8px 20px;border-radius:30px;text-decoration:none;">
       🌿 Petits Cadors Standings
     </a>
+    <a href="https://chrisblb.github.io/funbridge/sergelive.html"
+       style="display:inline-block;background:rgba(109,184,232,0.15);border:1px solid rgba(109,184,232,0.35);color:#9ed1f0;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:500;padding:8px 20px;border-radius:30px;text-decoration:none;">
+      🎭 SergeLive
+    </a>
+    <a href="https://chrisblb.github.io/funbridge/candidats-cadors.html"
+       style="display:inline-block;background:rgba(232,201,122,0.15);border:1px solid rgba(232,201,122,0.4);color:#fde68a;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;padding:8px 20px;border-radius:30px;text-decoration:none;">
+      ⭐ Cadors Candidates (live)
+    </a>
   </div>
 </div>
 
@@ -235,14 +243,75 @@ footer a:hover { color: #e8c97a; }
       </div>
     </div>
     <p class="card-desc">
-      Each month, the top 20 players of the Trio Quotidien from the previous month receive a personal invitation with the tournament password. No relegation, no subscription — finishing in the top 20 of the Trio is all it takes to come back the following month.
+      Each month, the strongest players of the ecosystem receive a personal invitation with the tournament password.
+      Invitations come from <strong>4 qualifying paths</strong> that reward consistency (Trio), cross-tournament performance (SergeLive) and loyalty (previous Cadors). No favouritism — just clear rules.
     </p>
     <div class="rules">
-      <div class="rule-item">The <strong>top 20 Trio players</strong> of month M receive an invitation on the 1st of month M+1</div>
-      <div class="rule-item">The <strong>top 5 Petits Cadors players</strong> (who also play the Trio) complete the list — up to 25 players in total</div>
-      <div class="rule-item">4 deals per day, joker management, monthly standings reset to zero</div>
-      <div class="rule-item">Invitations are sent by email at 6 a.m. on the 1st of each month</div>
+      <div class="rule-item"><strong>Top 20 of the Trio Quotidien</strong> for the previous month</div>
+      <div class="rule-item"><strong>Top 5 of the Petits Cadors</strong> (also playing the Trio) — recovery path open to everyone</div>
+      <div class="rule-item"><strong>Top 20 of SergeLive ∩ Top 50 of the Trio</strong> — rewards players active on both fronts</div>
+      <div class="rule-item"><strong>Cadors podium (Top 3)</strong> from the previous month — title defenders, starting with the 2<sup>nd</sup> tournament</div>
+      <div class="rule-item">4 deals per day · Jokers · Monthly standings reset to zero · Email invitation on the 1<sup>st</sup> of the month at 6 a.m.</div>
     </div>
+    <div class="note">
+      💡 Around <strong>28 to 32 invited players</strong> each month. Live preview list updated daily: <a href="https://chrisblb.github.io/funbridge/candidats-cadors.html" style="color:#c4a8f0;font-weight:600">Cadors candidates of the month</a>.
+    </div>
+  </div>
+
+  <!-- FUNNEL DIAGRAM -->
+  <div class="card" style="border-color:rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);text-align:center;">
+    <h3 style="font-family:'Playfair Display',serif;color:#e8c97a;font-size:1.3rem;margin-bottom:18px;">How is Les Cadors built?</h3>
+    <svg viewBox="0 0 900 480" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans, system-ui, sans-serif" style="width:100%;max-width:880px;height:auto;">
+      <defs>
+        <linearGradient id="gFunnelE" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0" stop-color="#7c4dcc" stop-opacity=".10"/>
+          <stop offset="1" stop-color="#7c4dcc" stop-opacity=".50"/>
+        </linearGradient>
+        <linearGradient id="gFinalE" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0" stop-color="#e8c97a"/>
+          <stop offset="1" stop-color="#7c4dcc"/>
+        </linearGradient>
+      </defs>
+      <g>
+        <rect x="20" y="30" width="190" height="110" rx="14" fill="#1a1024" stroke="#e8c97a" stroke-width="2"/>
+        <text x="115" y="62" text-anchor="middle" fill="#e8c97a" font-size="18" font-weight="700">🎴 Trio Quotidien</text>
+        <text x="115" y="92" text-anchor="middle" fill="#fff" font-size="22" font-weight="800">Top 20</text>
+        <text x="115" y="120" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="12">previous month</text>
+      </g>
+      <g>
+        <rect x="230" y="30" width="190" height="110" rx="14" fill="#102230" stroke="#6db8e8" stroke-width="2"/>
+        <text x="325" y="62" text-anchor="middle" fill="#6db8e8" font-size="18" font-weight="700">🎭 SergeLive</text>
+        <text x="325" y="88" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Top 20 Serge</text>
+        <text x="325" y="108" text-anchor="middle" fill="#fff" font-size="14" font-weight="600">∩ Top 50 Trio</text>
+        <text x="325" y="128" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="11">active on both fronts</text>
+      </g>
+      <g>
+        <rect x="440" y="30" width="190" height="110" rx="14" fill="#0a2820" stroke="#6ee7b7" stroke-width="2"/>
+        <text x="535" y="62" text-anchor="middle" fill="#6ee7b7" font-size="18" font-weight="700">🌿 Petits Cadors</text>
+        <text x="535" y="92" text-anchor="middle" fill="#fff" font-size="22" font-weight="800">Top 5</text>
+        <text x="535" y="120" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="11">also playing the Trio</text>
+      </g>
+      <g>
+        <rect x="650" y="30" width="230" height="110" rx="14" fill="#2a1a4a" stroke="#c4a8f0" stroke-width="2"/>
+        <text x="765" y="62" text-anchor="middle" fill="#c4a8f0" font-size="18" font-weight="700">👑 Cadors M-1</text>
+        <text x="765" y="92" text-anchor="middle" fill="#fff" font-size="20" font-weight="800">Podium (Top 3)</text>
+        <text x="765" y="120" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="11">title defenders · from 2nd month</text>
+      </g>
+      <path d="M 115 140 Q 115 195 380 220" stroke="#e8c97a" stroke-width="2.5" fill="none" opacity=".55"/>
+      <path d="M 325 140 Q 325 195 420 220" stroke="#6db8e8" stroke-width="2.5" fill="none" opacity=".55"/>
+      <path d="M 535 140 Q 535 195 480 220" stroke="#6ee7b7" stroke-width="2.5" fill="none" opacity=".55"/>
+      <path d="M 765 140 Q 765 195 520 220" stroke="#c4a8f0" stroke-width="2.5" fill="none" opacity=".55"/>
+      <polygon points="280,220 620,220 510,360 390,360" fill="url(#gFunnelE)" stroke="#7c4dcc" stroke-width="2"/>
+      <text x="450" y="275" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">Deduplication</text>
+      <text x="450" y="300" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="12">a player matching several rules</text>
+      <text x="450" y="318" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="12">is invited only once</text>
+      <rect x="280" y="380" width="340" height="80" rx="16" fill="url(#gFinalE)" stroke="#fff" stroke-width="2"/>
+      <text x="450" y="414" text-anchor="middle" fill="#1a1024" font-size="22" font-weight="800">👑 LES CADORS M+1</text>
+      <text x="450" y="440" text-anchor="middle" fill="rgba(26,16,36,.78)" font-size="12" font-weight="600">around 28 to 32 invited players per month</text>
+    </svg>
+    <p style="margin-top:18px;color:rgba(255,255,255,0.55);font-size:0.85rem;font-style:italic;">
+      Daily-updated preview list: <a href="https://chrisblb.github.io/funbridge/candidats-cadors.html" style="color:#e8c97a;">candidats-cadors.html</a>
+    </p>
   </div>
 
   <div class="divider">· · ·</div>
