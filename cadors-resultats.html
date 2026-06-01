@@ -6,7 +6,7 @@
 <title>Les Cadors – Classements</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--g:#1a6b3c;--gl:#e8f5ee;--gm:#2d8a52;--b:#dde8e3;--bg:#f7faf8;--mu:#666;--tx:#1a1a1a;}
+:root{--g:#2d4a7a;--gl:#ede8f8;--gm:#3d6aaa;--go:#c8972a;--b:#ddd8f0;--bg:#f9f7fe;--mu:#666;--tx:#1a1a1a;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;}
 header{background:var(--g);color:#fff;padding:24px 20px 20px;text-align:center;}
@@ -31,13 +31,15 @@ table{width:100%;border-collapse:collapse;font-size:13px;}
 th{background:var(--g);color:#fff;padding:8px 10px;text-align:left;font-weight:600;font-size:11px;letter-spacing:.5px;white-space:nowrap;}
 td{padding:7px 10px;border-bottom:1px solid var(--b);white-space:nowrap;}
 tr:last-child td{border-bottom:none;}
-tr.r1 td,tr.r2 td,tr.r3 td,tr.r20 td{background:#fde8e8;}
-tr.r40 td{background:#fff8f0;}
+tr.r1 td,tr.r2 td,tr.r3 td,tr.r20 td{background:#dde8f2;}
+tr.r40 td{background:#eef3f9;}
+tr.r1:hover td,tr.r2:hover td,tr.r3:hover td,tr.r20:hover td{background:#d8ccf0;}
+tr.r40:hover td{background:#e8e4fc;}
 .b1,.b2,.b3{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;font-weight:700;font-size:13px;color:#fff;}
 .b1{background:#c9a84c;}.b2{background:#a0a0a0;}.b3{background:#b87333;}
 td.rk{text-align:center;font-weight:600;}
 tr.hd{display:none;}
-mark{background:#fff176;border-radius:2px;padding:0 1px;}
+mark{background:#e0d4ff;border-radius:2px;padding:0 1px;}
 th.sk{cursor:pointer;user-select:none;}
 th.sk:hover{background:var(--gm);}
 .sa{opacity:.55;font-size:9px;margin-left:3px;}
@@ -45,11 +47,10 @@ table.wt{width:auto;min-width:100%;}
 table.wt th:nth-child(1),table.wt td:nth-child(1){position:sticky;left:0;z-index:1;min-width:46px;}
 table.wt th:nth-child(2),table.wt td:nth-child(2){position:sticky;left:46px;z-index:1;min-width:130px;box-shadow:2px 0 4px rgba(0,0,0,.07);}
 table.wt th:nth-child(-n+2){background:var(--g);z-index:2;}
-table.wt td:nth-child(-n+2){background:#f7faf8;}
+table.wt td:nth-child(-n+2){background:#f9f7fe;}
 </style></head><body>
 <header><h1>♠♥♦♣ Les Cadors</h1>
-<p>Tournoi mensuel Funbridge · Mis à jour le 01 juin 2026 à 06:00</p>
-<a href="https://chrisblb.github.io/funbridge/presentation.html" style="display:inline-block;background:rgba(255,255,255,.15);color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.35);font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;margin-top:8px;letter-spacing:.02em;">ⓘ Présentation des tournois</a></header>
+<p>Classements Funbridge · Mis à jour le 01 juin 2026 à 06:26</p></header>
 <div class="tw"><div class="tbs" id="tabs"></div></div>
 <div class="sb">
 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -58,7 +59,7 @@ table.wt td:nth-child(-n+2){background:#f7faf8;}
 <span class="mc" id="mc"></span></div>
 <div class="ct" id="ct"></div>
 <script>
-var S=[{"label":"Mai 2026","headers":["#","Joueur","Pts","Jokers<br><small style=\"font-weight:400;opacity:0.75\">accordés</small>","Attendus","NbJ"],"headerStyles":["","","","","opacity:0.6;outline:1px dashed rgba(255,255,255,0.5);outline-offset:-2px;font-style:italic",""],"rows":[[1,"Ross Taylor",146,"[-16 -13 -11]","-",31],[2,"christian dozol",128,"[-13 -13 -8]","-",29],[3,"Macigno",121,"[-15 -15 -12]","-",31],[4,"pawlut",117,"[-13 -8 -7]","-",27],[5,"HIBOU666",105,"[-11 -10 -]","[-9]",21],[6,"Pacboy",81,"[-12 -10 -9]","-",28],[7,"miptit",79,"[-16 -16 -10]","-",31],[8,"JMDEL",78,"[-18 -12 -10]","-",29],[9,"chris3d",69,"[-11 -6 -]","[-6]",17],[10,"Huhe",68,"[-32 - -]","[-5 -4]",14],[11,"Francis de Lucy",61,"[-39 -14 -]","[-12]",21],[11,"ZOE e-Rallye",61,"[-17 -12 -12]","-",31],[13,"G-3-D",60,"[-26 -19 -18]","-",24],[14,"chrisblb",57,"[-16 -16 -15]","-",31],[15,"fredd",56,"[-15 -14 -12]","-",25],[16,"thierry63",52,"[-79 -24 -15]","-",27],[17,"Mat Cauthon",48,"[-31 -14 -11]","-",29],[18,"Sorbonne",38,"[-56 -22 -]","[-12]",22],[19,"Richard1729",36,"[-15 -13 -10]","-",26],[20,"Miguel Cerquinho",30,"[-15 -8 -]","[-8]",22],[21,"anna57",21,"[-13 -11 -]","[-9]",23],[22,"benoit verjans",6,"-","-",1],[23,"Chris92370",3,"-","-",1],[24,"svmsn",0,"[-59 -46 -29]","-",24],[25,"Caméléon_",-6,"[-21 -20 -]","[-16]",19],[26,"ronny lundkvist",-7,"-","[-7]",1],[27,"dominique parant",-46,"[-31 -27 -21]","-",31],[28,"Passepartout63",-54,"[-22 -20 -]","[-20]",23],[29,"gegeceyrat",-73,"[-18 -15 -13]","-",27],[30,"Mighty Sparrow",-84,"[-64 -25 -]","[-22]",23]]}];
+var S=[{"label":"Mai 2026","headers":["#","Joueur","Pts","Jokers<br><small style=\"font-weight:400;opacity:0.75\">accordés</small>","Attendus","NbJ"],"headerStyles":["","","","","opacity:0.6;outline:1px dashed rgba(255,255,255,0.5);outline-offset:-2px;font-style:italic",""],"rows":[[1,"Ross Taylor",146,"[-16 -13 -11]","-",31],[2,"christian dozol",128,"[-13 -13 -8]","-",29],[3,"Macigno",121,"[-15 -15 -12]","-",31],[4,"pawlut",117,"[-13 -8 -7]","-",27],[5,"HIBOU666",105,"[-11 -10 0]","[-9]",21],[6,"Pacboy",81,"[-12 -10 -9]","-",28],[7,"miptit",79,"[-16 -16 -10]","-",31],[8,"JMDEL",78,"[-18 -12 -10]","-",29],[9,"chris3d",69,"[-11 -6 0]","[-6]",17],[10,"Huhe",68,"[-32 0 0]","[-5 -4]",14],[11,"ZOE e-Rallye",61,"[-17 -12 -12]","-",31],[11,"Francis de Lucy",61,"[-39 -14 0]","[-12]",21],[13,"G-3-D",60,"[-26 -19 -18]","-",24],[14,"chrisblb",57,"[-16 -16 -15]","-",31],[15,"fredd",56,"[-15 -14 -12]","-",25],[16,"thierry63",52,"[-79 -24 -15]","-",27],[17,"Mat Cauthon",48,"[-31 -14 -11]","-",29],[18,"Sorbonne",38,"[-56 -22 0]","[-12]",22],[19,"Richard1729",36,"[-15 -13 -10]","-",26],[20,"Miguel Cerquinho",30,"[-15 -8 0]","[-8]",22],[21,"anna57",21,"[-13 -11 0]","[-9]",23],[22,"benoit verjans",6,"-","-",1],[23,"Chris92370",3,"-","-",1],[24,"svmsn",0,"[-59 -46 -29]","-",24],[25,"Caméléon_",-6,"[-21 -20 0]","[-16]",19],[26,"ronny lundkvist",-7,"-","[-7]",1],[27,"dominique parant",-46,"[-31 -27 -21]","-",31],[28,"Passepartout63",-54,"[-22 -20 0]","[-20]",23],[29,"gegeceyrat",-73,"[-18 -15 -13]","-",27],[30,"Mighty Sparrow",-84,"[-64 -25 0]","[-22]",23]]}];
 (function(){
   var tabs=document.getElementById("tabs"),ct=document.getElementById("ct");
   S.forEach(function(s,i){
@@ -69,16 +70,16 @@ var S=[{"label":"Mai 2026","headers":["#","Joueur","Pts","Jokers<br><small style
     tabs.appendChild(t);
     var d=document.createElement("div");
     d.id="sh"+i;d.className="sh"+(i===0?" on":"");
-    var hdrs=s.headers.map(function(h,i){var st=s.headerStyles&&s.headerStyles[i]?' style="'+s.headerStyles[i]+'"':'';return"<th"+st+">"+h+"<\/th>";}).join("");
+    var hdrs=s.headers.map(function(h,i){var st=s.headerStyles&&s.headerStyles[i]?' style="'+s.headerStyles[i]+'"':'';return"<th"+st+">"+h+"</th>";}).join("");
     var rows=s.rows.map(function(r){
       var rk=r[0],rc=rk===1?"r1":rk===2?"r2":rk===3?"r3":rk<=20?"r20":rk<=40?"r40":"";
       var tds=r.map(function(v,ci){
-        if(ci===0){var b=rk===1?"<span class='b1'>1<\/span>":rk===2?"<span class='b2'>2<\/span>":rk===3?"<span class='b3'>3<\/span>":v;return"<td class='rk'>"+b+"<\/td>";}
-        return"<td>"+(v===""?"\u2013":v)+"<\/td>";
+        if(ci===0){var b=rk===1?"<span class='b1'>1</span>":rk===2?"<span class='b2'>2</span>":rk===3?"<span class='b3'>3</span>":v;return"<td class='rk'>"+b+"</td>";}
+        return"<td>"+(v===""?"–":v)+"</td>";
       }).join("");
-      return"<tr class='"+rc+"'>"+tds+"<\/tr>";
+      return"<tr class='"+rc+"'>"+ tds+"</tr>";
     }).join("");
-    d.innerHTML="<div class='ts'><table"+(s.wide?" class='wt'":"")+"><thead><tr>"+hdrs+"<\/tr><\/thead><tbody>"+rows+"<\/tbody><\/table><\/div>";
+    d.innerHTML="<div class='ts'><table"+(s.wide?" class='wt'":"")+"><thead><tr>"+hdrs+"</tr></thead><tbody>"+rows+"</tbody></table></div>";
     ct.appendChild(d);
   });
   initSort();
@@ -97,7 +98,7 @@ function ds(q){
     if(row.textContent.toLowerCase().indexOf(ql)>=0){row.classList.remove("hd");hl(row,ql);n++;}
     else{row.classList.add("hd");rm(row);}
   });
-  mc.textContent=n+(n===1?" r\u00e9sultat":" r\u00e9sultats");
+  mc.textContent=n+(n===1?" résultat":" résultats");
 }
 function cs(){var i=document.getElementById("sq");i.value="";document.getElementById("cb").classList.remove("on");document.getElementById("mc").textContent="";document.querySelectorAll("tbody tr").forEach(function(r){r.classList.remove("hd");rm(r);});}
 function hl(r,q){r.querySelectorAll("td").forEach(function(td){var o=td.getAttribute("data-o")||td.textContent;td.setAttribute("data-o",o);var re=new RegExp("("+q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","gi");td.innerHTML=o.replace(re,"<mark>$1<\/mark>");});}
@@ -108,17 +109,13 @@ function initSort(){
       if(/joker|attendus/i.test(th.textContent)) return;
       th.classList.add("sk");
       var sp=document.createElement("span");
-      sp.className="sa";sp.textContent="\u21c5";
+      sp.className="sa";sp.textContent="⇅";
       th.appendChild(sp);
       th.addEventListener("click",function(){
         var asc=th.dataset.sort!=="asc";
-        tbl.querySelectorAll("thead th").forEach(function(h){
-          h.dataset.sort="";
-          var s=h.querySelector(".sa");
-          if(s){s.textContent="\u21c5";s.style.opacity=".55";}
-        });
+        tbl.querySelectorAll("thead th").forEach(function(h){h.dataset.sort="";var s=h.querySelector(".sa");if(s){s.textContent="⇅";s.style.opacity=".55";}});
         th.dataset.sort=asc?"asc":"desc";
-        sp.textContent=asc?"\u2191":"\u2193";
+        sp.textContent=asc?"↑":"↓";
         sp.style.opacity="1";
         var tbody=tbl.querySelector("tbody");
         var rows=Array.from(tbody.querySelectorAll("tr"));
