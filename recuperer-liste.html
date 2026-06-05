@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Récupération liste</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f3f4f6;padding:20px;}
+h1{font-size:1.3rem;margin-bottom:4px;color:#111}
+.sub{font-size:.85rem;color:#6b7280;margin-bottom:20px}
+.card{background:#fff;border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.card h2{font-size:1rem;font-weight:700;color:#1a9e5c;margin-bottom:10px}
+.item{padding:10px 0;border-bottom:1px solid #e5e7eb;font-size:.95rem}
+.item:last-child{border-bottom:none}
+.item .qty{color:#6b7280;font-size:.8rem;margin-top:2px}
+.done{text-decoration:line-through;color:#9ca3af}
+.raw{background:#1e1e1e;color:#d4d4d4;border-radius:10px;padding:14px;font-size:.7rem;word-break:break-all;white-space:pre-wrap;overflow-x:auto;margin-top:8px}
+.empty{text-align:center;padding:40px 20px;color:#6b7280}
+.key-badge{display:inline-block;background:#e8f7ef;color:#1a9e5c;border-radius:6px;padding:2px 8px;font-size:.75rem;font-weight:600;margin-bottom:6px}
+.warn{background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:14px;margin-bottom:16px;font-size:.85rem;color:#c2410c}
+</style>
+</head>
+<body>
+<h1>🔍 Récupération de liste</h1>
+<p class="sub">Lecture du stockage local de ce navigateur</p>
+<div id="out"></div>
+<script>
+const out = document.getElementById('out');
+const keys = [];
+for(let i=0;i<localStorage.length;i++) keys.push(localStorage.key(i));
+
+if(keys.length === 0){
+  out.innerHTML = '<div class="warn">⚠️ Aucune donnée dans ce navigateur.<br><br>Si votre liste était dans l\'application habituelle, elle est peut-être dans un autre navigateur ou sur le serveur.<br><br>Essayez d\'ouvrir <b>cette page</b> depuis le même navigateur que vous utilisez habituellement pour l\'app de courses.</div>';
+} else {
+  // Try to parse and display shopping lists nicely
+  let found = false;
+  
+  // Common keys used by shopping apps
+  const shopKeys = keys.filter(k => 
+    k.match(/cours|list|shop|item|article|panier|magasin|market/i)
+  );
+  
+  const allKeys = [...new Set([...shopKeys, ...keys])];
+  
+  allKeys.forEach(key => {
+    const val = localStorage.getItem(key);
+    let parsed = null;
+    try { parsed = JSON.parse(val); } catch(e) {}
+    
+    const card = document.createElement('div');
+    card.className = 'card';
+    
+    let html = `<span class="key-badge">${key}</span>`;
+    
+    // Try to render as shopping list array
+    if(Array.isArray(parsed)) {
+      // Array of lists
+      if(parsed.length > 0 && parsed[0].items !== undefined) {
+        found = true;
+        parsed.forEach(list => {
+          html += `<h2>${list.name || 'Liste'}</h2>`;
+          (list.items||[]).forEach(item => {
+            html += `<div class="item${item.done?' done':''}">`;
+            html += item.name || item.text || JSON.stringify(item);
+            if(item.qty||item.quantity||item.quantite) html += `<div class="qty">${item.qty||item.quantity||item.quantite}</div>`;
+            html += '</div>';
+          });
+        });
+      }
+      // Array of items directly
+      else if(parsed.length > 0 && (parsed[0].name || parsed[0].text || parsed[0].titre)) {
+        found = true;
+        html += `<h2>Articles</h2>`;
+        parsed.forEach(item => {
+          const name = item.name||item.text||item.titre||item.label||JSON.stringify(item);
+          const qty = item.qty||item.quantity||item.quantite||item.qte||'';
+          html += `<div class="item${item.done||item.checked?' done':''}">${name}`;
+          if(qty) html += `<div class="qty">${qty}</div>`;
+          html += '</div>';
+        });
+      } else {
+        html += `<div class="raw">${JSON.stringify(parsed, null, 2)}</div>`;
+      }
+    }
+    // Single object with lists
+    else if(parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+      const objKeys = Object.keys(parsed);
+      if(objKeys.some(k => Array.isArray(parsed[k]))) {
+        found = true;
+        objKeys.forEach(k => {
+          if(Array.isArray(parsed[k]) && parsed[k].length > 0) {
+            html += `<h2>${k}</h2>`;
+            parsed[k].forEach(item => {
+              const name = item.name||item.text||item.titre||item.label||JSON.stringify(item);
+              html += `<div class="item">${name}</div>`;
+            });
+          }
+        });
+      } else {
+        html += `<div class="raw">${JSON.stringify(parsed, null, 2)}</div>`;
+      }
+    } else {
+      // Raw string value
+      html += `<div class="raw">${val && val.length > 500 ? val.slice(0,500)+'…' : val}</div>`;
+    }
+    
+    card.innerHTML = html;
+    out.appendChild(card);
+  });
+  
+  if(!found){
+    const warn = document.createElement('div');
+    warn.className = 'warn';
+    warn.innerHTML = '⚠️ Des données existent mais la liste de courses n\'a pas été reconnue automatiquement — regardez le contenu brut ci-dessus.';
+    out.insertBefore(warn, out.firstChild);
+  }
+}
+</script>
+</body>
+</html>
