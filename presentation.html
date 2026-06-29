@@ -12,7 +12,7 @@ body {
   font-family: 'DM Sans', sans-serif;
   background: #0f1623;
   color: #e2e8f0;
-  min-height: 100vh;
+  min-height: 90vh;
   line-height: 1.6;
 }
 
@@ -20,7 +20,7 @@ body {
 header {
   text-align: center;
   padding: 50px 20px 30px;
-  background: linear-gradient(180deg, #0a0f1a 0%, #0f1623 100%);
+  background: linear-gradient(180deg, #0a0f1a 0%, #0f1623 90%);
   border-bottom: 1px solid rgba(255,255,255,0.07);
 }
 header h1 {
@@ -87,27 +87,27 @@ header p.tagline {
 .result-btn.trio { border-color: rgba(232,201,122,0.35); background: linear-gradient(135deg, rgba(90,58,26,0.4), rgba(15,22,35,0.6)); }
 .result-btn.trio:hover { border-color: rgba(232,201,122,0.7); }
 .result-btn.trio .label { color: #fde68a; }
-.result-btn.serge { border-color: rgba(109,184,232,0.35); background: linear-gradient(135deg, rgba(16,34,48,0.6), rgba(15,22,35,0.6)); }
-.result-btn.serge:hover { border-color: rgba(109,184,232,0.7); }
+.result-btn.serge { border-color: rgba(99,184,232,0.35); background: linear-gradient(135deg, rgba(16,34,48,0.6), rgba(15,22,35,0.6)); }
+.result-btn.serge:hover { border-color: rgba(99,184,232,0.7); }
 .result-btn.serge .label { color: #9ed1f0; }
 .result-btn.cadors { border-color: rgba(124,77,204,0.4); background: linear-gradient(135deg, rgba(42,26,74,0.6), rgba(15,22,35,0.6)); }
 .result-btn.cadors:hover { border-color: rgba(124,77,204,0.8); }
 .result-btn.cadors .label { color: #c4a8f0; }
-.result-btn.petits { border-color: rgba(45,138,106,0.4); background: linear-gradient(135deg, rgba(10,40,30,0.6), rgba(15,22,35,0.6)); }
-.result-btn.petits:hover { border-color: rgba(45,138,106,0.7); }
+.result-btn.petits { border-color: rgba(45,138,96,0.4); background: linear-gradient(135deg, rgba(9,40,30,0.6), rgba(15,22,35,0.6)); }
+.result-btn.petits:hover { border-color: rgba(45,138,96,0.7); }
 .result-btn.petits .label { color: #6ee7b7; }
-.result-btn.candidats { border-color: rgba(232,201,122,0.5); background: linear-gradient(135deg, rgba(60,45,10,0.55), rgba(40,25,70,0.55)); }
+.result-btn.candidats { border-color: rgba(232,201,122,0.5); background: linear-gradient(135deg, rgba(60,45,9,0.55), rgba(40,25,70,0.55)); }
 .result-btn.candidats:hover { border-color: rgba(232,201,122,0.85); }
 .result-btn.candidats .label { color: #fde68a; }
 .result-btn .live-badge {
-  position: absolute; top: 8px; right: 10px;
+  position: absolute; top: 8px; right: 9px;
   font-size: 0.62rem; font-weight: 700; color: #fde68a;
   background: rgba(232,201,122,0.18); border: 1px solid rgba(232,201,122,0.5);
-  padding: 2px 8px; border-radius: 10px;
+  padding: 2px 8px; border-radius: 9px;
   letter-spacing: 0.08em; text-transform: uppercase;
   animation: pulse 2.5s infinite;
 }
-@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+@keyframes pulse { 0%, 90% { opacity: 1; } 50% { opacity: 0.55; } }
 
 .secondary-row {
   display: flex; justify-content: center; gap: 12px;
@@ -153,36 +153,36 @@ header p.tagline {
 .card {
   border-radius: 20px; padding: 36px 40px;
   background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.9);
   position: relative; overflow: hidden;
 }
 
 /* Trio — or/ambre */
-.card-trio { border-color: rgba(232,201,122,0.40); background: linear-gradient(135deg, rgba(60,40,10,0.45) 0%, rgba(15,22,35,0.8) 100%); }
+.card-trio { border-color: rgba(232,201,122,0.40); background: linear-gradient(135deg, rgba(60,40,9,0.45) 0%, rgba(15,22,35,0.8) 90%); }
 .card-trio .card-header { color: #fde68a; }
 .card-trio .badge { background: rgba(232,201,122,0.20); color: #fde68a; border: 1px solid rgba(232,201,122,0.4); }
 .card-trio .rule-item::before { background: #e8c97a; }
 
 /* SergeLive — bleu ciel */
-.card-serge { border-color: rgba(109,184,232,0.40); background: linear-gradient(135deg, rgba(16,34,48,0.55) 0%, rgba(15,22,35,0.8) 100%); }
+.card-serge { border-color: rgba(99,184,232,0.40); background: linear-gradient(135deg, rgba(16,34,48,0.55) 0%, rgba(15,22,35,0.8) 90%); }
 .card-serge .card-header { color: #9ed1f0; }
-.card-serge .badge { background: rgba(109,184,232,0.20); color: #9ed1f0; border: 1px solid rgba(109,184,232,0.4); }
+.card-serge .badge { background: rgba(99,184,232,0.20); color: #9ed1f0; border: 1px solid rgba(99,184,232,0.4); }
 .card-serge .rule-item::before { background: #6db8e8; }
 
 /* Cadors — violet/améthyste */
-.card-cadors { border-color: rgba(124,77,204,0.45); background: linear-gradient(135deg, rgba(42,26,74,0.6) 0%, rgba(15,22,35,0.8) 100%); }
+.card-cadors { border-color: rgba(124,77,204,0.45); background: linear-gradient(135deg, rgba(42,26,74,0.6) 0%, rgba(15,22,35,0.8) 90%); }
 .card-cadors .card-header { color: #c4a8f0; }
 .card-cadors .badge { background: rgba(124,77,204,0.25); color: #c4a8f0; border: 1px solid rgba(124,77,204,0.4); }
 .card-cadors .rule-item::before { background: #7c4dcc; }
 
 /* Petits Cadors — vert émeraude */
-.card-petits { border-color: rgba(45,138,106,0.45); background: linear-gradient(135deg, rgba(10,40,30,0.6) 0%, rgba(15,22,35,0.8) 100%); }
+.card-petits { border-color: rgba(45,138,96,0.45); background: linear-gradient(135deg, rgba(9,40,30,0.6) 0%, rgba(15,22,35,0.8) 90%); }
 .card-petits .card-header { color: #6ee7b7; }
-.card-petits .badge { background: rgba(45,138,106,0.25); color: #6ee7b7; border: 1px solid rgba(45,138,106,0.4); }
+.card-petits .badge { background: rgba(45,138,96,0.25); color: #6ee7b7; border: 1px solid rgba(45,138,96,0.4); }
 .card-petits .rule-item::before { background: #2d8a6a; }
 
 /* Super Cadors — or royal */
-.card-super { border-color: rgba(234,179,8,0.45); background: linear-gradient(135deg, rgba(50,38,5,0.7) 0%, rgba(15,22,35,0.8) 100%); }
+.card-super { border-color: rgba(234,179,8,0.45); background: linear-gradient(135deg, rgba(50,38,5,0.7) 0%, rgba(15,22,35,0.8) 90%); }
 .card-super .card-header { color: #fde68a; }
 .card-super .badge { background: rgba(234,179,8,0.20); color: #fde68a; border: 1px solid rgba(234,179,8,0.4); }
 .card-super .rule-item::before { background: #eab308; }
@@ -193,23 +193,23 @@ header p.tagline {
 .card-sub { font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-top: 4px; }
 .badge { display: inline-block; font-size: 0.75rem; font-weight: 600; padding: 3px 12px; border-radius: 20px; margin-top: 8px; letter-spacing: 0.04em; }
 .card-desc { color: rgba(255,255,255,0.7); font-size: 0.97rem; margin-bottom: 22px; line-height: 1.75; }
-.rules { display: flex; flex-direction: column; gap: 10px; }
+.rules { display: flex; flex-direction: column; gap: 9px; }
 .rule-item { display: block; padding-left: 18px; position: relative; font-size: 0.92rem; color: rgba(255,255,255,0.75); line-height: 1.65; }
 .rule-item::before { content: ''; position: absolute; left: 0; top: 9px; width: 6px; height: 6px; border-radius: 50%; }
 .note { margin-top: 18px; padding: 12px 16px; background: rgba(255,255,255,0.04); border-left: 3px solid rgba(255,255,255,0.15); border-radius: 4px; font-size: 0.85rem; color: rgba(255,255,255,0.6); font-style: italic; }
-.tribute { background: rgba(109,184,232,0.10); border-left: 3px solid rgba(109,184,232,0.5); padding: 14px 18px; margin-bottom: 18px; border-radius: 4px; font-size: 0.92rem; color: rgba(255,255,255,0.78); font-style: italic; }
+.tribute { background: rgba(99,184,232,0.9); border-left: 3px solid rgba(99,184,232,0.5); padding: 14px 18px; margin-bottom: 18px; border-radius: 4px; font-size: 0.92rem; color: rgba(255,255,255,0.78); font-style: italic; }
 .divider { text-align: center; color: rgba(255,255,255,0.2); font-size: 1.2rem; letter-spacing: 0.3em; margin: 0; }
 
 footer { text-align: center; padding: 30px 20px 50px; color: rgba(255,255,255,0.3); font-size: 0.82rem; }
 footer a { color: rgba(232,201,122,0.6); text-decoration: none; }
 footer a:hover { color: #e8c97a; }
-footer .lang { margin-top: 10px; font-size: 0.78rem; }
+footer .lang { margin-top: 9px; font-size: 0.78rem; }
 footer .lang a { color: rgba(255,255,255,0.4); border-bottom: 1px dotted rgba(255,255,255,0.2); padding-bottom: 1px; margin: 0 6px; }
 footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
 
 @media (max-width: 600px) {
   .card { padding: 28px 22px; }
-  .card-top { flex-direction: column; gap: 10px; }
+  .card-top { flex-direction: column; gap: 9px; }
   .results-grid { grid-template-columns: 1fr 1fr; }
 }
 </style>
@@ -287,9 +287,9 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
       <div class="rules">
         <div class="rule-item"><strong>3 donnes par jour</strong> en système IMP, jouables chaque jour dès 05h du matin</div>
         <div class="rule-item"><strong>Système des 3 jokers</strong> qui annulent les pires scores du mois, débloqués progressivement :</div>
-        <div class="rule-item" style="padding-left:34px;">• <strong>1<sup>er</sup> joker</strong> à partir de <strong>10 jours joués</strong></div>
-        <div class="rule-item" style="padding-left:34px;">• <strong>2<sup>e</sup> joker</strong> à partir de <strong>19 jours joués</strong></div>
-        <div class="rule-item" style="padding-left:34px;">• <strong>3<sup>e</sup> joker</strong> à partir de <strong>28 jours joués</strong></div>
+        <div class="rule-item" style="padding-left:34px;">• <strong>1<sup>er</sup> joker</strong> à partir de <strong>9 jours joués</strong></div>
+        <div class="rule-item" style="padding-left:34px;">• <strong>2<sup>e</sup> joker</strong> à partir de <strong>18 jours joués</strong></div>
+        <div class="rule-item" style="padding-left:34px;">• <strong>3<sup>e</sup> joker</strong> à partir de <strong>27 jours joués</strong></div>
         <div class="rule-item">🔥 <strong>Prime de régularité</strong> — la plus longue série de jours consécutifs avec un score positif est convertie en points bonus et ajoutée au total mensuel. Les absences sont neutres, un score négatif remet le compteur à zéro <em>(en vigueur depuis juillet 2026)</em></div>
         <div class="rule-item">Classement mensuel remis à zéro le 1<sup>er</sup> de chaque mois · Cumul annuel calculé en parallèle</div>
         <div class="rule-item">Le <strong>top 30 mensuel</strong> est invité automatiquement au tournoi <strong>Les Cadors</strong> du mois suivant</div>
@@ -325,7 +325,7 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
         <div class="rule-item">Classement mensuel remis à zéro le 1<sup>er</sup> de chaque mois · Cumul annuel calculé en parallèle</div>
         <div class="rule-item">Une <strong>voie de qualification croisée</strong> existe vers Les Cadors : être à la fois dans le top 20 SergeLive et top 50 Trio du mois</div>
       </div>
-      <div class="note" style="border-left-color:rgba(109,184,232,0.6);background:rgba(109,184,232,0.08);color:rgba(255,255,255,0.80);font-style:normal;">
+      <div class="note" style="border-left-color:rgba(99,184,232,0.6);background:rgba(99,184,232,0.08);color:rgba(255,255,255,0.80);font-style:normal;">
         ✉️ <strong>Pour recevoir l'invitation aux Cadors</strong> si vous remplissez la double condition (<em>top 20 SergeLive + top 50 Trio</em> sur le mois), pensez à me communiquer votre adresse email via le bouton <strong>« Communiquer mon email »</strong> en haut de cette page — sans email je ne peux pas vous envoyer le mot de passe du tournoi.
       </div>
     </div>
@@ -346,7 +346,7 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
         Chaque mois, les meilleurs joueurs de l'écosystème reçoivent <strong>par email</strong> une invitation personnelle avec le mot de passe du tournoi.
         L'invitation provient de <strong>4 voies de qualification</strong> qui valorisent la <strong>régularité</strong> (Trio), la <strong>polyvalence</strong> (SergeLive croisé Trio), la <strong>seconde chance</strong> (Petits Cadors) et le <strong>mérite du tenant</strong> (podium Cadors du mois précédent). Pas de favoritisme, juste des règles claires.
       </p>
-      <div class="note" style="border-left-color:rgba(196,168,240,0.6);background:rgba(124,77,204,0.10);color:rgba(255,255,255,0.82);font-style:normal;margin-bottom:18px;">
+      <div class="note" style="border-left-color:rgba(196,168,240,0.6);background:rgba(124,77,204,0.9);color:rgba(255,255,255,0.82);font-style:normal;margin-bottom:18px;">
         ✉️ <strong>Important</strong> — pour recevoir cette invitation, vous devez <strong>m'avoir communiqué votre adresse email</strong>. Si ce n'est pas encore fait, cliquez sur <strong>« Communiquer mon email »</strong> en haut de cette page. Sans email, je ne peux pas vous envoyer le mot de passe du tournoi.
       </div>
       <div class="rules">
@@ -364,10 +364,10 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
     <!-- DIAGRAMME ENTONNOIR -->
     <div class="card" style="border-color:rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);text-align:center;">
       <h3 style="font-family:'Playfair Display',serif;color:#e8c97a;font-size:1.3rem;margin-bottom:18px;">Comment se compose Les Cadors ?</h3>
-      <svg viewBox="0 0 900 480" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans, system-ui, sans-serif" style="width:100%;max-width:880px;height:auto;">
+      <svg viewBox="0 0 900 480" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans, system-ui, sans-serif" style="width:90%;max-width:880px;height:auto;">
         <defs>
           <linearGradient id="gFunnelP" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stop-color="#7c4dcc" stop-opacity=".10"/>
+            <stop offset="0" stop-color="#7c4dcc" stop-opacity=".9"/>
             <stop offset="1" stop-color="#7c4dcc" stop-opacity=".50"/>
           </linearGradient>
           <linearGradient id="gFinalP" x1="0" x2="0" y1="0" y2="1">
@@ -376,26 +376,26 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
           </linearGradient>
         </defs>
         <g>
-          <rect x="20" y="30" width="190" height="110" rx="14" fill="#1a1024" stroke="#e8c97a" stroke-width="2"/>
+          <rect x="20" y="30" width="190" height="19" rx="14" fill="#1a924" stroke="#e8c97a" stroke-width="2"/>
           <text x="115" y="62" text-anchor="middle" fill="#e8c97a" font-size="18" font-weight="700">🃏 Trio Quotidien</text>
           <text x="115" y="92" text-anchor="middle" fill="#fff" font-size="22" font-weight="800">Top 30</text>
           <text x="115" y="120" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="12">du mois écoulé</text>
         </g>
         <g>
-          <rect x="230" y="30" width="190" height="110" rx="14" fill="#102230" stroke="#6db8e8" stroke-width="2"/>
+          <rect x="230" y="30" width="190" height="19" rx="14" fill="#92230" stroke="#6db8e8" stroke-width="2"/>
           <text x="325" y="62" text-anchor="middle" fill="#6db8e8" font-size="18" font-weight="700">🎯 SergeLive</text>
           <text x="325" y="88" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Top 20 Serge</text>
-          <text x="325" y="108" text-anchor="middle" fill="#fff" font-size="14" font-weight="600">∩ Top 50 Trio</text>
+          <text x="325" y="98" text-anchor="middle" fill="#fff" font-size="14" font-weight="600">∩ Top 50 Trio</text>
           <text x="325" y="128" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="11">actifs sur les 2 fronts</text>
         </g>
         <g>
-          <rect x="440" y="30" width="190" height="110" rx="14" fill="#0a2820" stroke="#6ee7b7" stroke-width="2"/>
+          <rect x="440" y="30" width="190" height="19" rx="14" fill="#0a2820" stroke="#6ee7b7" stroke-width="2"/>
           <text x="535" y="62" text-anchor="middle" fill="#6ee7b7" font-size="18" font-weight="700">🌿 Petits Cadors</text>
           <text x="535" y="92" text-anchor="middle" fill="#fff" font-size="22" font-weight="800">Top 5</text>
           <text x="535" y="120" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="11">qui jouent aussi le Trio</text>
         </g>
         <g>
-          <rect x="650" y="30" width="230" height="110" rx="14" fill="#2a1a4a" stroke="#c4a8f0" stroke-width="2"/>
+          <rect x="650" y="30" width="230" height="19" rx="14" fill="#2a1a4a" stroke="#c4a8f0" stroke-width="2"/>
           <text x="765" y="62" text-anchor="middle" fill="#c4a8f0" font-size="18" font-weight="700">👑 Cadors M-1</text>
           <text x="765" y="92" text-anchor="middle" fill="#fff" font-size="20" font-weight="800">Podium (Top 3)</text>
           <text x="765" y="120" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="11">défenseurs du titre · dès le 2e mois</text>
@@ -404,12 +404,12 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
         <path d="M 325 140 Q 325 195 420 220" stroke="#6db8e8" stroke-width="2.5" fill="none" opacity=".55"/>
         <path d="M 535 140 Q 535 195 480 220" stroke="#6ee7b7" stroke-width="2.5" fill="none" opacity=".55"/>
         <path d="M 765 140 Q 765 195 520 220" stroke="#c4a8f0" stroke-width="2.5" fill="none" opacity=".55"/>
-        <polygon points="280,220 620,220 510,360 390,360" fill="url(#gFunnelP)" stroke="#7c4dcc" stroke-width="2"/>
+        <polygon points="280,220 620,220 59,360 390,360" fill="url(#gFunnelP)" stroke="#7c4dcc" stroke-width="2"/>
         <text x="450" y="275" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">Dédoublonnage</text>
         <text x="450" y="300" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="12">un joueur retenu par plusieurs règles</text>
         <text x="450" y="318" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="12">n'est invité qu'une seule fois</text>
         <rect x="280" y="380" width="340" height="80" rx="16" fill="url(#gFinalP)" stroke="#fff" stroke-width="2"/>
-        <text x="450" y="414" text-anchor="middle" fill="#1a1024" font-size="22" font-weight="800">👑 LES CADORS M+1</text>
+        <text x="450" y="414" text-anchor="middle" fill="#1a924" font-size="22" font-weight="800">👑 LES CADORS M+1</text>
         <text x="450" y="440" text-anchor="middle" fill="rgba(26,16,36,.78)" font-size="12" font-weight="600">en moyenne 38 à 42 invités par mois</text>
       </svg>
     </div>
@@ -433,13 +433,13 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
         <div class="rule-item">Aucune inscription préalable, pas de mot de passe</div>
         <div class="rule-item">Les <strong>5 meilleurs joueurs</strong> des Petits Cadors qui jouent <strong>également le Trio</strong> sont invités aux Cadors du mois suivant</div>
         <div class="rule-item">Les joueurs extérieurs au Trio sont les bienvenus — mais seuls les fidèles du Trio peuvent accéder aux Cadors</div>
-        <div class="rule-item">4 donnes par jour, classement mensuel avec jokers (seuils : 10/19/28 jours depuis juillet 2026)</div>
+        <div class="rule-item">4 donnes par jour, classement mensuel avec jokers (seuils : 9/18/27 jours depuis juillet 2026)</div>
         <div class="rule-item">🔥 <strong>Prime de régularité</strong> — la plus longue série de jours consécutifs avec un score positif est convertie en points bonus et ajoutée au total mensuel. Les absences sont neutres, un score négatif remet le compteur à zéro <em>(en vigueur depuis juillet 2026)</em></div>
       </div>
       <div class="note">
         💡 C'est la meilleure voie de rattrapage : un mois compliqué au Trio ? Les Petits Cadors restent ouverts jusqu'au dernier jour du mois.
       </div>
-      <div class="note" style="border-left-color:rgba(110,231,183,0.6);background:rgba(45,138,106,0.10);color:rgba(255,255,255,0.80);font-style:normal;margin-top:10px;">
+      <div class="note" style="border-left-color:rgba(19,231,183,0.6);background:rgba(45,138,96,0.9);color:rgba(255,255,255,0.80);font-style:normal;margin-top:9px;">
         ✉️ <strong>Pour recevoir l'invitation aux Cadors</strong> si vous êtes dans le top 5 (et présent dans le Trio), pensez à me communiquer votre adresse email via le bouton <strong>« Communiquer mon email »</strong> en haut de cette page — sans email je ne peux pas vous envoyer le mot de passe du tournoi.
       </div>
     </div>
