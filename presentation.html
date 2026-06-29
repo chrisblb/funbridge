@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tournois Bridge de chrisblb</title>
+<title>Tournois Bridge de chrisblb · Bridge Tournaments</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -36,6 +36,19 @@ header p.tagline {
   letter-spacing: 0.18em;
   text-transform: uppercase;
 }
+
+/* ── BOUTON LANGUE ── */
+.lang-btn {
+  margin-top: 16px;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7);
+  font-size: 0.85rem; font-weight: 500;
+  padding: 7px 18px; border-radius: 30px;
+  border: 1px solid rgba(255,255,255,0.2);
+  cursor: pointer; font-family: 'DM Sans', sans-serif;
+  transition: all 0.15s;
+}
+.lang-btn:hover { background: rgba(255,255,255,0.14); color: #fff; }
 
 /* ── SECTION RÉSULTATS ── */
 .results-section {
@@ -217,48 +230,54 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
 <body>
 
 <header>
-  <h1>🃏 Nos Tournois Bridge</h1>
+  <h1 class="lang-fr">🃏 Nos Tournois Bridge</h1>
+  <h1 class="lang-en" style="display:none">🃏 Our Bridge Tournaments</h1>
   <p class="tagline">Trio Quotidien · SergeLive · Les Cadors · Les Petits Cadors · Super Cadors</p>
+  <button class="lang-btn" id="lang-btn" type="button">🇬🇧 English</button>
 </header>
 
 <!-- ════════ RÉSULTATS — toujours visibles en haut ════════ -->
 <section class="results-section">
-  <h2>Résultats quotidiens</h2>
-  <p class="sub">Classements mis à jour automatiquement chaque matin à 6h<br><span style="color:rgba(255,255,255,0.4);font-size:0.82rem;">⏰ Tous les tournois démarrent chaque jour à <strong style="color:#fde68a;">5h du matin</strong> et restent ouverts <strong style="color:#fde68a;">23h</strong> (jusqu'à 4h le lendemain)</span></p>
+  <h2 class="lang-fr">Résultats quotidiens</h2>
+  <h2 class="lang-en" style="display:none">Daily Results</h2>
+  <p class="sub lang-fr">Classements mis à jour automatiquement chaque matin à 6h<br><span style="color:rgba(255,255,255,0.4);font-size:0.82rem;">⏰ Tous les tournois démarrent chaque jour à <strong style="color:#fde68a;">5h du matin</strong> et restent ouverts <strong style="color:#fde68a;">23h</strong> (jusqu'à 4h le lendemain)</span></p>
+  <p class="sub lang-en" style="display:none">Rankings updated automatically every morning at 6am<br><span style="color:rgba(255,255,255,0.4);font-size:0.82rem;">⏰ All tournaments start every day at <strong style="color:#fde68a;">5am</strong> and stay open for <strong style="color:#fde68a;">23 hours</strong> (until 4am the next day)</span></p>
 
   <div class="results-grid">
     <a class="result-btn trio" href="https://chrisblb.github.io/funbridge/trio-resultats.html">
       <div class="icon">🃏</div>
       <div class="label">Trio Quotidien</div>
-      <div class="sub-label">Classement mensuel</div>
+      <div class="sub-label"><span class="lang-fr">Classement mensuel</span><span class="lang-en" style="display:none">Monthly ranking</span></div>
     </a>
     <a class="result-btn serge" href="https://chrisblb.github.io/funbridge/sergelive-resultats.html">
       <div class="icon">🎯</div>
       <div class="label">SergeLive</div>
-      <div class="sub-label">Classement mensuel</div>
+      <div class="sub-label"><span class="lang-fr">Classement mensuel</span><span class="lang-en" style="display:none">Monthly ranking</span></div>
     </a>
     <a class="result-btn cadors" href="https://chrisblb.github.io/funbridge/cadors-resultats.html">
       <div class="icon">👑</div>
       <div class="label">Les Cadors</div>
-      <div class="sub-label">Tournoi mensuel</div>
+      <div class="sub-label"><span class="lang-fr">Tournoi mensuel</span><span class="lang-en" style="display:none">Monthly tournament</span></div>
     </a>
     <a class="result-btn petits" href="https://chrisblb.github.io/funbridge/petitscadors-resultats.html">
       <div class="icon">🌿</div>
       <div class="label">Les Petits Cadors</div>
-      <div class="sub-label">Tournoi mensuel</div>
+      <div class="sub-label"><span class="lang-fr">Tournoi mensuel</span><span class="lang-en" style="display:none">Monthly tournament</span></div>
     </a>
     <a class="result-btn candidats" href="https://chrisblb.github.io/funbridge/candidats-cadors.html">
       <span class="live-badge">live</span>
       <div class="icon">⭐</div>
-      <div class="label">Candidats Cadors</div>
-      <div class="sub-label">Liste prévisionnelle</div>
+      <div class="label lang-fr">Candidats Cadors</div>
+      <div class="label lang-en" style="display:none">Cadors Candidates</div>
+      <div class="sub-label"><span class="lang-fr">Liste prévisionnelle</span><span class="lang-en" style="display:none">Provisional list</span></div>
     </a>
   </div>
 
   <div class="secondary-row">
-    <a class="btn-secondary" href="https://chrisblb.github.io/funbridge/inscription.html">✉️ Communiquer mon email</a>
+    <a class="btn-secondary" href="https://chrisblb.github.io/funbridge/inscription.html"><span class="lang-fr">✉️ Communiquer mon email</span><span class="lang-en" style="display:none">✉️ Share my email</span></a>
     <button class="btn-toggle" id="toggle-presentation" type="button">
-      <span class="toggle-label">Présentation des tournois</span>
+      <span class="toggle-label lang-fr">Présentation des tournois</span>
+      <span class="toggle-label lang-en" style="display:none">Tournament overview</span>
       <span class="arrow">▼</span>
     </button>
   </div>
@@ -269,9 +288,11 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
 <!-- ════════ PRÉSENTATIONS — masquées par défaut ════════ -->
 <div id="presentation-panel">
 
+  <!-- ══ CONTENU FRANÇAIS ══ -->
+  <div class="lang-fr">
   <div class="cards">
 
-    <!-- TRIO QUOTIDIEN -->
+    <!-- TRIO QUOTIDIEN FR -->
     <div class="card card-trio">
       <div class="card-top">
         <div class="card-icon">🃏</div>
@@ -282,7 +303,7 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
         </div>
       </div>
       <p class="card-desc">
-        Le rendez-vous quotidien de tous les joueurs. La régularité paie : c’est ce tournoi qui détermine la majorité des invitations aux Cadors.
+        Le rendez-vous quotidien de tous les joueurs. La régularité paie : c'est ce tournoi qui détermine la majorité des invitations aux Cadors.
       </p>
       <div class="rules">
         <div class="rule-item"><strong>3 donnes par jour</strong> en système IMP, jouables chaque jour dès 05h du matin</div>
@@ -301,7 +322,7 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
 
     <div class="divider">· · ·</div>
 
-    <!-- SERGELIVE -->
+    <!-- SERGELIVE FR -->
     <div class="card card-serge">
       <div class="card-top">
         <div class="card-icon">🎯</div>
@@ -332,7 +353,7 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
 
     <div class="divider">· · ·</div>
 
-    <!-- LES CADORS -->
+    <!-- LES CADORS FR -->
     <div class="card card-cadors">
       <div class="card-top">
         <div class="card-icon">👑</div>
@@ -362,41 +383,41 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
       </div>
     </div>
 
-    <!-- DIAGRAMME ENTONNOIR -->
+    <!-- DIAGRAMME ENTONNOIR FR -->
     <div class="card" style="border-color:rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);text-align:center;">
       <h3 style="font-family:'Playfair Display',serif;color:#e8c97a;font-size:1.3rem;margin-bottom:18px;">Comment se compose Les Cadors ?</h3>
       <svg viewBox="0 0 900 480" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans, system-ui, sans-serif" style="width:90%;max-width:880px;height:auto;">
         <defs>
-          <linearGradient id="gFunnelP" x1="0" x2="0" y1="0" y2="1">
+          <linearGradient id="gFunnelFR" x1="0" x2="0" y1="0" y2="1">
             <stop offset="0" stop-color="#7c4dcc" stop-opacity=".9"/>
             <stop offset="1" stop-color="#7c4dcc" stop-opacity=".50"/>
           </linearGradient>
-          <linearGradient id="gFinalP" x1="0" x2="0" y1="0" y2="1">
+          <linearGradient id="gFinalFR" x1="0" x2="0" y1="0" y2="1">
             <stop offset="0" stop-color="#e8c97a"/>
             <stop offset="1" stop-color="#7c4dcc"/>
           </linearGradient>
         </defs>
         <g>
-          <rect x="20" y="30" width="190" height="19" rx="14" fill="#1a924" stroke="#e8c97a" stroke-width="2"/>
+          <rect x="20" y="30" width="190" height="110" rx="14" fill="#1a1024" stroke="#e8c97a" stroke-width="2"/>
           <text x="115" y="62" text-anchor="middle" fill="#e8c97a" font-size="18" font-weight="700">🃏 Trio Quotidien</text>
           <text x="115" y="92" text-anchor="middle" fill="#fff" font-size="22" font-weight="800">Top 30</text>
           <text x="115" y="120" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="12">du mois écoulé</text>
         </g>
         <g>
-          <rect x="230" y="30" width="190" height="19" rx="14" fill="#92230" stroke="#6db8e8" stroke-width="2"/>
+          <rect x="230" y="30" width="190" height="110" rx="14" fill="#102230" stroke="#6db8e8" stroke-width="2"/>
           <text x="325" y="62" text-anchor="middle" fill="#6db8e8" font-size="18" font-weight="700">🎯 SergeLive</text>
           <text x="325" y="88" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Top 20 Serge</text>
-          <text x="325" y="98" text-anchor="middle" fill="#fff" font-size="14" font-weight="600">∩ Top 50 Trio</text>
+          <text x="325" y="108" text-anchor="middle" fill="#fff" font-size="14" font-weight="600">∩ Top 50 Trio</text>
           <text x="325" y="128" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="11">actifs sur les 2 fronts</text>
         </g>
         <g>
-          <rect x="440" y="30" width="190" height="19" rx="14" fill="#0a2820" stroke="#6ee7b7" stroke-width="2"/>
+          <rect x="440" y="30" width="190" height="110" rx="14" fill="#0a2820" stroke="#6ee7b7" stroke-width="2"/>
           <text x="535" y="62" text-anchor="middle" fill="#6ee7b7" font-size="18" font-weight="700">🌿 Petits Cadors</text>
           <text x="535" y="92" text-anchor="middle" fill="#fff" font-size="22" font-weight="800">Top 5</text>
           <text x="535" y="120" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="11">qui jouent aussi le Trio</text>
         </g>
         <g>
-          <rect x="650" y="30" width="230" height="19" rx="14" fill="#2a1a4a" stroke="#c4a8f0" stroke-width="2"/>
+          <rect x="650" y="30" width="230" height="110" rx="14" fill="#2a1a4a" stroke="#c4a8f0" stroke-width="2"/>
           <text x="765" y="62" text-anchor="middle" fill="#c4a8f0" font-size="18" font-weight="700">👑 Cadors M-1</text>
           <text x="765" y="92" text-anchor="middle" fill="#fff" font-size="20" font-weight="800">Podium (Top 3)</text>
           <text x="765" y="120" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="11">défenseurs du titre · dès le 2e mois</text>
@@ -405,19 +426,19 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
         <path d="M 325 140 Q 325 195 420 220" stroke="#6db8e8" stroke-width="2.5" fill="none" opacity=".55"/>
         <path d="M 535 140 Q 535 195 480 220" stroke="#6ee7b7" stroke-width="2.5" fill="none" opacity=".55"/>
         <path d="M 765 140 Q 765 195 520 220" stroke="#c4a8f0" stroke-width="2.5" fill="none" opacity=".55"/>
-        <polygon points="280,220 620,220 59,360 390,360" fill="url(#gFunnelP)" stroke="#7c4dcc" stroke-width="2"/>
+        <polygon points="280,220 620,220 510,360 390,360" fill="url(#gFunnelFR)" stroke="#7c4dcc" stroke-width="2"/>
         <text x="450" y="275" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">Dédoublonnage</text>
         <text x="450" y="300" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="12">un joueur retenu par plusieurs règles</text>
         <text x="450" y="318" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="12">n'est invité qu'une seule fois</text>
-        <rect x="280" y="380" width="340" height="80" rx="16" fill="url(#gFinalP)" stroke="#fff" stroke-width="2"/>
-        <text x="450" y="414" text-anchor="middle" fill="#1a924" font-size="22" font-weight="800">👑 LES CADORS M+1</text>
+        <rect x="280" y="380" width="340" height="80" rx="16" fill="url(#gFinalFR)" stroke="#fff" stroke-width="2"/>
+        <text x="450" y="414" text-anchor="middle" fill="#1a1024" font-size="22" font-weight="800">👑 LES CADORS M+1</text>
         <text x="450" y="440" text-anchor="middle" fill="rgba(26,16,36,.78)" font-size="12" font-weight="600">en moyenne 38 à 42 invités par mois</text>
       </svg>
     </div>
 
     <div class="divider">· · ·</div>
 
-    <!-- LES PETITS CADORS -->
+    <!-- LES PETITS CADORS FR -->
     <div class="card card-petits">
       <div class="card-top">
         <div class="card-icon">🌿</div>
@@ -448,7 +469,7 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
 
     <div class="divider">· · ·</div>
 
-    <!-- SUPER CADORS -->
+    <!-- SUPER CADORS FR -->
     <div class="card card-super">
       <div class="card-top">
         <div class="card-icon">👑👑</div>
@@ -469,26 +490,270 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
     </div>
 
   </div>
-</div>
+  </div><!-- fin .lang-fr -->
+
+  <!-- ══ CONTENU ANGLAIS ══ -->
+  <div class="lang-en" style="display:none">
+  <div class="cards">
+
+    <!-- TRIO QUOTIDIEN EN -->
+    <div class="card card-trio">
+      <div class="card-top">
+        <div class="card-icon">🃏</div>
+        <div>
+          <div class="card-header">Le Trio Quotidien</div>
+          <div class="card-sub">Daily tournament · Open to all · All year round</div>
+          <span class="badge">Open access · No password</span>
+        </div>
+      </div>
+      <p class="card-desc">
+        The daily meeting place for all players. <strong>3 deals per day in IMP</strong>, playable at your own pace throughout the day. Consistency pays off — this is the tournament that determines most of the invitations to Les Cadors.
+      </p>
+      <div class="rules">
+        <div class="rule-item"><strong>3 deals per day</strong> in IMP format, playable at any time of day</div>
+        <div class="rule-item"><strong>3-joker system</strong> that cancels your worst scores of the month, unlocked progressively:</div>
+        <div class="rule-item" style="padding-left:34px;">• <strong>1<sup>st</sup> joker</strong> from <strong>9 days played</strong></div>
+        <div class="rule-item" style="padding-left:34px;">• <strong>2<sup>nd</sup> joker</strong> from <strong>18 days played</strong></div>
+        <div class="rule-item" style="padding-left:34px;">• <strong>3<sup>rd</sup> joker</strong> from <strong>27 days played</strong></div>
+        <div class="rule-item">🔥 <strong>Consistency bonus</strong> — the longest consecutive streak of days with a positive score is converted into bonus points and added to the monthly total. Absences are neutral, a negative score resets the counter to zero <em>(in effect from July 2026)</em></div>
+        <div class="rule-item">Monthly ranking reset on the 1<sup>st</sup> of each month · Annual cumulative calculated in parallel</div>
+        <div class="rule-item">The <strong>monthly top 30</strong> is automatically invited to the <strong>Les Cadors</strong> tournament the following month</div>
+      </div>
+      <div class="note" style="border-left-color:rgba(232,201,122,0.6);background:rgba(232,201,122,0.06);color:rgba(255,255,255,0.78);font-style:normal;">
+        ✉️ <strong>To receive your Cadors invitation</strong> if you are in the top 30, remember to share your email address via the <strong>« Share my email »</strong> button at the top of this page — without an email I cannot send you the tournament password.
+      </div>
+    </div>
+
+    <div class="divider">· · ·</div>
+
+    <!-- SERGELIVE EN -->
+    <div class="card card-serge">
+      <div class="card-top">
+        <div class="card-icon">🎯</div>
+        <div>
+          <div class="card-header">Le SergeLive</div>
+          <div class="card-sub">Daily tournament · Open to all · All year round</div>
+          <span class="badge">Open access · No password</span>
+        </div>
+      </div>
+      <div class="tribute">
+        ✦ This tournament is a <strong>tribute to our friend Serge</strong>, who left us too soon. It follows the format of his <em>LEROY-S4</em> tournament that many of us knew and loved — his way of bringing online bridge to life every day lives on through SergeLive.
+      </div>
+      <p class="card-desc">
+        A fuller format than the Trio: <strong>7 deals per day</strong>, with a key rule: <strong>only positive scores count</strong>. A bad day doesn't penalise you — it simply scores 0. This mechanic rewards consistency without punishing tough days.
+      </p>
+      <div class="rules">
+        <div class="rule-item"><strong>7 deals per day</strong> — a longer format than a standard tournament</div>
+        <div class="rule-item"><strong>Only positive scores are counted</strong> — a negative day counts as 0 (no jokers needed, no score to make up)</div>
+        <div class="rule-item">⭐ <strong>The 15th of each month counts double</strong> — the 15th is the date Serge left us to join the stars. That day, the score achieved is counted double in his memory <em>(in effect from July 2026 — Thursday scores are no longer doubled)</em></div>
+        <div class="rule-item">🔥 <strong>Consistency bonus</strong> — at the end of each month, the longest streak of consecutive days with a positive score is converted into bonus points and added to the total. Playing every day at your best is rewarded <em>(in effect from July 2026)</em></div>
+        <div class="rule-item">Monthly ranking reset on the 1<sup>st</sup> of each month · Annual cumulative calculated in parallel</div>
+        <div class="rule-item">A <strong>cross-qualification route</strong> exists to Les Cadors: finish in both the top 20 SergeLive and top 50 Trio for the month</div>
+      </div>
+      <div class="note" style="border-left-color:rgba(109,184,232,0.6);background:rgba(109,184,232,0.08);color:rgba(255,255,255,0.80);font-style:normal;">
+        ✉️ <strong>To receive your Cadors invitation</strong> if you meet the double condition (<em>top 20 SergeLive + top 50 Trio</em> for the month), remember to share your email address via the <strong>« Share my email »</strong> button at the top of this page — without an email I cannot send you the tournament password.
+      </div>
+    </div>
+
+    <div class="divider">· · ·</div>
+
+    <!-- LES CADORS EN -->
+    <div class="card card-cadors">
+      <div class="card-top">
+        <div class="card-icon">👑</div>
+        <div>
+          <div class="card-header">Les Cadors</div>
+          <div class="card-sub">Monthly tournament · By invitation · Starting June 1<sup>st</sup>, 2026</div>
+          <span class="badge">Password protected</span>
+        </div>
+      </div>
+      <p class="card-desc">
+        Each month, the top players receive a personal invitation <strong>by email</strong> with the tournament password.
+        Invitations come from <strong>4 qualification routes</strong> that reward <strong>consistency</strong> (Trio), <strong>versatility</strong> (SergeLive × Trio), <strong>second chances</strong> (Petits Cadors) and <strong>defending merit</strong> (Cadors podium from the previous month). No favouritism — just clear rules.
+      </p>
+      <div class="note" style="border-left-color:rgba(196,168,240,0.6);background:rgba(124,77,204,0.10);color:rgba(255,255,255,0.82);font-style:normal;margin-bottom:18px;">
+        ✉️ <strong>Important</strong> — to receive this invitation, you must have <strong>shared your email address with me</strong>. If you haven't done so yet, click <strong>« Share my email »</strong> at the top of this page. Without an email I cannot send you the tournament password.
+      </div>
+      <div class="rules">
+        <div class="rule-item"><strong>Top 30 of the Trio Quotidien</strong> from the previous month</div>
+        <div class="rule-item"><strong>Top 5 of the Petits Cadors</strong> (who also play the Trio) — a recovery route open to all</div>
+        <div class="rule-item"><strong>Top 20 SergeLive ∩ Top 50 Trio</strong> — rewards players active on both fronts</div>
+        <div class="rule-item"><strong>Cadors podium (Top 3)</strong> from the previous month — to defend their title, from the 2<sup>nd</sup> tournament</div>
+        <div class="rule-item">4 deals per day · Monthly ranking reset · Invitation by email on the 1<sup>st</sup> of each month at 6am</div>
+        <div class="rule-item"><strong>Same 3-joker system as Trio Quotidien</strong> — thresholds: 9 / 18 / 27 days played</div>
+      </div>
+      <div class="note">
+        💡 On average <strong>38 to 42 guests</strong> per month. Provisional list updated daily: <a href="https://chrisblb.github.io/funbridge/candidats-cadors.html" style="color:#c4a8f0;font-weight:600">Cadors candidates for the month</a>.
+      </div>
+    </div>
+
+    <!-- FUNNEL DIAGRAM EN -->
+    <div class="card" style="border-color:rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);text-align:center;">
+      <h3 style="font-family:'Playfair Display',serif;color:#e8c97a;font-size:1.3rem;margin-bottom:18px;">How is Les Cadors composed?</h3>
+      <svg viewBox="0 0 900 480" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans, system-ui, sans-serif" style="width:100%;max-width:880px;height:auto;">
+        <defs>
+          <linearGradient id="gFunnelEN" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="#7c4dcc" stop-opacity=".10"/>
+            <stop offset="1" stop-color="#7c4dcc" stop-opacity=".50"/>
+          </linearGradient>
+          <linearGradient id="gFinalEN" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="#e8c97a"/>
+            <stop offset="1" stop-color="#7c4dcc"/>
+          </linearGradient>
+        </defs>
+        <g>
+          <rect x="20" y="30" width="190" height="110" rx="14" fill="#1a1024" stroke="#e8c97a" stroke-width="2"/>
+          <text x="115" y="62" text-anchor="middle" fill="#e8c97a" font-size="18" font-weight="700">🃏 Trio Quotidien</text>
+          <text x="115" y="92" text-anchor="middle" fill="#fff" font-size="22" font-weight="800">Top 30</text>
+          <text x="115" y="120" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="12">previous month</text>
+        </g>
+        <g>
+          <rect x="230" y="30" width="190" height="110" rx="14" fill="#102230" stroke="#6db8e8" stroke-width="2"/>
+          <text x="325" y="62" text-anchor="middle" fill="#6db8e8" font-size="18" font-weight="700">🎯 SergeLive</text>
+          <text x="325" y="88" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Top 20 Serge</text>
+          <text x="325" y="108" text-anchor="middle" fill="#fff" font-size="14" font-weight="600">∩ Top 50 Trio</text>
+          <text x="325" y="128" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="11">active on both fronts</text>
+        </g>
+        <g>
+          <rect x="440" y="30" width="190" height="110" rx="14" fill="#0a2820" stroke="#6ee7b7" stroke-width="2"/>
+          <text x="535" y="62" text-anchor="middle" fill="#6ee7b7" font-size="18" font-weight="700">🌿 Petits Cadors</text>
+          <text x="535" y="92" text-anchor="middle" fill="#fff" font-size="22" font-weight="800">Top 5</text>
+          <text x="535" y="120" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="11">who also play the Trio</text>
+        </g>
+        <g>
+          <rect x="650" y="30" width="230" height="110" rx="14" fill="#2a1a4a" stroke="#c4a8f0" stroke-width="2"/>
+          <text x="765" y="62" text-anchor="middle" fill="#c4a8f0" font-size="18" font-weight="700">👑 Cadors M-1</text>
+          <text x="765" y="92" text-anchor="middle" fill="#fff" font-size="20" font-weight="800">Podium (Top 3)</text>
+          <text x="765" y="120" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="11">title defenders · from 2nd month</text>
+        </g>
+        <path d="M 115 140 Q 115 195 380 220" stroke="#e8c97a" stroke-width="2.5" fill="none" opacity=".55"/>
+        <path d="M 325 140 Q 325 195 420 220" stroke="#6db8e8" stroke-width="2.5" fill="none" opacity=".55"/>
+        <path d="M 535 140 Q 535 195 480 220" stroke="#6ee7b7" stroke-width="2.5" fill="none" opacity=".55"/>
+        <path d="M 765 140 Q 765 195 520 220" stroke="#c4a8f0" stroke-width="2.5" fill="none" opacity=".55"/>
+        <polygon points="280,220 620,220 510,360 390,360" fill="url(#gFunnelEN)" stroke="#7c4dcc" stroke-width="2"/>
+        <text x="450" y="275" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">Deduplication</text>
+        <text x="450" y="300" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="12">a player qualifying through multiple routes</text>
+        <text x="450" y="318" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="12">is only invited once</text>
+        <rect x="280" y="380" width="340" height="80" rx="16" fill="url(#gFinalEN)" stroke="#fff" stroke-width="2"/>
+        <text x="450" y="414" text-anchor="middle" fill="#1a1024" font-size="22" font-weight="800">👑 LES CADORS M+1</text>
+        <text x="450" y="440" text-anchor="middle" fill="rgba(26,16,36,.78)" font-size="12" font-weight="600">on average 38 to 42 guests per month</text>
+      </svg>
+    </div>
+
+    <div class="divider">· · ·</div>
+
+    <!-- LES PETITS CADORS EN -->
+    <div class="card card-petits">
+      <div class="card-top">
+        <div class="card-icon">🌿</div>
+        <div>
+          <div class="card-header">Les Petits Cadors</div>
+          <div class="card-sub">Monthly tournament · Open to all · Starting June 1<sup>st</sup>, 2026</div>
+          <span class="badge">Open access · No password</span>
+        </div>
+      </div>
+      <p class="card-desc">
+        A tournament with no barriers, open to everyone. It offers an extra chance to join Les Cadors the following month — especially after a tough month in the Trio.
+      </p>
+      <div class="rules">
+        <div class="rule-item">No prior registration, no password</div>
+        <div class="rule-item">The <strong>top 5 players</strong> of the Petits Cadors who <strong>also play the Trio</strong> are invited to Les Cadors the following month</div>
+        <div class="rule-item">Players outside the Trio are welcome — but only regular Trio players can qualify for Les Cadors</div>
+        <div class="rule-item">4 deals per day · Monthly ranking reset on the 1<sup>st</sup> of each month</div>
+        <div class="rule-item"><strong>Same 3-joker system as Trio Quotidien</strong> — thresholds: 9 / 18 / 27 days played</div>
+        <div class="rule-item">🔥 <strong>Consistency bonus</strong> — the longest consecutive streak of days with a positive score is converted into bonus points and added to the monthly total. Absences are neutral, a negative score resets the counter to zero <em>(in effect from July 2026)</em></div>
+      </div>
+      <div class="note">
+        💡 Your best recovery route: had a tough month in the Trio? Les Petits Cadors stays open until the last day of the month.
+      </div>
+      <div class="note" style="border-left-color:rgba(110,231,183,0.6);background:rgba(45,138,106,0.10);color:rgba(255,255,255,0.80);font-style:normal;margin-top:10px;">
+        ✉️ <strong>To receive your Cadors invitation</strong> if you are in the top 5 (and playing the Trio), remember to share your email address via the <strong>« Share my email »</strong> button at the top of this page — without an email I cannot send you the tournament password.
+      </div>
+    </div>
+
+    <div class="divider">· · ·</div>
+
+    <!-- SUPER CADORS EN -->
+    <div class="card card-super">
+      <div class="card-top">
+        <div class="card-icon">👑👑</div>
+        <div>
+          <div class="card-header">The Super Cadors</div>
+          <div class="card-sub">Annual grand tournament · December 2026</div>
+          <span class="badge">Year-end showdown</span>
+        </div>
+      </div>
+      <p class="card-desc">
+        At the end of the year, the players who performed best across all Cadors tournaments will gather for a grand finale to close out the season.
+      </p>
+      <div class="rules">
+        <div class="rule-item">A special tournament held in December</div>
+        <div class="rule-item">Open to the top performers of the 2026 Cadors season</div>
+        <div class="rule-item">Selection criteria to be announced</div>
+      </div>
+    </div>
+
+  </div>
+  </div><!-- fin .lang-en -->
+
+</div><!-- fin #presentation-panel -->
 
 <footer>
-  <p>Tournois organisés par <strong style="color:rgba(232,201,122,0.7)">chrisblb</strong> &nbsp;·&nbsp; Funbridge &amp; Bridge en ligne</p>
-  <p class="lang"><a href="presentation-en.html">English version 🇬🇧</a></p>
+  <p class="lang-fr">Tournois organisés par <strong style="color:rgba(232,201,122,0.7)">chrisblb</strong> &nbsp;·&nbsp; Funbridge &amp; Bridge en ligne</p>
+  <p class="lang-en" style="display:none">Tournaments organised by <strong style="color:rgba(232,201,122,0.7)">chrisblb</strong> &nbsp;·&nbsp; Funbridge &amp; Online Bridge</p>
 </footer>
 
 <script>
-const btn = document.getElementById('toggle-presentation');
-const panel = document.getElementById('presentation-panel');
-btn.addEventListener('click', function() {
+// ── Toggle langue ──
+const LABELS = {
+  fr: { show: 'Présentation des tournois', hide: 'Masquer la présentation' },
+  en: { show: 'Tournament overview', hide: 'Hide overview' }
+};
+
+function setLang(lang) {
+  localStorage.setItem('pblang', lang);
+  document.querySelectorAll('.lang-fr').forEach(el => el.style.display = lang==='fr' ? '' : 'none');
+  document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang==='en' ? '' : 'none');
+  document.getElementById('lang-btn').innerHTML = lang==='fr' ? '🇬🇧 English' : '🇫🇷 Français';
+  document.documentElement.lang = lang;
+
+  // Mettre à jour le label du bouton toggle selon l'état courant du panel
+  const panel = document.getElementById('presentation-panel');
   const isOpen = panel.style.display === 'block';
+  const btn = document.getElementById('toggle-presentation');
+  // On ne touche qu'aux éléments toggle-label visibles
+  btn.querySelectorAll('.toggle-label').forEach(el => {
+    el.style.display = (el.classList.contains('lang-' + lang)) ? '' : 'none';
+  });
+  if (isOpen) {
+    // Mettre à jour le texte "Masquer"
+    const activeLabel = btn.querySelector('.toggle-label.lang-' + lang);
+    if (activeLabel) activeLabel.textContent = LABELS[lang].hide;
+  }
+}
+
+// Init
+setLang(localStorage.getItem('pblang') || 'fr');
+document.getElementById('lang-btn').addEventListener('click', function() {
+  setLang(document.documentElement.lang === 'fr' ? 'en' : 'fr');
+});
+
+// ── Toggle présentation ──
+const toggleBtn = document.getElementById('toggle-presentation');
+const panel = document.getElementById('presentation-panel');
+toggleBtn.addEventListener('click', function() {
+  const isOpen = panel.style.display === 'block';
+  const lang = document.documentElement.lang || 'fr';
   panel.style.display = isOpen ? 'none' : 'block';
-  btn.classList.toggle('open', !isOpen);
-  btn.querySelector('.toggle-label').textContent = isOpen ? 'Présentation des tournois' : 'Masquer la présentation';
+  toggleBtn.classList.toggle('open', !isOpen);
+  // Mettre à jour le label actif
+  const activeLabel = toggleBtn.querySelector('.toggle-label.lang-' + lang);
+  if (activeLabel) activeLabel.textContent = isOpen ? LABELS[lang].show : LABELS[lang].hide;
   if (!isOpen) setTimeout(() => panel.scrollIntoView({behavior:'smooth', block:'start'}), 50);
 });
 
 // Auto-ouvre si l'URL a #presentation
-if (location.hash === '#presentation') btn.click();
+if (location.hash === '#presentation') toggleBtn.click();
 </script>
 
 </body>
