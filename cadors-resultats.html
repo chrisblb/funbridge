@@ -17,7 +17,7 @@ header p{font-size:13px;opacity:.75;margin-top:4px;}
 .tbs{display:flex;min-width:max-content;padding:0 12px;}
 .tb{padding:12px 16px;font-size:13px;font-weight:500;color:var(--mu);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;}
 .tb.on{color:var(--g);border-bottom-color:var(--g);font-weight:600;}
-.sb{background:#fff;padding:10px 16px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:8px;}
+.sb{background:#fff;padding:10px 16px;border-bottom:1px solid var(--b);}.sb-inner{max-width:960px;margin:0 auto;display:flex;align-items:center;gap:8px;}
 .sb input{flex:1;border:2px solid var(--g);border-radius:8px;padding:10px 16px;font-size:15px;outline:none;background:#fff;box-shadow:0 2px 8px rgba(26,107,60,.18);transition:border-color .15s,box-shadow .15s;}
 .sb input:focus{border-color:var(--g);box-shadow:0 0 0 4px rgba(26,107,60,.2);}.sb input::placeholder{color:#999;}
 .clr{background:none;border:none;cursor:pointer;color:var(--mu);font-size:18px;padding:2px 6px;display:none;}.clr.on{display:block;}
@@ -51,7 +51,7 @@ table.wt td:nth-child(-n+2){background:#f7faf8;}
 <p>Tournoi mensuel Funbridge · Mis à jour le 30 juin 2026 à 10:58</p>
 <a href="https://chrisblb.github.io/funbridge/presentation.html" style="display:inline-block;background:rgba(255,255,255,.15);color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.35);font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;margin-top:8px;letter-spacing:.02em;">ⓘ Présentation des tournois</a></header>
 <div class="tw"><div class="tbs" id="tabs"></div></div>
-<div class="sb">
+<div class="sb"><div class="sb-inner">
 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
 <input type="text" id="sq" placeholder="Rechercher un joueur…" oninput="ds(this.value)" autocomplete="off">
 <button class="clr" id="cb" onclick="cs()">×</button>
