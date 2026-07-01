@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visuel Mensuel · chrisblb's Bridge Tournaments</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: #0f1623;
+  color: #e2e8f0;
+  min-height: 90vh;
+  line-height: 1.6;
+}
+
+header {
+  text-align: center;
+  padding: 50px 20px 30px;
+  background: linear-gradient(180deg, #0a0f1a 0%, #0f1623 90%);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  color: #e8c97a;
+  letter-spacing: 0.02em;
+  margin-bottom: 8px;
+}
+header p.tagline {
+  color: rgba(255,255,255,0.45);
+  font-size: 0.82rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.lang-btn {
+  margin-top: 16px;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7);
+  font-size: 0.85rem; font-weight: 500;
+  padding: 7px 18px; border-radius: 30px;
+  border: 1px solid rgba(255,255,255,0.2);
+  cursor: pointer; font-family: 'DM Sans', sans-serif;
+  transition: all 0.15s;
+}
+.lang-btn:hover { background: rgba(255,255,255,0.14); color: #fff; }
+
+main { max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+
+.back-row { text-align: center; margin-bottom: 22px; }
+.back-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: rgba(255,255,255,0.55); font-size: 0.85rem;
+  text-decoration: none; transition: color 0.15s;
+}
+.back-link:hover { color: #fde68a; }
+
+.tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 22px; flex-wrap: wrap; }
+.tab-btn {
+  background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6);
+  border: 1px solid rgba(255,255,255,0.15); border-radius: 30px;
+  padding: 10px 22px; font-size: 0.9rem; font-weight: 600;
+  cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+}
+.tab-btn:hover { border-color: rgba(255,255,255,0.35); color: #fff; }
+.tab-btn.active { background: rgba(94,211,201,0.15); border-color: rgba(94,211,201,0.6); color: #7de8e0; }
+
+.panel { text-align: center; }
+.month-label {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem; color: #fde68a; margin-bottom: 6px;
+}
+.provisional {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(192,57,43,0.15); color: #f0a; color: #ff8a80;
+  border: 1px solid rgba(192,57,43,0.4); border-radius: 20px;
+  padding: 4px 14px; font-size: 0.8rem; font-weight: 600; margin-bottom: 16px;
+}
+.visual-img {
+  max-width: 100%; height: auto; border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+  margin-top: 10px;
+}
+.dl-row { margin-top: 20px; }
+.dl-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, #2d8a8a, #1a5f5f);
+  color: #fff; font-size: 0.95rem; font-weight: 600;
+  padding: 12px 28px; border-radius: 50px; text-decoration: none;
+  letter-spacing: 0.03em; box-shadow: 0 4px 20px rgba(45,138,138,0.4);
+  transition: all 0.15s;
+}
+.dl-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 26px rgba(45,138,138,0.55); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1 class="lang-fr">🖼️ Visuel Mensuel</h1>
+  <h1 class="lang-en" style="display:none">🖼️ Monthly Visual</h1>
+  <p class="tagline lang-fr">Tops 20 des 4 tournois &amp; recoupements</p>
+  <p class="tagline lang-en" style="display:none">Top 20 of all 4 tournaments &amp; overlaps</p>
+  <button class="lang-btn" id="lang-btn" type="button">🇬🇧 English</button>
+</header>
+
+<main>
+  <div class="back-row">
+    <a class="back-link" href="presentation.html">
+      <span class="lang-fr">← Retour à la présentation</span>
+      <span class="lang-en" style="display:none">← Back to overview</span>
+    </a>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="current" onclick="showTab('current')" type="button">
+      <span class="lang-fr">🔴 Mois en cours</span><span class="lang-en" style="display:none">🔴 Current Month</span>
+    </button>
+    <button class="tab-btn" data-tab="prev" onclick="showTab('prev')" type="button">
+      <span class="lang-fr">Mois écoulé</span><span class="lang-en" style="display:none">Past Month</span>
+    </button>
+  </div>
+
+  <div class="panel" id="panel-current">
+    <div class="month-label">Juillet 2026</div>
+    <div class="provisional">
+      <span class="lang-fr">⏳ Classement provisoire — mis à jour régulièrement</span>
+      <span class="lang-en" style="display:none">⏳ Provisional standings — updated regularly</span>
+    </div><br>
+    <img class="visual-img" src="visuel-mensuel-2026-07.png" alt="Visuel mensuel Juillet 2026">
+    <div class="dl-row">
+      <a class="dl-btn" href="visuel-mensuel-2026-07.png" download="Bilan-Bridge-Juillet-2026.png">
+        <span class="lang-fr">⬇️ Télécharger l'image</span>
+        <span class="lang-en" style="display:none">⬇️ Download image</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-prev" style="display:none">
+    <div class="month-label">Juin 2026</div>
+    <img class="visual-img" src="visuel-mensuel-2026-06.png" alt="Visuel mensuel Juin 2026">
+    <div class="dl-row">
+      <a class="dl-btn" href="visuel-mensuel-2026-06.png" download="Bilan-Bridge-Juin-2026.png">
+        <span class="lang-fr">⬇️ Télécharger l'image</span>
+        <span class="lang-en" style="display:none">⬇️ Download image</span>
+      </a>
+    </div>
+  </div>
+</main>
+
+<script>
+function showTab(name) {
+  document.getElementById('panel-current').style.display = name === 'current' ? '' : 'none';
+  document.getElementById('panel-prev').style.display = name === 'prev' ? '' : 'none';
+  document.querySelectorAll('.tab-btn').forEach(function(b) {
+    b.classList.toggle('active', b.dataset.tab === name);
+  });
+}
+function setLang(lang) {
+  document.querySelectorAll('.lang-fr').forEach(function(el) { el.style.display = lang === 'fr' ? '' : 'none'; });
+  document.querySelectorAll('.lang-en').forEach(function(el) { el.style.display = lang === 'en' ? '' : 'none'; });
+  document.getElementById('lang-btn').innerHTML = lang === 'fr' ? '🇬🇧 English' : '🇫🇷 Français';
+  document.documentElement.lang = lang;
+  try { localStorage.setItem('pblang', lang); } catch(e) {}
+}
+setLang(localStorage.getItem('pblang') || 'fr');
+document.getElementById('lang-btn').addEventListener('click', function() {
+  setLang(document.documentElement.lang === 'fr' ? 'en' : 'fr');
+});
+</script>
+
+</body>
+</html>

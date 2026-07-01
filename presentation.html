@@ -51,11 +51,6 @@ header p.tagline {
 .lang-btn:hover { background: rgba(255,255,255,0.14); color: #fff; }
 
 /* ── SECTION RÉSULTATS ── */
-.monthly-visual-section { max-width: 900px; margin: 0 auto; padding: 8px 20px 32px; text-align: center; }
-.monthly-visual-section h2 { color: #fde68a; font-size: 1.3rem; margin-bottom: 6px; }
-.monthly-visual-section .sub { color: rgba(255,255,255,0.55); font-size: 0.88rem; margin-bottom: 14px; }
-.monthly-visual-img { max-width: 100%; height: auto; border-radius: 14px; border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
-
 .results-section {
   max-width: 900px;
   margin: 40px auto 30px;
@@ -117,6 +112,9 @@ header p.tagline {
 .result-btn.candidats { border-color: rgba(232,201,122,0.5); background: linear-gradient(135deg, rgba(60,45,9,0.55), rgba(40,25,70,0.55)); }
 .result-btn.candidats:hover { border-color: rgba(232,201,122,0.85); }
 .result-btn.candidats .label { color: #fde68a; }
+.result-btn.visuel { border-color: rgba(94,211,201,0.4); background: linear-gradient(135deg, rgba(11,54,52,0.55), rgba(15,22,35,0.6)); }
+.result-btn.visuel:hover { border-color: rgba(94,211,201,0.8); }
+.result-btn.visuel .label { color: #7de8e0; }
 .result-btn .live-badge {
   position: absolute; top: 8px; right: 9px;
   font-size: 0.62rem; font-weight: 700; color: #fde68a;
@@ -276,6 +274,12 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
       <div class="label lang-en" style="display:none">Cadors Candidates</div>
       <div class="sub-label"><span class="lang-fr">Liste prévisionnelle</span><span class="lang-en" style="display:none">Provisional list</span></div>
     </a>
+    <a class="result-btn visuel" href="https://chrisblb.github.io/funbridge/visuel-mensuel.html">
+      <div class="icon">🖼️</div>
+      <div class="label lang-fr">Visuel Mensuel</div>
+      <div class="label lang-en" style="display:none">Monthly Visual</div>
+      <div class="sub-label"><span class="lang-fr">Tops &amp; recoupements</span><span class="lang-en" style="display:none">Tops &amp; overlaps</span></div>
+    </a>
   </div>
 
   <div class="secondary-row">
@@ -286,14 +290,6 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
       <span class="arrow">▼</span>
     </button>
   </div>
-</section>
-
-<section class="monthly-visual-section">
-  <h2 class="lang-fr">🏆 Bilan du mois</h2>
-  <h2 class="lang-en" style="display:none">🏆 Monthly Wrap-up</h2>
-  <p class="sub lang-fr">Tops 20 des 4 tournois et recoupements — merci à toutes et tous pour votre participation !</p>
-  <p class="sub lang-en" style="display:none">Top 20 of all 4 tournaments and overlaps — thank you all for taking part!</p>
-  <img src="visuel-mensuel.png" alt="Bilan Bridge du mois" class="monthly-visual-img">
 </section>
 
 <div class="divider-block">· · · · ·</div>
