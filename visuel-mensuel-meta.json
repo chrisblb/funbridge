@@ -1,0 +1,11 @@
+{
+  "current": {
+    "label": "Juillet 2026",
+    "file": "visuel-mensuel-current.png"
+  },
+  "previous": {
+    "label": "Juin 2026",
+    "file": "visuel-mensuel-previous.png"
+  },
+  "publishedAt": "2026-07-01T08:53:30.885Z"
+}

@@ -94,6 +94,8 @@ main { max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
   transition: all 0.15s;
 }
 .dl-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 26px rgba(45,138,138,0.55); }
+.updated-note { text-align: center; margin-top: 26px; font-size: 0.76rem; color: rgba(255,255,255,0.35); }
+.err-note { text-align: center; color: rgba(255,138,128,0.85); font-size: 0.9rem; padding: 20px; }
 </style>
 </head>
 <body>
@@ -124,14 +126,14 @@ main { max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
   </div>
 
   <div class="panel" id="panel-current">
-    <div class="month-label">Juillet 2026</div>
+    <div class="month-label" id="label-current">…</div>
     <div class="provisional">
       <span class="lang-fr">⏳ Classement provisoire — mis à jour régulièrement</span>
       <span class="lang-en" style="display:none">⏳ Provisional standings — updated regularly</span>
     </div><br>
-    <img class="visual-img" src="visuel-mensuel-2026-07.png" alt="Visuel mensuel Juillet 2026">
+    <img class="visual-img" id="img-current" src="" alt="Visuel mensuel du mois en cours">
     <div class="dl-row">
-      <a class="dl-btn" href="visuel-mensuel-2026-07.png" download="Bilan-Bridge-Juillet-2026.png">
+      <a class="dl-btn" id="dl-current" href="#">
         <span class="lang-fr">⬇️ Télécharger l'image</span>
         <span class="lang-en" style="display:none">⬇️ Download image</span>
       </a>
@@ -139,15 +141,17 @@ main { max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
   </div>
 
   <div class="panel" id="panel-prev" style="display:none">
-    <div class="month-label">Juin 2026</div>
-    <img class="visual-img" src="visuel-mensuel-2026-06.png" alt="Visuel mensuel Juin 2026">
+    <div class="month-label" id="label-prev">…</div>
+    <img class="visual-img" id="img-prev" src="" alt="Visuel mensuel du mois écoulé">
     <div class="dl-row">
-      <a class="dl-btn" href="visuel-mensuel-2026-06.png" download="Bilan-Bridge-Juin-2026.png">
+      <a class="dl-btn" id="dl-prev" href="#">
         <span class="lang-fr">⬇️ Télécharger l'image</span>
         <span class="lang-en" style="display:none">⬇️ Download image</span>
       </a>
     </div>
   </div>
+
+  <p class="updated-note" id="updated-note"></p>
 </main>
 
 <script>
@@ -169,6 +173,34 @@ setLang(localStorage.getItem('pblang') || 'fr');
 document.getElementById('lang-btn').addEventListener('click', function() {
   setLang(document.documentElement.lang === 'fr' ? 'en' : 'fr');
 });
+
+/* -- Charge les métadonnées (labels, fichiers, date de publication) -- */
+fetch('visuel-mensuel-meta.json?t=' + Date.now())
+  .then(function(r) { return r.ok ? r.json() : Promise.reject(); })
+  .then(function(meta) {
+    var v = '?v=' + encodeURIComponent(meta.publishedAt || Date.now());
+
+    document.getElementById('label-current').textContent = meta.current.label;
+    document.getElementById('img-current').src = meta.current.file + v;
+    var dlc = document.getElementById('dl-current');
+    dlc.href = meta.current.file;
+    dlc.setAttribute('download', 'Bilan-Bridge-' + meta.current.label.replace(' ', '-') + '.png');
+
+    document.getElementById('label-prev').textContent = meta.previous.label;
+    document.getElementById('img-prev').src = meta.previous.file + v;
+    var dlp = document.getElementById('dl-prev');
+    dlp.href = meta.previous.file;
+    dlp.setAttribute('download', 'Bilan-Bridge-' + meta.previous.label.replace(' ', '-') + '.png');
+
+    if (meta.publishedAt) {
+      var dt = new Date(meta.publishedAt);
+      document.getElementById('updated-note').textContent =
+        'Dernière mise à jour : ' + dt.toLocaleDateString('fr-FR') + ' à ' + dt.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
+    }
+  })
+  .catch(function() {
+    document.querySelector('main').innerHTML = '<p class="err-note">Visuel indisponible pour l\'instant.</p>';
+  });
 </script>
 
 </body>
