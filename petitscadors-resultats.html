@@ -50,7 +50,7 @@ table.wt th:nth-child(-n+2){background:var(--g);z-index:2;}
 table.wt td:nth-child(-n+2){background:#f4faf8;}
 </style></head><body>
 <header><h1>♠♥♦♣ Les Petits Cadors</h1>
-<p>Tournoi mensuel Funbridge · Joueurs 41 à 80 du Trio · Mis à jour le 01 juillet 2026 à 08:45</p>
+<p>Tournoi mensuel Funbridge · Joueurs 41 à 80 du Trio · Mis à jour le 01 juillet 2026 à 08:57</p>
 <a href="https://chrisblb.github.io/funbridge/presentation.html" style="display:inline-block;background:rgba(255,255,255,.15);color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.35);font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;margin-top:8px;letter-spacing:.02em;">ⓘ Présentation des tournois</a></header>
 <div class="tw"><div class="tbs" id="tabs"></div></div>
 <div class="sb"><div class="sb-inner">
@@ -128,7 +128,7 @@ function initSort(){
           var bv=(b.cells[ci]||{}).textContent||"";
           av=av.trim();bv=bv.trim();
           var an=parseFloat(av.replace(/[^\d.-]/g,"")),bn=parseFloat(bv.replace(/[^\d.-]/g,""));
-          if(!isNaN(an)&&!isNaN(bn)) return asc?an-bn:bn-an;
+          if(/^[[-d]/.test(av)&&/^[[-d]/.test(bv)&&!isNaN(an)&&!isNaN(bn)) return asc?an-bn:bn-an;
           return asc?av.localeCompare(bv,"fr"):bv.localeCompare(av,"fr");
         });
         rows.forEach(function(r){tbody.appendChild(r);});
