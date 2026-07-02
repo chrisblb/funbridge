@@ -115,6 +115,20 @@ header p.tagline {
 .result-btn.visuel { border-color: rgba(94,211,201,0.4); background: linear-gradient(135deg, rgba(11,54,52,0.55), rgba(15,22,35,0.6)); }
 .result-btn.visuel:hover { border-color: rgba(94,211,201,0.8); }
 .result-btn.visuel .label { color: #7de8e0; }
+/* ── Aperçu du visuel mensuel ── */
+.visuel-preview { display: block; max-width: 760px; margin: 26px auto 4px; border-radius: 14px; overflow: hidden; border: 1px solid rgba(94,211,201,0.35); box-shadow: 0 10px 34px rgba(0,0,0,0.5); text-decoration: none; background: #0f1623; transition: transform 0.18s, border-color 0.18s; }
+.visuel-preview:hover { transform: translateY(-3px); border-color: rgba(94,211,201,0.8); }
+.visuel-preview img { width: 100%; display: block; }
+.visuel-preview .visuel-caption { padding: 10px 16px 12px; text-align: center; font-size: 0.85rem; color: #7de8e0; }
+
+/* ── Poster prime de régularité ── */
+.poster-block { max-width: 860px; margin: 0 auto; text-align: center; }
+.poster-title { font-family: 'Playfair Display', serif; color: #e8c97a; font-size: 1.35rem; margin-bottom: 8px; }
+.poster-sub { color: rgba(255,255,255,0.65); font-size: 0.92rem; margin-bottom: 16px; }
+.poster-block a { display: block; }
+.poster-block img { width: 100%; border-radius: 14px; border: 1px solid rgba(232,201,122,0.35); box-shadow: 0 10px 34px rgba(0,0,0,0.5); display: block; background: #fff; }
+.poster-hint { color: rgba(255,255,255,0.4); font-size: 0.8rem; margin-top: 10px; }
+
 .result-btn .live-badge {
   position: absolute; top: 8px; right: 9px;
   font-size: 0.62rem; font-weight: 700; color: #fde68a;
@@ -282,6 +296,14 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
     </a>
   </div>
 
+  <a class="visuel-preview" href="https://chrisblb.github.io/funbridge/visuel-mensuel.html">
+    <img src="visuel-mensuel-current.png" alt="Visuel mensuel — tops 20 des 4 tournois et recoupements" loading="lazy">
+    <div class="visuel-caption">
+      <span class="lang-fr">🖼️ Le visuel du mois — tops 20 &amp; recoupements, mis à jour chaque matin · cliquer pour agrandir</span>
+      <span class="lang-en" style="display:none">🖼️ This month's visual — top 20s &amp; overlaps, updated every morning · click to enlarge</span>
+    </div>
+  </a>
+
   <div class="secondary-row">
     <a class="btn-secondary" href="https://chrisblb.github.io/funbridge/inscription.html"><span class="lang-fr">✉️ Communiquer mon email</span><span class="lang-en" style="display:none">✉️ Share my email</span></a>
     <button class="btn-toggle" id="toggle-presentation" type="button">
@@ -358,6 +380,18 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
       <div class="note" style="border-left-color:rgba(99,184,232,0.6);background:rgba(99,184,232,0.08);color:rgba(255,255,255,0.80);font-style:normal;">
         ✉️ <strong>Pour recevoir l'invitation aux Cadors</strong> si vous remplissez la double condition (<em>top 20 SergeLive + top 50 Trio</em> sur le mois), pensez à me communiquer votre adresse email via le bouton <strong>« Communiquer mon email »</strong> en haut de cette page — sans email je ne peux pas vous envoyer le mot de passe du tournoi.
       </div>
+    </div>
+
+    <div class="divider">· · ·</div>
+
+    <!-- POSTER PRIME DE RÉGULARITÉ FR -->
+    <div class="poster-block">
+      <div class="poster-title">🔥 La Prime de Régularité en un coup d'œil</div>
+      <p class="poster-sub">En vigueur depuis juillet 2026 au Trio, au SergeLive et aux Petits Cadors.</p>
+      <a href="prime-regularite-30jours.svg" target="_blank" rel="noopener">
+        <img src="prime-regularite-30jours.svg" alt="Poster explicatif de la Prime de Régularité" loading="lazy">
+      </a>
+      <p class="poster-hint">Cliquer sur le poster pour l'ouvrir en grand</p>
     </div>
 
     <div class="divider">· · ·</div>
@@ -562,6 +596,18 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
       <div class="note" style="border-left-color:rgba(109,184,232,0.6);background:rgba(109,184,232,0.08);color:rgba(255,255,255,0.80);font-style:normal;">
         ✉️ <strong>To receive your Cadors invitation</strong> if you meet the double condition (<em>top 20 SergeLive + top 50 Trio</em> for the month), remember to share your email address via the <strong>« Share my email »</strong> button at the top of this page — without an email I cannot send you the tournament password.
       </div>
+    </div>
+
+    <div class="divider">· · ·</div>
+
+    <!-- POSTER PRIME DE RÉGULARITÉ EN -->
+    <div class="poster-block">
+      <div class="poster-title">🔥 The Regularity Bonus at a glance</div>
+      <p class="poster-sub">In effect since July 2026 for Trio, SergeLive and Petits Cadors <em>(poster in French)</em>.</p>
+      <a href="prime-regularite-30jours.svg" target="_blank" rel="noopener">
+        <img src="prime-regularite-30jours.svg" alt="Regularity Bonus explainer poster (in French)" loading="lazy">
+      </a>
+      <p class="poster-hint">Click the poster to open it full size</p>
     </div>
 
     <div class="divider">· · ·</div>
