@@ -115,19 +115,13 @@ header p.tagline {
 .result-btn.visuel { border-color: rgba(94,211,201,0.4); background: linear-gradient(135deg, rgba(11,54,52,0.55), rgba(15,22,35,0.6)); }
 .result-btn.visuel:hover { border-color: rgba(94,211,201,0.8); }
 .result-btn.visuel .label { color: #7de8e0; }
-/* ── Aperçu du visuel mensuel ── */
-.visuel-preview { display: block; max-width: 760px; margin: 26px auto 4px; border-radius: 14px; overflow: hidden; border: 1px solid rgba(94,211,201,0.35); box-shadow: 0 10px 34px rgba(0,0,0,0.5); text-decoration: none; background: #0f1623; transition: transform 0.18s, border-color 0.18s; }
-.visuel-preview:hover { transform: translateY(-3px); border-color: rgba(94,211,201,0.8); }
-.visuel-preview img { width: 100%; display: block; }
-.visuel-preview .visuel-caption { padding: 10px 16px 12px; text-align: center; font-size: 0.85rem; color: #7de8e0; }
+.result-btn.prime { border-color: rgba(255,159,67,0.4); background: linear-gradient(135deg, rgba(70,40,12,0.55), rgba(15,22,35,0.6)); }
+.result-btn.prime:hover { border-color: rgba(255,159,67,0.8); }
+.result-btn.prime .label { color: #ffb066; }
 
-/* ── Poster prime de régularité ── */
-.poster-block { max-width: 860px; margin: 0 auto; text-align: center; }
-.poster-title { font-family: 'Playfair Display', serif; color: #e8c97a; font-size: 1.35rem; margin-bottom: 8px; }
-.poster-sub { color: rgba(255,255,255,0.65); font-size: 0.92rem; margin-bottom: 16px; }
-.poster-block a { display: block; }
-.poster-block img { width: 100%; border-radius: 14px; border: 1px solid rgba(232,201,122,0.35); box-shadow: 0 10px 34px rgba(0,0,0,0.5); display: block; background: #fff; }
-.poster-hint { color: rgba(255,255,255,0.4); font-size: 0.8rem; margin-top: 10px; }
+/* ── Mini-bouton poster prime de régularité (dans les encarts) ── */
+.poster-mini { display: inline-block; margin-left: 8px; padding: 2px 12px; border: 1px solid rgba(255,159,67,0.5); border-radius: 20px; color: #ffb066; font-size: 0.8rem; font-weight: 600; text-decoration: none; white-space: nowrap; transition: all 0.15s; }
+.poster-mini:hover { background: rgba(255,159,67,0.12); border-color: rgba(255,159,67,0.9); }
 
 .result-btn .live-badge {
   position: absolute; top: 8px; right: 9px;
@@ -294,15 +288,13 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
       <div class="label lang-en" style="display:none">Monthly Visual</div>
       <div class="sub-label"><span class="lang-fr">Tops &amp; recoupements</span><span class="lang-en" style="display:none">Tops &amp; overlaps</span></div>
     </a>
+    <a class="result-btn prime" href="https://chrisblb.github.io/funbridge/prime-regularite-30jours.svg">
+      <div class="icon">🔥</div>
+      <div class="label lang-fr">Prime de Régularité</div>
+      <div class="label lang-en" style="display:none">Consistency Bonus</div>
+      <div class="sub-label"><span class="lang-fr">Poster explicatif</span><span class="lang-en" style="display:none">Explainer poster</span></div>
+    </a>
   </div>
-
-  <a class="visuel-preview" href="https://chrisblb.github.io/funbridge/visuel-mensuel.html">
-    <img src="visuel-mensuel-current.png" alt="Visuel mensuel — tops 20 des 4 tournois et recoupements" loading="lazy">
-    <div class="visuel-caption">
-      <span class="lang-fr">🖼️ Le visuel du mois — tops 20 &amp; recoupements, mis à jour chaque matin · cliquer pour agrandir</span>
-      <span class="lang-en" style="display:none">🖼️ This month's visual — top 20s &amp; overlaps, updated every morning · click to enlarge</span>
-    </div>
-  </a>
 
   <div class="secondary-row">
     <a class="btn-secondary" href="https://chrisblb.github.io/funbridge/inscription.html"><span class="lang-fr">✉️ Communiquer mon email</span><span class="lang-en" style="display:none">✉️ Share my email</span></a>
@@ -342,7 +334,7 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
         <div class="rule-item" style="padding-left:34px;">• <strong>1<sup>er</sup> joker</strong> à partir de <strong>9 jours joués</strong></div>
         <div class="rule-item" style="padding-left:34px;">• <strong>2<sup>e</sup> joker</strong> à partir de <strong>18 jours joués</strong></div>
         <div class="rule-item" style="padding-left:34px;">• <strong>3<sup>e</sup> joker</strong> à partir de <strong>27 jours joués</strong></div>
-        <div class="rule-item">🔥 <strong>Prime de régularité</strong> — la plus longue série de jours consécutifs avec un score positif est convertie en points bonus et ajoutée au total mensuel. Les absences sont neutres, un score négatif remet le compteur à zéro <em>(en vigueur depuis juillet 2026)</em></div>
+        <div class="rule-item">🔥 <strong>Prime de régularité</strong> — la plus longue série de jours consécutifs avec un score positif est convertie en points bonus et ajoutée au total mensuel. Les absences sont neutres, un score négatif remet le compteur à zéro <em>(en vigueur depuis juillet 2026)</em> <a class="poster-mini" href="prime-regularite-30jours.svg" target="_blank" rel="noopener">🖼️ Voir le poster</a></div>
         <div class="rule-item">Classement mensuel remis à zéro le 1<sup>er</sup> de chaque mois · Cumul annuel calculé en parallèle</div>
         <div class="rule-item">Le <strong>top 30 mensuel</strong> est invité automatiquement au tournoi <strong>Les Cadors</strong> du mois suivant</div>
       </div>
@@ -373,25 +365,13 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
         <div class="rule-item"><strong>7 donnes par jour</strong> — format plus long qu'un tournoi standard</div>
         <div class="rule-item"><strong>Seuls les scores positifs sont retenus</strong> — un jour négatif compte comme 0 (pas de jokers nécessaires, pas de score à rattraper)</div>
         <div class="rule-item">⭐ <strong>Le 15 de chaque mois compte double</strong> — le 15 est la date à laquelle Serge nous a quittés pour rejoindre les étoiles. Ce jour-là, le score obtenu est compté double en son souvenir <em>(en vigueur depuis juillet 2026 — les points des jeudis ne sont plus doublés)</em></div>
-        <div class="rule-item">🔥 <strong>Prime de régularité</strong> — à la fin de chaque mois, le nombre de jours consécutifs le plus long réalisé avec un score positif est converti en points bonus et ajouté au total. Jouer chaque jour à son meilleur niveau est ainsi récompensé <em>(en vigueur depuis juillet 2026)</em></div>
+        <div class="rule-item">🔥 <strong>Prime de régularité</strong> — à la fin de chaque mois, le nombre de jours consécutifs le plus long réalisé avec un score positif est converti en points bonus et ajouté au total. Jouer chaque jour à son meilleur niveau est ainsi récompensé <em>(en vigueur depuis juillet 2026)</em> <a class="poster-mini" href="prime-regularite-30jours.svg" target="_blank" rel="noopener">🖼️ Voir le poster</a></div>
         <div class="rule-item">Classement mensuel remis à zéro le 1<sup>er</sup> de chaque mois · Cumul annuel calculé en parallèle</div>
         <div class="rule-item">Une <strong>voie de qualification croisée</strong> existe vers Les Cadors : être à la fois dans le top 20 SergeLive et top 50 Trio du mois</div>
       </div>
       <div class="note" style="border-left-color:rgba(99,184,232,0.6);background:rgba(99,184,232,0.08);color:rgba(255,255,255,0.80);font-style:normal;">
         ✉️ <strong>Pour recevoir l'invitation aux Cadors</strong> si vous remplissez la double condition (<em>top 20 SergeLive + top 50 Trio</em> sur le mois), pensez à me communiquer votre adresse email via le bouton <strong>« Communiquer mon email »</strong> en haut de cette page — sans email je ne peux pas vous envoyer le mot de passe du tournoi.
       </div>
-    </div>
-
-    <div class="divider">· · ·</div>
-
-    <!-- POSTER PRIME DE RÉGULARITÉ FR -->
-    <div class="poster-block">
-      <div class="poster-title">🔥 La Prime de Régularité en un coup d'œil</div>
-      <p class="poster-sub">En vigueur depuis juillet 2026 au Trio, au SergeLive et aux Petits Cadors.</p>
-      <a href="prime-regularite-30jours.svg" target="_blank" rel="noopener">
-        <img src="prime-regularite-30jours.svg" alt="Poster explicatif de la Prime de Régularité" loading="lazy">
-      </a>
-      <p class="poster-hint">Cliquer sur le poster pour l'ouvrir en grand</p>
     </div>
 
     <div class="divider">· · ·</div>
@@ -500,7 +480,7 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
         <div class="rule-item">Les joueurs extérieurs au Trio sont les bienvenus — mais seuls les fidèles du Trio peuvent accéder aux Cadors</div>
         <div class="rule-item">4 donnes par jour · Classement mensuel remis à zéro le 1<sup>er</sup> du mois</div>
         <div class="rule-item"><strong>Même système de 3 jokers que le Trio</strong> — seuils : 9 / 18 / 27 jours joués</div>
-        <div class="rule-item">🔥 <strong>Prime de régularité</strong> — la plus longue série de jours consécutifs avec un score positif est convertie en points bonus et ajoutée au total mensuel. Les absences sont neutres, un score négatif remet le compteur à zéro <em>(en vigueur depuis juillet 2026)</em></div>
+        <div class="rule-item">🔥 <strong>Prime de régularité</strong> — la plus longue série de jours consécutifs avec un score positif est convertie en points bonus et ajoutée au total mensuel. Les absences sont neutres, un score négatif remet le compteur à zéro <em>(en vigueur depuis juillet 2026)</em> <a class="poster-mini" href="prime-regularite-30jours.svg" target="_blank" rel="noopener">🖼️ Voir le poster</a></div>
       </div>
       <div class="note">
         💡 C'est la meilleure voie de rattrapage : un mois compliqué au Trio ? Les Petits Cadors restent ouverts jusqu'au dernier jour du mois.
@@ -558,7 +538,7 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
         <div class="rule-item" style="padding-left:34px;">• <strong>1<sup>st</sup> joker</strong> from <strong>9 days played</strong></div>
         <div class="rule-item" style="padding-left:34px;">• <strong>2<sup>nd</sup> joker</strong> from <strong>18 days played</strong></div>
         <div class="rule-item" style="padding-left:34px;">• <strong>3<sup>rd</sup> joker</strong> from <strong>27 days played</strong></div>
-        <div class="rule-item">🔥 <strong>Consistency bonus</strong> — the longest consecutive streak of days with a positive score is converted into bonus points and added to the monthly total. Absences are neutral, a negative score resets the counter to zero <em>(in effect from July 2026)</em></div>
+        <div class="rule-item">🔥 <strong>Consistency bonus</strong> — the longest consecutive streak of days with a positive score is converted into bonus points and added to the monthly total. Absences are neutral, a negative score resets the counter to zero <em>(in effect from July 2026)</em> <a class="poster-mini" href="prime-regularite-30jours.svg" target="_blank" rel="noopener">🖼️ See the poster <em style="font-weight:400">(French)</em></a></div>
         <div class="rule-item">Monthly ranking reset on the 1<sup>st</sup> of each month · Annual cumulative calculated in parallel</div>
         <div class="rule-item">The <strong>monthly top 30</strong> is automatically invited to the <strong>Les Cadors</strong> tournament the following month</div>
       </div>
@@ -589,25 +569,13 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
         <div class="rule-item"><strong>7 deals per day</strong> — a longer format than a standard tournament</div>
         <div class="rule-item"><strong>Only positive scores are counted</strong> — a negative day counts as 0 (no jokers needed, no score to make up)</div>
         <div class="rule-item">⭐ <strong>The 15th of each month counts double</strong> — the 15th is the date Serge left us to join the stars. That day, the score achieved is counted double in his memory <em>(in effect from July 2026 — Thursday scores are no longer doubled)</em></div>
-        <div class="rule-item">🔥 <strong>Consistency bonus</strong> — at the end of each month, the longest streak of consecutive days with a positive score is converted into bonus points and added to the total. Playing every day at your best is rewarded <em>(in effect from July 2026)</em></div>
+        <div class="rule-item">🔥 <strong>Consistency bonus</strong> — at the end of each month, the longest streak of consecutive days with a positive score is converted into bonus points and added to the total. Playing every day at your best is rewarded <em>(in effect from July 2026)</em> <a class="poster-mini" href="prime-regularite-30jours.svg" target="_blank" rel="noopener">🖼️ See the poster <em style="font-weight:400">(French)</em></a></div>
         <div class="rule-item">Monthly ranking reset on the 1<sup>st</sup> of each month · Annual cumulative calculated in parallel</div>
         <div class="rule-item">A <strong>cross-qualification route</strong> exists to Les Cadors: finish in both the top 20 SergeLive and top 50 Trio for the month</div>
       </div>
       <div class="note" style="border-left-color:rgba(109,184,232,0.6);background:rgba(109,184,232,0.08);color:rgba(255,255,255,0.80);font-style:normal;">
         ✉️ <strong>To receive your Cadors invitation</strong> if you meet the double condition (<em>top 20 SergeLive + top 50 Trio</em> for the month), remember to share your email address via the <strong>« Share my email »</strong> button at the top of this page — without an email I cannot send you the tournament password.
       </div>
-    </div>
-
-    <div class="divider">· · ·</div>
-
-    <!-- POSTER PRIME DE RÉGULARITÉ EN -->
-    <div class="poster-block">
-      <div class="poster-title">🔥 The Regularity Bonus at a glance</div>
-      <p class="poster-sub">In effect since July 2026 for Trio, SergeLive and Petits Cadors <em>(poster in French)</em>.</p>
-      <a href="prime-regularite-30jours.svg" target="_blank" rel="noopener">
-        <img src="prime-regularite-30jours.svg" alt="Regularity Bonus explainer poster (in French)" loading="lazy">
-      </a>
-      <p class="poster-hint">Click the poster to open it full size</p>
     </div>
 
     <div class="divider">· · ·</div>
@@ -716,7 +684,7 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
         <div class="rule-item">Players outside the Trio are welcome — but only regular Trio players can qualify for Les Cadors</div>
         <div class="rule-item">4 deals per day · Monthly ranking reset on the 1<sup>st</sup> of each month</div>
         <div class="rule-item"><strong>Same 3-joker system as Trio Quotidien</strong> — thresholds: 9 / 18 / 27 days played</div>
-        <div class="rule-item">🔥 <strong>Consistency bonus</strong> — the longest consecutive streak of days with a positive score is converted into bonus points and added to the monthly total. Absences are neutral, a negative score resets the counter to zero <em>(in effect from July 2026)</em></div>
+        <div class="rule-item">🔥 <strong>Consistency bonus</strong> — the longest consecutive streak of days with a positive score is converted into bonus points and added to the monthly total. Absences are neutral, a negative score resets the counter to zero <em>(in effect from July 2026)</em> <a class="poster-mini" href="prime-regularite-30jours.svg" target="_blank" rel="noopener">🖼️ See the poster <em style="font-weight:400">(French)</em></a></div>
       </div>
       <div class="note">
         💡 Your best recovery route: had a tough month in the Trio? Les Petits Cadors stays open until the last day of the month.
