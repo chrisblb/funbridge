@@ -179,7 +179,7 @@
 <text x="50" y="850" font-size="20" font-weight="800" fill="#212121">LÉGENDE</text>
 <circle cx="215" cy="842" r="17" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2.5"/>
 <text x="215" y="850" text-anchor="middle" font-size="21" font-weight="800" fill="#2e7d32">+</text>
-<text x="245" y="838" font-size="16" font-weight="700" fill="#212121">Score positif</text>
+<text x="245" y="838" font-size="16" font-weight="700" fill="#212121">Score positif ou nul</text>
 <text x="245" y="860" font-size="15" fill="#777">(la série continue)</text>
 <circle cx="465" cy="842" r="17" fill="#fdecea" stroke="#c62828" stroke-width="2.5"/>
 <text x="465" y="850" text-anchor="middle" font-size="21" font-weight="800" fill="#c62828">−</text>
@@ -190,8 +190,9 @@
 <text x="730" y="838" font-size="16" font-weight="700" fill="#212121">Jour non joué</text>
 <text x="730" y="860" font-size="15" fill="#777">(ne coupe pas la série)</text>
 <rect x="940" y="785" width="540" height="115" rx="10" fill="#ffffff" stroke="#999" stroke-width="1.5" stroke-dasharray="6 5"/>
-<text x="972" y="850" font-size="30">💡</text>
-<text x="1020" y="826" font-size="16" fill="#212121">Les séries doivent être des jours consécutifs.</text>
-<text x="1020" y="850" font-size="16" fill="#212121">Les jours non joués (✕) ne coupent pas la série ;</text>
-<text x="1020" y="874" font-size="16" fill="#212121">seuls les scores négatifs (−) l’arrêtent.</text>
+<text x="972" y="846" font-size="30">💡</text>
+<text x="1020" y="812" font-size="16" fill="#212121">Les séries doivent être des jours consécutifs.</text>
+<text x="1020" y="834" font-size="16" fill="#212121">Les jours non joués (✕) ne coupent pas la série ;</text>
+<text x="1020" y="856" font-size="16" fill="#212121">seuls les scores négatifs (−) l’arrêtent.</text>
+<text x="1020" y="878" font-size="15" fill="#1b5e20" font-weight="700">Un score de 0 est traité comme positif.</text>
 </svg>
