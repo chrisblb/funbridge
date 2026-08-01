@@ -248,16 +248,35 @@ footer a:hover { color: #e8c97a; }
   .tl-row { flex-wrap: wrap; }
   .tl-when { margin-left: 0; width: 100%; text-align: left; }
 }
+
+/* ── BOUTON LANGUE ── */
+.lang-btn {
+  margin-top: 12px;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7);
+  font-size: 0.8rem; font-weight: 500;
+  padding: 5px 14px; border-radius: 30px;
+  border: 1px solid rgba(255,255,255,0.2);
+  cursor: pointer; font-family: 'DM Sans', sans-serif;
+  transition: all 0.15s;
+}
+.lang-btn:hover { background: rgba(255,255,255,0.14); color: #fff; }
 </style>
 </head>
 <body>
 
 <header>
-  <span class="kicker">Premier départ le 22 août 2026 · La Vuelta</span>
-  <h1>Les Quintés des Grands Tours</h1>
-  <p class="tagline">Giro · Tour de France · Vuelta</p>
+  <span class="kicker lang-fr">Premier départ le 22 août 2026 · La Vuelta</span>
+  <span class="kicker lang-en" style="display:none">First start on 22 August 2026 · The Vuelta</span>
+  <h1 class="lang-fr">Les Quintés des Grands Tours</h1>
+  <h1 class="lang-en" style="display:none">The Grand Tour Quintés</h1>
+  <p class="tagline lang-fr">Giro · Tour de France · Vuelta</p>
+  <p class="tagline lang-en" style="display:none">Giro · Tour de France · Vuelta</p>
   <div class="jerseys">🩷 💛 ❤️</div>
+  <button class="lang-btn" id="lang-btn" type="button">🇬🇧 English</button>
 </header>
+
+<div class="lang-fr">
 
 <div class="intro">
   <p class="lead">Trois nouveaux tournois par étapes, calqués sur les trois grands tours cyclistes.</p>
@@ -639,16 +658,402 @@ footer a:hover { color: #e8c97a; }
   </div>
 </section>
 
+</div><!-- fin .lang-fr -->
+
+<div class="lang-en" style="display:none">
+
+<div class="intro">
+  <p class="lead">Three new stage tournaments, modelled on the three cycling grand tours.</p>
+  <p>
+    One stage a day. Five deals. Time bonuses for the best, a time limit for the rest —
+    and a peloton that thins out day after day until the final standings.
+  </p>
+  <p>
+    An idea from <strong style="color:#e8c97a">maki21</strong>, worked out together for a launch
+    in <strong>2026</strong> with the Vuelta Quinté.
+  </p>
+</div>
+
+<!-- ════════ THE THREE RACES ════════ -->
+<div class="cards">
+
+  <div class="card card-vuelta">
+    <div class="card-top">
+      <div class="card-icon">❤️</div>
+      <div>
+        <div class="card-header">The Vuelta Quinté</div>
+        <div class="card-sub">Stage race · 22 August – 13 September 2026</div>
+        <span class="badge">Red jersey · Registration required</span>
+      </div>
+    </div>
+    <p class="card-desc">
+      This is the one that opens the season, at the end of this summer. Three weeks to discover the
+      format for real, before the Giro and the Tour in 2027.
+    </p>
+    <div class="stage-facts">
+      <div class="fact"><strong>21</strong> stages</div>
+      <div class="fact"><strong>5</strong> deals a day</div>
+      <div class="fact"><strong>2</strong> rest days</div>
+      <div class="fact"><strong>23</strong> days in all</div>
+    </div>
+  </div>
+
+  <div class="divider">· · ·</div>
+
+  <div class="card card-giro">
+    <div class="card-top">
+      <div class="card-icon">🩷</div>
+      <div>
+        <div class="card-header">The Giro Quinté</div>
+        <div class="card-sub">Stage race · May 2027</div>
+        <span class="badge">Pink jersey · Registration required</span>
+      </div>
+    </div>
+    <p class="card-desc">
+      The first race of 2027, in the spring. The peloton re-forms after the Vuelta: the habits are
+      there, the format is proven.
+    </p>
+    <div class="stage-facts">
+      <div class="fact"><strong>21</strong> stages</div>
+      <div class="fact"><strong>5</strong> deals a day</div>
+      <div class="fact"><strong>2</strong> rest days</div>
+      <div class="fact"><strong>23</strong> days in all</div>
+    </div>
+  </div>
+
+  <div class="divider">· · ·</div>
+
+  <div class="card card-tour">
+    <div class="card-top">
+      <div class="card-icon">💛</div>
+      <div>
+        <div class="card-header">The Tour Quinté</div>
+        <div class="card-sub">Stage race · July 2027</div>
+        <span class="badge">Yellow jersey · Registration required</span>
+      </div>
+    </div>
+    <p class="card-desc">
+      The centrepiece of the summer, at the same time as the real Tour de France. The one everybody
+      will want to win.
+    </p>
+    <div class="stage-facts">
+      <div class="fact"><strong>21</strong> stages</div>
+      <div class="fact"><strong>5</strong> deals a day</div>
+      <div class="fact"><strong>2</strong> rest days</div>
+      <div class="fact"><strong>23</strong> days in all</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ════════ THE CALENDAR ════════ -->
+<section class="block">
+  <h2>The calendar</h2>
+  <p class="sub">Saturday to the third Sunday that follows, just like the real races</p>
+  <div class="timeline">
+    <div class="tl-row">
+      <span class="tl-dot tl-vuelta"></span>
+      <span class="tl-name">❤️ The Vuelta Quinté</span>
+      <span class="tl-when">22 August – 13 September 2026 · 3 weeks</span>
+    </div>
+    <div class="tl-row">
+      <span class="tl-dot tl-giro"></span>
+      <span class="tl-name">🩷 The Giro Quinté</span>
+      <span class="tl-when">May 2027 · 3 weeks</span>
+    </div>
+    <div class="tl-row">
+      <span class="tl-dot tl-tour"></span>
+      <span class="tl-name">💛 The Tour Quinté</span>
+      <span class="tl-when">July 2027 · 3 weeks</span>
+    </div>
+  </div>
+  <div class="note">
+    📅 The 2026 Vuelta is set: <strong>22 August to 13 September</strong>, 21 stages and 2 rest days.
+    Dates for the 2027 Giro and Tour will be announced as soon as the official routes are published.
+    Throughout, the Trio Quotidien, the SergeLive, the Cadors and the Petits Cadors carry on as usual.
+  </div>
+</section>
+
+<!-- ════════ THE RULES ════════ -->
+<section class="block">
+  <h2>How it works</h2>
+  <p class="sub">The rules, stage by stage</p>
+
+  <div class="rulebox">
+
+    <div class="rule">
+      <div class="rule-num">1</div>
+      <div class="rule-body">
+        <h3>One stage a day, five deals</h3>
+        <p>
+          Every day of the race is a stage: <strong>5 deals in IMPs</strong>, to be played that day.
+          That is what sets these three races apart from the Trio Quotidien (3 deals) — hence
+          <em>quintés</em>, fives.
+        </p>
+      </div>
+    </div>
+
+    <div class="rule">
+      <div class="rule-num">2</div>
+      <div class="rule-body">
+        <h3>Taking part is compulsory</h3>
+        <p>
+          A stage you do not play counts as abandoning: you are <strong>out of the rest of the race</strong>.
+          Just like on the road, you do not skip a stage.
+        </p>
+      </div>
+    </div>
+
+    <div class="rule">
+      <div class="rule-num">3</div>
+      <div class="rule-body">
+        <h3>Two rest days</h3>
+        <p>
+          The <strong>2nd and 3rd Mondays</strong> are neutralised. The tournament stays open on Funbridge
+          and you may play if you feel like it: it is simply that <strong>that day earns and costs nobody
+          a single IMP</strong>, whether they played or not.
+        </p>
+        <p style="margin-top:10px;">
+          Two consequences: being absent carries no penalty at all, and
+          <strong>no one can be eliminated on a rest day</strong> — even with a dreadful score,
+          since the day counts as zero. Two real breathers in the three weeks.
+        </p>
+      </div>
+    </div>
+
+    <div class="rule">
+      <div class="rule-num">4</div>
+      <div class="rule-body">
+        <h3>Stage bonuses</h3>
+        <p>
+          Like bonus seconds in a sprint, the top three <strong>ranks</strong> of the day earn extra IMPs:
+          <strong>+10</strong> for 1st rank, <strong>+6</strong> for 2nd, <strong>+4</strong> for 3rd.
+          Note carefully: these are <em>ranks</em>, not players — everyone tied on the same rank gets the
+          same bonus.
+        </p>
+      </div>
+    </div>
+
+    <div class="rule">
+      <div class="rule-num">5</div>
+      <div class="rule-body">
+        <h3>Two time-trial stages</h3>
+        <p>
+          Two stages of the race are designated as <strong>time trials</strong>: you play them normally,
+          but with <strong>no bonus at all</strong>. Only the raw score counts — every rider against the
+          clock. That is the cycling rule: bonus seconds are only awarded at the finish of road stages.
+        </p>
+        <p style="margin-top:10px;">
+          <strong>The stages concerned will be announced during the race</strong>, as it unfolds — so you
+          will know in advance when the bonus does not apply.
+        </p>
+      </div>
+    </div>
+
+    <div class="rule">
+      <div class="rule-num">6</div>
+      <div class="rule-body">
+        <h3>The time limit</h3>
+        <p>
+          Any player whose score for the day is <strong>below −25 IMPs</strong> is out of the rest of the
+          race. It is an <strong>absolute</strong> threshold, not a gap to the leader: whether the day's
+          winner is on +33 or on +12, the bar is the same for everyone. A bad day is therefore not enough
+          to knock you out — you really have to be outside the time limit.
+        </p>
+      </div>
+    </div>
+
+    <div class="rule">
+      <div class="rule-num">7</div>
+      <div class="rule-body">
+        <h3>The final standings</h3>
+        <p>
+          The standings for each race are the <strong>sum of the IMP scores of every stage</strong>,
+          bonuses included. One classification per grand tour — and so three winners in the year.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════ WORKED EXAMPLE ════════ -->
+<section class="block">
+  <h2>Bonuses made plain</h2>
+  <p class="sub">A real example, taken from a day of the Cadors</p>
+
+  <div class="rulebox">
+    <div class="example-wrap">
+      <table class="example">
+        <thead>
+          <tr>
+            <th>Rank of the day</th>
+            <th>Score played</th>
+            <th>Players on that rank</th>
+            <th>Bonus</th>
+            <th>Score kept</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="rank">1st</td><td>+15 IMPs</td><td>1 player</td><td class="bonus">+10</td><td class="total">+25</td></tr>
+          <tr><td class="rank">2nd</td><td>+14 IMPs</td><td>4 players</td><td class="bonus">+6</td><td class="total">+20</td></tr>
+          <tr><td class="rank">3rd</td><td>+13 IMPs</td><td>6 players</td><td class="bonus">+4</td><td class="total">+17</td></tr>
+          <tr><td class="rank">4th</td><td>+8 IMPs</td><td>and below</td><td class="none">none</td><td class="total">+8</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note gold">
+      💡 <strong>Eleven players</strong> across the top three ranks are rewarded, not just three people.
+      That is the whole point of the system: as soon as there are ties, the bonus benefits many.
+    </div>
+    <div class="note">
+      🚴 On that same day, with 31 players and the bar at −25 IMPs, <strong>a single player</strong>
+      would have been eliminated, on −27. The peloton thins out, but it stays dense — elimination
+      punishes the accident, not the bad day. (That day was a Cadors tournament, over four deals;
+      over five deals the spread stretches a little further, which is precisely why the bar was
+      lowered to −25.)
+    </div>
+  </div>
+</section>
+
+<!-- ════════ ACCESS ════════ -->
+<section class="block">
+  <h2>Getting into the three races</h2>
+  <p class="sub">Registration beforehand, and a password</p>
+
+  <div class="rulebox">
+    <div class="rule">
+      <div class="rule-num">🔑</div>
+      <div class="rule-body">
+        <h3>Password-protected tournaments</h3>
+        <p>
+          These three races are not open access. The password is sent <strong>by email</strong> to
+          registered players only: you therefore need to have given me your address before the start.
+        </p>
+      </div>
+    </div>
+    <div class="rule">
+      <div class="rule-num">✉️</div>
+      <div class="rule-body">
+        <h3>Registration by name</h3>
+        <p>
+          I only accept players in these tournaments who have registered and whose email address I hold.
+          That is what lets me handle eliminations, tell the players concerned, and keep the standings clean.
+        </p>
+      </div>
+    </div>
+    <div class="rule">
+      <div class="rule-num">⚠️</div>
+      <div class="rule-body">
+        <h3>Playing by the rules</h3>
+        <p>
+          Funbridge gives me no way to technically shut the door on an eliminated player. The rules
+          therefore rest on everyone's good faith — and that is just as it should be. An eliminated player
+          who kept on playing would have their results <strong>left out of the standings</strong> and
+          would face a deterrent penalty of <strong>−50 IMPs a day</strong>. A reminder would be sent by email.
+        </p>
+      </div>
+    </div>
+    <div class="note warn">
+      🤝 Put plainly: once you are outside the time limit, you put the bike away. It is the only rule that
+      asks for everyone's good faith, and I trust the peloton entirely.
+    </div>
+  </div>
+</section>
+
+<!-- ════════ CALL TO REGISTER ════════ -->
+<div class="cta">
+  <h2>Put your name down now</h2>
+  <p>
+    The launch is the 2026 Vuelta Quinté, starting on <strong>22 August</strong>. Send me your email
+    address to register and then receive everything you need to know about these three new tournaments.
+  </p>
+  <a class="cta-btn" href="https://chrisblb.github.io/funbridge/inscription.html">✉️ Send me my email address</a>
+  <small>Your address is used only to run the tournaments. Nothing else, ever.</small>
+</div>
+
+<!-- ════════ QUESTIONS ════════ -->
+<section class="block">
+  <h2>The questions you are already asking</h2>
+  <p class="sub">And the answers, before you even ask them</p>
+
+  <div class="faq">
+    <details>
+      <summary>Five deals a day for three weeks — isn't that a lot?</summary>
+      <p>
+        That is what a stage race is: commitment is part of the game. But nobody has to enter, and the
+        Trio Quotidien, the SergeLive, the Cadors and the Petits Cadors all carry on as usual meanwhile.
+        These three races are an addition, not a replacement.
+      </p>
+    </details>
+    <details>
+      <summary>I'm away on holiday in the middle of the race — can I take part?</summary>
+      <p>
+        Not really: playing every day is compulsory, apart from the two rest Mondays. Better to aim for
+        another grand tour during the year — which is exactly why there are three of them.
+      </p>
+    </details>
+    <details>
+      <summary>If I'm eliminated, is that it for me?</summary>
+      <p>
+        For that race, yes. But the three events are independent: being eliminated in the Giro does not
+        stop you starting the Tour in July. And the other tournaments stay open all year round.
+      </p>
+    </details>
+    <details>
+      <summary>Is the elimination threshold final?</summary>
+      <p>
+        Yes: it is settled at <strong>−25 IMPs</strong>. It was first set at −20, then raised after
+        combing through the real results of the Trio, the Cadors and the Petits Cadors. The reason: over
+        five deals the spread stretches, and a bar at −20 repeated 21 times would have knocked out close
+        to half the peloton. At −25, <strong>7 to 8 players in 10</strong> see the finish — the
+        proportion of a real grand tour.
+      </p>
+    </details>
+    <details>
+      <summary>How will I know where I stand?</summary>
+      <p>
+        Just as with the other tournaments: standings online, updated every morning, with the running
+        total, the bonuses earned and the list of players still in the race.
+      </p>
+    </details>
+  </div>
+</section>
+
+</div><!-- fin .lang-en -->
+
 <footer>
-  <p>Une idée de <strong style="color:rgba(232,201,122,0.75)">maki21</strong>, mise en œuvre par
+  <p class="lang-fr">Une idée de <strong style="color:rgba(232,201,122,0.75)">maki21</strong>, mise en œuvre par
+     <strong style="color:rgba(232,201,122,0.75)">chrisblb</strong></p>
+  <p class="lang-en" style="display:none">An idea from <strong style="color:rgba(232,201,122,0.75)">maki21</strong>, put into practice by
      <strong style="color:rgba(232,201,122,0.75)">chrisblb</strong></p>
   <p style="margin-top:8px;">
-    <a href="https://chrisblb.github.io/funbridge/presentation.html">← Retour à la présentation des tournois</a>
+    <a class="lang-fr" href="https://chrisblb.github.io/funbridge/presentation.html">← Retour à la présentation des tournois</a>
+    <a class="lang-en" style="display:none" href="https://chrisblb.github.io/funbridge/presentation.html">← Back to the tournament overview</a>
   </p>
-  <p style="margin-top:14px;font-size:0.76rem;color:rgba(255,255,255,0.22);">
+  <p class="lang-fr" style="margin-top:14px;font-size:0.76rem;color:rgba(255,255,255,0.22);">
     Règlement en vigueur pour le Quinté de la Vuelta 2026 · Départ le 22 août
   </p>
+  <p class="lang-en" style="display:none;margin-top:14px;font-size:0.76rem;color:rgba(255,255,255,0.22);">
+    Rules in force for the 2026 Vuelta Quinté · Start on 22 August
+  </p>
 </footer>
+
+<script>
+function setLang(lang) {
+  try { localStorage.setItem('pblang', lang); } catch (e) {}
+  document.querySelectorAll('.lang-fr').forEach(function(el){ el.style.display = lang === 'fr' ? '' : 'none'; });
+  document.querySelectorAll('.lang-en').forEach(function(el){ el.style.display = lang === 'en' ? '' : 'none'; });
+  document.getElementById('lang-btn').innerHTML = lang === 'fr' ? '\uD83C\uDDEC\uD83C\uDDE7 English' : '\uD83C\uDDEB\uD83C\uDDF7 Français';
+  document.documentElement.lang = lang;
+}
+var pref = 'fr';
+try { pref = localStorage.getItem('pblang') || 'fr'; } catch (e) {}
+setLang(pref === 'en' ? 'en' : 'fr');
+document.getElementById('lang-btn').addEventListener('click', function() {
+  setLang(document.documentElement.lang === 'en' ? 'fr' : 'en');
+});
+</script>
 
 </body>
 </html>
