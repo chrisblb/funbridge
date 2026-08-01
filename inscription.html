@@ -22,6 +22,17 @@ input:focus{outline:none;border-color:var(--purple-mid);}
 textarea{width:100%;padding:11px 14px;border:1.5px solid #ccc;border-radius:8px;font-size:0.97rem;font-family:'DM Sans',sans-serif;background:#fff;transition:border-color 0.2s;resize:vertical;min-height:90px;}
 textarea:focus{outline:none;border-color:var(--purple-mid);}
 .field{margin-bottom:20px;}
+.tournois{display:flex;flex-direction:column;gap:9px;margin-top:4px;}
+.tcb{display:flex;align-items:center;gap:12px;padding:11px 14px;border:1.5px solid #ccc;border-radius:8px;
+     background:#fff;cursor:pointer;transition:border-color .15s,background .15s;margin:0;}
+.tcb:hover{border-color:var(--purple-mid);background:#fbfaf7;}
+.tcb input{width:19px;height:19px;flex:0 0 auto;accent-color:var(--purple-mid);cursor:pointer;margin:0;}
+.tcb.coche{border-color:var(--purple-mid);background:#eef4ff;}
+.tico{font-size:1.3rem;line-height:1;flex:0 0 auto;}
+.tnom{display:flex;flex-direction:column;font-size:0.94rem;color:#2a2a2a;font-weight:500;line-height:1.3;}
+.tnom small{font-weight:400;font-size:0.76rem;color:#6a6a6a;margin-top:2px;}
+.hint{font-size:0.78rem;color:#8a5a2a;margin-top:8px;display:none;}
+.hint.visible{display:block;}
 button{width:100%;padding:14px;background:var(--purple);color:var(--gold-light);font-family:'Playfair Display',serif;font-size:1.05rem;border:none;border-radius:8px;cursor:pointer;transition:background 0.2s;margin-top:8px;}
 button:hover{background:var(--purple-mid);}
 .success{display:none;text-align:center;padding:20px 0;}
@@ -43,7 +54,10 @@ button:hover{background:var(--purple-mid);}
 
     <div class="info-box">
       <strong>Pourquoi votre adresse email ?</strong>
-      Elle me permettra de vous communiquer le mot de passe d'accès au tournoi LesCadors si vous êtes sélectionné(e) chaque mois.
+      Elle me permet de vous envoyer le mot de passe d'accès aux tournois qui vous intéressent :
+      chaque mois pour Les Cadors si vous êtes sélectionné(e), et au départ de chaque Grand Tour
+      — le premier étant <strong>Le Quinté de la Vuelta, le 22 août 2026</strong>.
+      Elle ne sert qu'à cela et n'est communiquée à personne.
     </div>
 
     <div class="field">
@@ -57,11 +71,38 @@ button:hover{background:var(--purple-mid);}
     </div>
 
     <div class="field">
+      <label>Quels tournois vous intéressent ? *</label>
+      <div class="tournois">
+        <label class="tcb">
+          <input type="checkbox" name="tournois" value="cadors">
+          <span class="tico">&#x1F451;</span>
+          <span class="tnom">Les Cadors<small>Tournoi mensuel, sur sélection</small></span>
+        </label>
+        <label class="tcb">
+          <input type="checkbox" name="tournois" value="vuelta">
+          <span class="tico">&#x2764;&#xFE0F;</span>
+          <span class="tnom">Le Quinté de la Vuelta<small>Du 22 août au 13 septembre 2026 &middot; 21 étapes &middot; maillot rouge</small></span>
+        </label>
+        <label class="tcb">
+          <input type="checkbox" name="tournois" value="giro">
+          <span class="tico">&#x1FA77;</span>
+          <span class="tnom">Le Quinté du Giro<small>Mai 2027 &middot; 21 étapes &middot; maillot rose</small></span>
+        </label>
+        <label class="tcb">
+          <input type="checkbox" name="tournois" value="tour">
+          <span class="tico">&#x1F49B;</span>
+          <span class="tnom">Le Quinté du Tour<small>Juillet 2027 &middot; 21 étapes &middot; maillot jaune</small></span>
+        </label>
+      </div>
+      <div class="hint" id="tournois-hint">Merci de cocher au moins un tournoi.</div>
+    </div>
+
+    <div class="field">
       <label for="message">Message éventuel</label>
       <textarea id="message" name="message" placeholder="Vos questions ou remarques…"></textarea>
     </div>
 
-    <input type="hidden" name="_subject" value="Nouvelle inscription — LesCadors chrisblb">
+    <input type="hidden" name="_subject" value="Nouvelle inscription — tournois chrisblb">
     <input type="hidden" name="_language" value="fr">
 
     <button type="submit">S'inscrire</button>
@@ -69,7 +110,7 @@ button:hover{background:var(--purple-mid);}
 
   <div class="success" id="successMsg">
     <div class="check">✅</div>
-    <p>Inscription enregistrée !<br>Merci !</p>
+    <p>Inscription enregistrée !<br>Vous recevrez le mot de passe par email avant chaque tournoi choisi.<br><br>Merci !</p>
   </div>
 </div>
 
@@ -77,8 +118,25 @@ button:hover{background:var(--purple-mid);}
 
 <script>
 const form = document.getElementById('inscriptionForm');
+
+// Surlignage de la ligne cochée
+document.querySelectorAll('.tcb input').forEach(function(cb) {
+  cb.addEventListener('change', function() {
+    cb.closest('.tcb').classList.toggle('coche', cb.checked);
+    document.getElementById('tournois-hint').classList.remove('visible');
+  });
+});
+
 form.addEventListener('submit', async function(e) {
   e.preventDefault();
+
+  // Au moins un tournoi doit être coché
+  if (document.querySelectorAll('.tcb input:checked').length === 0) {
+    document.getElementById('tournois-hint').classList.add('visible');
+    document.querySelector('.tournois').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
   const data = new FormData(form);
   const resp = await fetch(form.action, {
     method: 'POST',
