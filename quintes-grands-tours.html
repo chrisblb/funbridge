@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Les Quintés des Grands Tours · Départ le 22 août 2026</title>
+<meta name="theme-color" content="#0f1623">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: #0f1623;
+  color: #e2e8f0;
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* ── HEADER ── */
+header {
+  text-align: center;
+  padding: 34px 20px 26px;
+  background: linear-gradient(180deg, #0a0f1a 0%, #0f1623 90%);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.kicker {
+  display: inline-block;
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: #0f1623; background: #e8c97a;
+  padding: 4px 14px; border-radius: 20px;
+  margin-bottom: 14px;
+}
+header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.7rem, 5.2vw, 2.6rem);
+  color: #e8c97a;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+  margin-bottom: 10px;
+}
+header p.tagline {
+  color: rgba(255,255,255,0.45);
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.jerseys { font-size: 1.6rem; letter-spacing: 0.35em; margin-top: 16px; }
+
+/* ── CHAPÔ ── */
+.intro {
+  max-width: 720px; margin: 34px auto 10px; padding: 0 22px;
+  text-align: center;
+}
+.intro p {
+  color: rgba(255,255,255,0.72);
+  font-size: 1.02rem; line-height: 1.8;
+}
+.intro p + p { margin-top: 14px; }
+.intro .lead {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.18rem; color: #fde68a; line-height: 1.6;
+}
+
+/* ── CARTES DES TROIS TOURS ── */
+.cards {
+  max-width: 860px; margin: 34px auto 40px; padding: 0 20px;
+  display: flex; flex-direction: column; gap: 26px;
+}
+.card {
+  border-radius: 20px; padding: 32px 36px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.09);
+  position: relative; overflow: hidden;
+}
+.card-top { display: flex; align-items: flex-start; gap: 20px; margin-bottom: 18px; }
+.card-icon { font-size: 2.4rem; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+.card-header { font-family: 'Playfair Display', serif; font-size: 1.55rem; font-weight: 700; line-height: 1.2; }
+.card-sub { font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-top: 5px; }
+.badge {
+  display: inline-block; font-size: 0.75rem; font-weight: 600;
+  padding: 3px 12px; border-radius: 20px; margin-top: 9px; letter-spacing: 0.04em;
+}
+.card-desc { color: rgba(255,255,255,0.7); font-size: 0.97rem; line-height: 1.75; }
+
+/* Giro — maillot rose */
+.card-giro { border-color: rgba(236,72,153,0.42); background: linear-gradient(135deg, rgba(74,16,50,0.55) 0%, rgba(15,22,35,0.85) 90%); }
+.card-giro .card-header { color: #f9a8d4; }
+.card-giro .badge { background: rgba(236,72,153,0.20); color: #f9a8d4; border: 1px solid rgba(236,72,153,0.45); }
+
+/* Tour — maillot jaune */
+.card-tour { border-color: rgba(234,179,8,0.45); background: linear-gradient(135deg, rgba(56,42,5,0.6) 0%, rgba(15,22,35,0.85) 90%); }
+.card-tour .card-header { color: #fde68a; }
+.card-tour .badge { background: rgba(234,179,8,0.20); color: #fde68a; border: 1px solid rgba(234,179,8,0.45); }
+
+/* Vuelta — maillot rouge */
+.card-vuelta { border-color: rgba(229,72,77,0.45); background: linear-gradient(135deg, rgba(66,14,16,0.6) 0%, rgba(15,22,35,0.85) 90%); }
+.card-vuelta .card-header { color: #fca5a5; }
+.card-vuelta .badge { background: rgba(229,72,77,0.20); color: #fca5a5; border: 1px solid rgba(229,72,77,0.45); }
+
+.stage-facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.fact {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px; padding: 10px 14px;
+  font-size: 0.84rem; color: rgba(255,255,255,0.72);
+}
+.fact strong { color: #fff; display: block; font-size: 1.02rem; font-weight: 700; }
+
+/* ── SECTIONS ── */
+section.block { max-width: 860px; margin: 46px auto; padding: 0 22px; }
+section.block h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.55rem; color: #e8c97a;
+  text-align: center; margin-bottom: 8px;
+}
+section.block .sub {
+  text-align: center; color: rgba(255,255,255,0.5);
+  font-size: 0.9rem; margin-bottom: 26px;
+}
+
+/* ── RÈGLES ── */
+.rulebox {
+  background: rgba(255,255,255,0.035);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 18px; padding: 28px 32px;
+}
+.rule { display: flex; gap: 16px; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.rule:last-child { border-bottom: 0; padding-bottom: 0; }
+.rule:first-child { padding-top: 0; }
+.rule-num {
+  flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%;
+  background: rgba(232,201,122,0.15); border: 1px solid rgba(232,201,122,0.4);
+  color: #e8c97a; font-weight: 700; font-size: 0.85rem;
+  display: flex; align-items: center; justify-content: center;
+}
+.rule-body h3 {
+  font-size: 1rem; color: #fff; font-weight: 700; margin-bottom: 4px;
+}
+.rule-body p { font-size: 0.93rem; color: rgba(255,255,255,0.68); line-height: 1.7; }
+
+/* ── TABLEAU EXEMPLE ── */
+.example-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table.example {
+  width: 100%; min-width: 460px; border-collapse: collapse;
+  font-size: 0.92rem; margin-top: 6px;
+}
+table.example th {
+  text-align: left; font-size: 0.72rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: rgba(255,255,255,0.42);
+  padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.12);
+  font-weight: 600;
+}
+table.example td {
+  padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.78);
+}
+table.example tr:last-child td { border-bottom: 0; }
+table.example .rank { color: #e8c97a; font-weight: 700; }
+table.example .bonus { color: #6ee7b7; font-weight: 700; }
+table.example .total { color: #fff; font-weight: 700; }
+table.example .none { color: rgba(255,255,255,0.35); }
+
+/* ── CALENDRIER ── */
+.timeline { display: flex; flex-direction: column; gap: 14px; }
+.tl-row {
+  display: flex; align-items: center; gap: 16px;
+  background: rgba(255,255,255,0.035);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px; padding: 16px 20px;
+}
+.tl-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+.tl-giro { background: #ec4899; box-shadow: 0 0 14px rgba(236,72,153,0.6); }
+.tl-tour { background: #eab308; box-shadow: 0 0 14px rgba(234,179,8,0.6); }
+.tl-vuelta { background: #e5484d; box-shadow: 0 0 14px rgba(229,72,77,0.6); }
+.tl-name { font-weight: 700; color: #fff; font-size: 1rem; }
+.tl-when { color: rgba(255,255,255,0.55); font-size: 0.88rem; margin-left: auto; text-align: right; }
+
+/* ── ENCADRÉS ── */
+.note {
+  margin-top: 20px; padding: 14px 18px;
+  background: rgba(255,255,255,0.04);
+  border-left: 3px solid rgba(255,255,255,0.15);
+  border-radius: 4px; font-size: 0.88rem; color: rgba(255,255,255,0.62);
+}
+.note.gold {
+  border-left-color: rgba(232,201,122,0.6);
+  background: rgba(232,201,122,0.07);
+  color: rgba(255,255,255,0.8);
+}
+.note.warn {
+  border-left-color: rgba(229,72,77,0.7);
+  background: rgba(229,72,77,0.08);
+  color: rgba(255,255,255,0.8);
+}
+
+/* ── APPEL À INSCRIPTION ── */
+.cta {
+  max-width: 700px; margin: 50px auto; padding: 34px 30px;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(60,40,9,0.5) 0%, rgba(15,22,35,0.85) 90%);
+  border: 1px solid rgba(232,201,122,0.4);
+  border-radius: 20px;
+}
+.cta h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem; color: #e8c97a; margin-bottom: 12px;
+}
+.cta p { color: rgba(255,255,255,0.72); font-size: 0.97rem; line-height: 1.75; }
+.cta-btn {
+  display: inline-block; margin-top: 20px;
+  background: #e8c97a; color: #0f1623;
+  font-weight: 700; font-size: 0.98rem;
+  padding: 13px 30px; border-radius: 30px;
+  text-decoration: none; letter-spacing: 0.02em;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232,201,122,0.25); }
+.cta small { display: block; margin-top: 14px; color: rgba(255,255,255,0.42); font-size: 0.82rem; }
+
+/* ── FAQ ── */
+.faq { display: flex; flex-direction: column; gap: 12px; }
+.faq details {
+  background: rgba(255,255,255,0.035);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px; padding: 16px 20px;
+}
+.faq summary {
+  cursor: pointer; font-weight: 600; color: #fff; font-size: 0.97rem;
+  list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 12px;
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: '+'; color: #e8c97a; font-size: 1.3rem; font-weight: 400; line-height: 1; }
+.faq details[open] summary::after { content: '−'; }
+.faq details p { margin-top: 12px; color: rgba(255,255,255,0.68); font-size: 0.92rem; line-height: 1.75; }
+
+.divider { text-align: center; color: rgba(255,255,255,0.18); font-size: 1.1rem; letter-spacing: 0.3em; margin: 0; }
+
+footer { text-align: center; padding: 34px 20px 56px; color: rgba(255,255,255,0.3); font-size: 0.82rem; }
+footer a { color: rgba(232,201,122,0.6); text-decoration: none; }
+footer a:hover { color: #e8c97a; }
+
+@media (max-width: 600px) {
+  .card { padding: 26px 22px; }
+  .card-top { flex-direction: column; gap: 10px; }
+  .rulebox { padding: 22px 18px; }
+  .tl-row { flex-wrap: wrap; }
+  .tl-when { margin-left: 0; width: 100%; text-align: left; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="kicker">Premier départ le 22 août 2026 · La Vuelta</span>
+  <h1>Les Quintés des Grands Tours</h1>
+  <p class="tagline">Giro · Tour de France · Vuelta</p>
+  <div class="jerseys">🩷 💛 ❤️</div>
+</header>
+
+<div class="intro">
+  <p class="lead">Trois nouveaux tournois par étapes, calqués sur les trois grands tours cyclistes.</p>
+  <p>
+    Chaque jour, une étape. Cinq donnes. Des bonifications pour les meilleurs, un temps d'élimination
+    pour les autres — et un peloton qui se réduit jour après jour jusqu'au classement final.
+  </p>
+  <p>
+    Une idée de <strong style="color:#e8c97a">maki21</strong>, que nous avons mise au point ensemble pour un
+    lancement dès <strong>2026</strong> avec le Quinté de la Vuelta.
+  </p>
+</div>
+
+<!-- ════════ LES TROIS ÉPREUVES ════════ -->
+<div class="cards">
+
+  <div class="card card-giro">
+    <div class="card-top">
+      <div class="card-icon">🩷</div>
+      <div>
+        <div class="card-header">Le Quinté du Giro</div>
+        <div class="card-sub">Tournoi par étapes · Mai 2027</div>
+        <span class="badge">Maillot rose · Sur inscription</span>
+      </div>
+    </div>
+    <p class="card-desc">
+      La première épreuve de 2027, au printemps. Le peloton se reforme après la Vuelta&nbsp;:
+      les habitudes sont prises, la formule est rodée.
+    </p>
+    <div class="stage-facts">
+      <div class="fact"><strong>21</strong> étapes</div>
+      <div class="fact"><strong>5</strong> donnes par jour</div>
+      <div class="fact"><strong>2</strong> jours de repos</div>
+      <div class="fact"><strong>23</strong> jours au total</div>
+    </div>
+  </div>
+
+  <div class="divider">· · ·</div>
+
+  <div class="card card-tour">
+    <div class="card-top">
+      <div class="card-icon">💛</div>
+      <div>
+        <div class="card-header">Le Quinté du Tour</div>
+        <div class="card-sub">Tournoi par étapes · Juillet 2027</div>
+        <span class="badge">Maillot jaune · Sur inscription</span>
+      </div>
+    </div>
+    <p class="card-desc">
+      L'épreuve reine, en plein été et en même temps que la vraie. Trois semaines à suivre les étapes
+      le matin et à jouer les vôtres dans la foulée.
+    </p>
+    <div class="stage-facts">
+      <div class="fact"><strong>21</strong> étapes</div>
+      <div class="fact"><strong>5</strong> donnes par jour</div>
+      <div class="fact"><strong>2</strong> jours de repos</div>
+      <div class="fact"><strong>23</strong> jours au total</div>
+    </div>
+  </div>
+
+  <div class="divider">· · ·</div>
+
+  <div class="card card-vuelta">
+    <div class="card-top">
+      <div class="card-icon">❤️</div>
+      <div>
+        <div class="card-header">Le Quinté de la Vuelta</div>
+        <div class="card-sub">Tournoi par étapes · 22 août – 13 septembre 2026</div>
+        <span class="badge">Maillot rouge · Sur inscription</span>
+      </div>
+    </div>
+    <p class="card-desc">
+      C'est elle qui ouvre le bal, dès cette fin d'été. Trois semaines pour découvrir la formule
+      grandeur nature, avant le Giro et le Tour de 2027.
+    </p>
+    <div class="stage-facts">
+      <div class="fact"><strong>21</strong> étapes</div>
+      <div class="fact"><strong>5</strong> donnes par jour</div>
+      <div class="fact"><strong>2</strong> jours de repos</div>
+      <div class="fact"><strong>23</strong> jours au total</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ════════ LE CALENDRIER ════════ -->
+<section class="block">
+  <h2>Le calendrier</h2>
+  <p class="sub">Du samedi au troisième dimanche qui suit, comme les vraies courses</p>
+  <div class="timeline">
+    <div class="tl-row">
+      <span class="tl-dot tl-vuelta"></span>
+      <span class="tl-name">❤️ Le Quinté de la Vuelta</span>
+      <span class="tl-when">22 août – 13 septembre 2026 · 3 semaines</span>
+    </div>
+    <div class="tl-row">
+      <span class="tl-dot tl-giro"></span>
+      <span class="tl-name">🩷 Le Quinté du Giro</span>
+      <span class="tl-when">Mai 2027 · 3 semaines</span>
+    </div>
+    <div class="tl-row">
+      <span class="tl-dot tl-tour"></span>
+      <span class="tl-name">💛 Le Quinté du Tour</span>
+      <span class="tl-when">Juillet 2027 · 3 semaines</span>
+    </div>
+  </div>
+  <div class="note">
+    📅 La Vuelta 2026 est calée&nbsp;: <strong>du 22 août au 13 septembre</strong>, 21 étapes et 2 jours de repos.
+    Les dates du Giro et du Tour 2027 seront annoncées dès la publication des parcours officiels.
+    Pendant tout ce temps, le Trio Quotidien, le SergeLive et les Cadors continuent normalement.
+  </div>
+</section>
+
+<!-- ════════ LES RÈGLES ════════ -->
+<section class="block">
+  <h2>Comment ça marche</h2>
+  <p class="sub">Les règles du jeu, étape par étape</p>
+
+  <div class="rulebox">
+
+    <div class="rule">
+      <div class="rule-num">1</div>
+      <div class="rule-body">
+        <h3>Une étape par jour, cinq donnes</h3>
+        <p>
+          Chaque journée du tour est une étape&nbsp;: <strong>5 donnes en IMP</strong>, à jouer dans la journée.
+          C'est ce qui distingue ces trois épreuves du Trio Quotidien (3 donnes) — on parle ici de <em>quintés</em>.
+        </p>
+      </div>
+    </div>
+
+    <div class="rule">
+      <div class="rule-num">2</div>
+      <div class="rule-body">
+        <h3>Participation obligatoire</h3>
+        <p>
+          Une étape non jouée, c'est l'abandon&nbsp;: le joueur est <strong>éliminé de la suite du tour</strong>.
+          Comme sur la route, on ne saute pas une étape.
+        </p>
+      </div>
+    </div>
+
+    <div class="rule">
+      <div class="rule-num">3</div>
+      <div class="rule-body">
+        <h3>Deux jours de repos</h3>
+        <p>
+          Les <strong>2<sup>e</sup> et 3<sup>e</sup> lundis</strong> sont des journées neutralisées.
+          Le tournoi reste ouvert sur Funbridge et vous pouvez y jouer si le cœur vous en dit&nbsp;:
+          simplement, <strong>ce jour-là ne rapporte ni ne coûte aucun IMP à personne</strong>, que l'on ait joué ou non.
+        </p>
+        <p style="margin-top:10px;">
+          Deux conséquences&nbsp;: l'absence est permise sans la moindre pénalité, et
+          <strong>aucune élimination n'est possible un jour de repos</strong> — même avec un très mauvais score,
+          puisque la journée compte pour zéro. Deux vraies respirations dans les trois semaines.
+        </p>
+      </div>
+    </div>
+
+    <div class="rule">
+      <div class="rule-num">4</div>
+      <div class="rule-body">
+        <h3>Les bonifications d'étape</h3>
+        <p>
+          Comme les secondes de bonification au sprint, les trois premiers <strong>rangs</strong> du jour
+          reçoivent des IMP en plus&nbsp;: <strong>+10</strong> au 1<sup>er</sup> rang, <strong>+6</strong> au 2<sup>e</sup>,
+          <strong>+4</strong> au 3<sup>e</sup>. Attention&nbsp;: on raisonne en <em>rangs</em>, pas en joueurs —
+          tous les ex æquo d'un même rang touchent la même bonification.
+        </p>
+      </div>
+    </div>
+
+    <div class="rule">
+      <div class="rule-num">5</div>
+      <div class="rule-body">
+        <h3>Deux étapes contre-la-montre</h3>
+        <p>
+          Deux étapes du tour sont désignées comme <strong>contre-la-montre</strong>&nbsp;: on y joue normalement,
+          mais <strong>sans aucune bonification</strong>. Seul le score brut compte — chacun pour soi contre le chrono.
+          C'est la règle du cyclisme&nbsp;: les secondes de bonification ne sont attribuées qu'à l'arrivée des étapes en ligne.
+        </p>
+        <p style="margin-top:10px;">
+          <strong>Les étapes concernées seront annoncées pendant le tour</strong>, au fur et à mesure —
+          vous saurez donc à l'avance quand la bonification ne s'applique pas.
+        </p>
+      </div>
+    </div>
+
+    <div class="rule">
+      <div class="rule-num">6</div>
+      <div class="rule-body">
+        <h3>Le temps d'élimination</h3>
+        <p>
+          Tout joueur dont le score du jour est <strong>inférieur à −25 IMP</strong> est éliminé de la suite du tour.
+          C'est un seuil <strong>absolu</strong>, pas un écart avec le premier&nbsp;: que le vainqueur du jour soit à +33 ou à +12,
+          la barre reste la même pour tout le monde. Une mauvaise journée ne suffit donc pas à vous sortir —
+          il faut vraiment être hors délai.
+        </p>
+      </div>
+    </div>
+
+    <div class="rule">
+      <div class="rule-num">7</div>
+      <div class="rule-body">
+        <h3>Le classement final</h3>
+        <p>
+          Le classement de chaque tour, c'est le <strong>cumul des scores IMP de toutes les étapes</strong>,
+          bonifications comprises. Un classement par grand tour — et donc trois vainqueurs dans l'année.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════ EXEMPLE CHIFFRÉ ════════ -->
+<section class="block">
+  <h2>Les bonifications en clair</h2>
+  <p class="sub">Un exemple réel, repris d'une journée des Cadors</p>
+
+  <div class="rulebox">
+    <div class="example-wrap">
+      <table class="example">
+        <thead>
+          <tr>
+            <th>Rang du jour</th>
+            <th>Score joué</th>
+            <th>Joueurs à ce rang</th>
+            <th>Bonification</th>
+            <th>Score retenu</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="rank">1<sup>er</sup></td>
+            <td>+15 IMP</td>
+            <td>1 joueur</td>
+            <td class="bonus">+10</td>
+            <td class="total">+25</td>
+          </tr>
+          <tr>
+            <td class="rank">2<sup>e</sup></td>
+            <td>+14 IMP</td>
+            <td>4 joueurs</td>
+            <td class="bonus">+6</td>
+            <td class="total">+20</td>
+          </tr>
+          <tr>
+            <td class="rank">3<sup>e</sup></td>
+            <td>+13 IMP</td>
+            <td>6 joueurs</td>
+            <td class="bonus">+4</td>
+            <td class="total">+17</td>
+          </tr>
+          <tr>
+            <td class="rank">4<sup>e</sup></td>
+            <td>+8 IMP</td>
+            <td>et suivants</td>
+            <td class="none">aucune</td>
+            <td class="total">+8</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note gold">
+      💡 Les <strong>11 joueurs</strong> des trois premiers rangs sont bonifiés, pas seulement trois personnes.
+      C'est tout l'intérêt du système&nbsp;: dès qu'il y a des ex æquo, la bonification profite largement.
+    </div>
+    <div class="note">
+      🚴 Sur cette même journée, avec 31 participants et la barre à −25 IMP, <strong>un seul joueur</strong>
+      aurait été éliminé, à −27. Le peloton se réduit, mais il reste dense — l'élimination sanctionne
+      l'accident, pas la mauvaise journée. (Cette journée-là était un tournoi des Cadors, à quatre donnes&nbsp;;
+      à cinq donnes les écarts s'étirent un peu plus, et c'est précisément pourquoi la barre a été descendue à −25.)
+    </div>
+  </div>
+</section>
+
+<!-- ════════ ACCÈS ════════ -->
+<section class="block">
+  <h2>L'accès aux trois tours</h2>
+  <p class="sub">Inscription préalable et mot de passe</p>
+
+  <div class="rulebox">
+    <div class="rule">
+      <div class="rule-num">🔑</div>
+      <div class="rule-body">
+        <h3>Tournois protégés par mot de passe</h3>
+        <p>
+          Ces trois épreuves ne sont pas en accès libre. Le mot de passe est envoyé <strong>par email</strong>
+          aux seuls joueurs inscrits&nbsp;: il faut donc m'avoir communiqué votre adresse avant le départ.
+        </p>
+      </div>
+    </div>
+    <div class="rule">
+      <div class="rule-num">✉️</div>
+      <div class="rule-body">
+        <h3>Inscription nominative</h3>
+        <p>
+          Je n'accepte sur ces tournois que les joueurs inscrits et dont j'ai l'adresse email. C'est ce qui me permet
+          de gérer les éliminations, de prévenir les joueurs concernés et de tenir un classement propre.
+        </p>
+      </div>
+    </div>
+    <div class="rule">
+      <div class="rule-num">⚠️</div>
+      <div class="rule-body">
+        <h3>Le respect du règlement</h3>
+        <p>
+          Funbridge ne me permet pas de fermer techniquement la porte à un joueur éliminé. Le règlement repose donc
+          sur la loyauté de chacun — et c'est très bien ainsi. Un joueur éliminé qui continuerait à jouer verrait
+          ses résultats <strong>écartés du classement</strong> et se verrait appliquer une pénalité dissuasive
+          de <strong>−50 IMP par jour</strong>. Un rappel par email lui serait envoyé.
+        </p>
+      </div>
+    </div>
+    <div class="note warn">
+      🤝 Autrement dit&nbsp;: quand vous êtes hors délai, vous rangez le vélo. C'est la seule règle qui demande
+      la bonne foi de tous, et je fais entièrement confiance au peloton.
+    </div>
+  </div>
+</section>
+
+<!-- ════════ APPEL À INSCRIPTION ════════ -->
+<div class="cta">
+  <h2>Faites-vous connaître dès maintenant</h2>
+  <p>
+    Le lancement, c'est le Quinté de la Vuelta 2026, prévu le <strong>22 août</strong>. Communiquez-moi votre
+    adresse email pour vous inscrire et recevoir ensuite toutes les informations sur ces trois nouveaux tournois.
+  </p>
+  <a class="cta-btn" href="https://chrisblb.github.io/funbridge/inscription.html">✉️ Communiquer mon email</a>
+  <small>Votre adresse ne sert qu'à l'organisation des tournois. Rien d'autre, jamais.</small>
+</div>
+
+<!-- ════════ QUESTIONS ════════ -->
+<section class="block">
+  <h2>Les questions que vous vous posez déjà</h2>
+  <p class="sub">Et les réponses, avant même que vous les posiez</p>
+
+  <div class="faq">
+    <details>
+      <summary>Cinq donnes par jour pendant trois semaines, c'est beaucoup&nbsp;?</summary>
+      <p>
+        C'est le principe d'un tour par étapes&nbsp;: l'engagement fait partie du jeu. Mais personne n'est obligé
+        de s'inscrire, et le Trio Quotidien, le SergeLive et les Cadors continuent normalement pendant ce temps.
+        Ces trois épreuves sont un supplément, pas un remplacement.
+      </p>
+    </details>
+    <details>
+      <summary>Je pars en vacances au milieu du tour, je peux participer&nbsp;?</summary>
+      <p>
+        Difficilement&nbsp;: la participation est obligatoire chaque jour, sauf les deux lundis de repos.
+        Mieux vaut viser un autre grand tour dans l'année — c'est justement pour ça qu'il y en a trois.
+      </p>
+    </details>
+    <details>
+      <summary>Si je suis éliminé, tout est fini pour moi&nbsp;?</summary>
+      <p>
+        Pour ce tour-là, oui. Mais les trois épreuves sont indépendantes&nbsp;: une élimination au Giro n'empêche
+        pas de prendre le départ du Tour en juillet. Et les autres tournois restent ouverts toute l'année.
+      </p>
+    </details>
+    <details>
+      <summary>Le seuil d'élimination est-il définitif&nbsp;?</summary>
+      <p>
+        Oui&nbsp;: elle est arrêtée à <strong>−25 IMP</strong>. Elle avait d'abord été fixée à −20, puis
+        relevée après avoir passé au crible les résultats réels du Trio, des Cadors et des Petits Cadors.
+        La raison&nbsp;: à cinq donnes les écarts s'étirent, et une barre à −20 répétée 21 fois aurait sorti
+        près de la moitié du peloton. À −25, ce sont <strong>7 à 8 joueurs sur 10</strong> qui voient l'arrivée
+        — la proportion d'un vrai grand tour.
+      </p>
+    </details>
+    <details>
+      <summary>Comment saurai-je où j'en suis&nbsp;?</summary>
+      <p>
+        Comme pour les autres tournois&nbsp;: un classement en ligne mis à jour chaque matin, avec le cumul des étapes,
+        les bonifications reçues et la liste des joueurs encore en course.
+      </p>
+    </details>
+  </div>
+</section>
+
+<footer>
+  <p>Une idée de <strong style="color:rgba(232,201,122,0.75)">maki21</strong>, mise en œuvre par
+     <strong style="color:rgba(232,201,122,0.75)">chrisblb</strong></p>
+  <p style="margin-top:8px;">
+    <a href="https://chrisblb.github.io/funbridge/presentation.html">← Retour à la présentation des tournois</a>
+  </p>
+  <p style="margin-top:14px;font-size:0.76rem;color:rgba(255,255,255,0.22);">
+    Règlement en vigueur pour le Quinté de la Vuelta 2026 · Départ le 22 août
+  </p>
+</footer>
+
+</body>
+</html>
