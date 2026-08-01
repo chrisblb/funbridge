@@ -131,6 +131,7 @@ header p.tagline {
 .result-btn.quintes:hover { border-color: rgba(220,60,80,0.85); }
 .result-btn.quintes .label { color: #ff9aa2; }
 .result-btn.quintes .live-badge { color: #ff9aa2; background: rgba(220,60,80,0.18); border-color: rgba(220,60,80,0.55); }
+.results-grid.quintes-row { grid-template-columns: repeat(2, 1fr); max-width: 470px; margin: 0 auto 16px; }
 
 /* ── Mini-bouton poster prime de régularité (dans les encarts) ── */
 .poster-mini { display: inline-block; margin-left: 8px; padding: 2px 12px; border: 1px solid rgba(255,159,67,0.5); border-radius: 20px; color: #ffb066; font-size: 0.8rem; font-weight: 600; text-decoration: none; white-space: nowrap; transition: all 0.15s; }
@@ -293,14 +294,23 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
     </a>
   </div>
 
-  <div class="results-grid secondary">
+  <div class="results-grid quintes-row">
     <a class="result-btn quintes" href="https://chrisblb.github.io/funbridge/quintes-grands-tours.html">
       <span class="live-badge"><span class="lang-fr">nouveau</span><span class="lang-en" style="display:none">new</span></span>
       <div class="icon">🚴</div>
       <div class="label lang-fr">Les Quintés des Grands Tours</div>
       <div class="label lang-en" style="display:none">Grand Tour Quintés</div>
+      <div class="sub-label"><span class="lang-fr">Le règlement</span><span class="lang-en" style="display:none">The rules</span></div>
+    </a>
+    <a class="result-btn quintes" href="https://chrisblb.github.io/funbridge/vuelta-resultats.html">
+      <div class="icon">❤️</div>
+      <div class="label lang-fr">Le Quinté de la Vuelta</div>
+      <div class="label lang-en" style="display:none">The Vuelta Quinté</div>
       <div class="sub-label"><span class="lang-fr">Départ le 22 août</span><span class="lang-en" style="display:none">Starts 22 August</span></div>
     </a>
+  </div>
+
+  <div class="results-grid secondary">
     <a class="result-btn candidats" href="https://chrisblb.github.io/funbridge/candidats-cadors.html">
       <span class="live-badge">live</span>
       <div class="icon">⭐</div>

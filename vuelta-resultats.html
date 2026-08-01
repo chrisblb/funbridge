@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Le Quinté de la Vuelta 2026 — Quintés des Grands Tours</title>
+<meta name="theme-color" content="#0f1623">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══ STYLES DES QUINTÉS DES GRANDS TOURS ═══
+   Partagés par la page de classement et la page de gestion.
+   Déplacés tels quels depuis quinte-essai.html le 30/07/2026,
+   sans une règle modifiée ni réordonnée. */
+:root{
+  --bg:#0f1623; --panel:#18202f; --panel2:#1f2937;
+  --border:rgba(255,255,255,0.09); --text:#e2e8f0; --dim:rgba(255,255,255,0.72);
+  --muted:rgba(255,255,255,0.42); --gold:#e8c97a;
+  --green:#6ee7b7; --green-bg:rgba(16,185,129,0.14); --green-bd:rgba(16,185,129,0.35);
+  --red:#fca5a5; --red-bg:rgba(239,68,68,0.14); --red-bd:rgba(239,68,68,0.38);
+  --amber:#fcd34d; --amber-bg:rgba(245,158,11,0.12); --amber-bd:rgba(245,158,11,0.32);
+  --violet:#a78bfa;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.55;padding-bottom:60px;}
+
+header{padding:22px 20px 18px;background:linear-gradient(180deg,#0a0f1a,#0f1623);border-bottom:1px solid var(--border);}
+.wrap{max-width:1000px;margin:0 auto;padding:0 20px;}
+.kicker{display:inline-block;font-size:.66rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:#10202a;background:var(--amber);padding:3px 11px;border-radius:20px;margin-bottom:9px;}
+h1{font-family:'Playfair Display',serif;font-size:clamp(1.3rem,4vw,1.85rem);color:var(--gold);line-height:1.15;}
+.sub{color:var(--muted);font-size:.8rem;margin-top:5px;}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:10px;margin:20px 0;}
+.tile{background:var(--panel);border:1px solid var(--border);border-radius:11px;padding:12px 14px;}
+.tile .v{font-size:1.5rem;font-weight:700;color:var(--gold);line-height:1;}
+.tile .l{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-top:5px;}
+.tile.g .v{color:var(--green);} .tile.r .v{color:var(--red);}
+
+section{margin:26px 0;}
+h2{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--gold);margin-bottom:4px;}
+.h2sub{font-size:.78rem;color:var(--muted);margin-bottom:14px;}
+
+table{width:100%;border-collapse:collapse;font-size:.88rem;}
+th{text-align:left;font-size:.68rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);
+  padding:9px 10px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;}
+td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,0.05);}
+tr:last-child td{border-bottom:0;}
+.num{font-family:'DM Mono',monospace;text-align:right;white-space:nowrap;}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+
+.rang{font-family:'DM Mono',monospace;color:var(--muted);width:44px;}
+tr.podium1 .rang,tr.podium1 td{color:var(--gold);font-weight:700;}
+tr.podium2 td,tr.podium3 td{font-weight:600;}
+.pos{color:var(--green);} .neg{color:var(--red);}
+.bonif{color:var(--green);font-weight:600;}
+.zero{color:var(--muted);}
+
+.tag{display:inline-block;font-size:.7rem;padding:2px 9px;border-radius:20px;font-weight:600;white-space:nowrap;}
+.tag.hd{background:var(--red-bg);color:var(--red);border:1px solid var(--red-bd);}
+.tag.ab{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-bd);}
+.tag.clm{background:rgba(167,139,250,.16);color:var(--violet);border:1px solid rgba(167,139,250,.4);}
+.tag.repos{background:rgba(255,255,255,.06);color:var(--muted);border:1px solid var(--border);}
+
+.etapes-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.eb{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:7px 11px;cursor:pointer;
+  font-family:'DM Mono',monospace;font-size:.78rem;color:var(--dim);min-width:42px;text-align:center;}
+.eb:hover{border-color:var(--gold);color:var(--text);}
+.eb.on{background:var(--gold);color:#10202a;border-color:var(--gold);font-weight:700;}
+.eb.repos{opacity:.5;} .eb.clm{border-color:rgba(167,139,250,.5);}
+.eb.vide{opacity:.3;cursor:default;}
+
+.note{background:var(--panel);border-left:3px solid var(--amber-bd);border-radius:6px;padding:11px 14px;
+  font-size:.82rem;color:var(--dim);margin-top:14px;}
+.note.essai{border-left-color:var(--gold);background:rgba(232,201,122,.07);}
+.recherche{display:flex;align-items:center;gap:11px;flex-wrap:wrap;margin:2px 0 20px;}
+.search-box{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:9px 13px;
+  font-family:'DM Sans',sans-serif;font-size:.88rem;color:var(--text);width:260px;outline:none;}
+.search-box:focus{border-color:var(--gold);}
+.search-box::placeholder{color:var(--muted);}
+.rq{font-size:.79rem;color:var(--muted);}
+.rq b{color:var(--gold);}
+.razb{background:transparent;border:1px solid var(--border);border-radius:7px;color:var(--muted);
+  font-family:'DM Sans',sans-serif;font-size:.78rem;padding:6px 11px;cursor:pointer;}
+.razb:hover{border-color:var(--gold);color:var(--text);}
+.vide{color:var(--muted);font-size:.85rem;padding:24px 12px;text-align:center;}
+.err{background:var(--red-bg);border:1px solid var(--red-bd);color:var(--red);border-radius:10px;padding:14px 16px;font-size:.86rem;}
+footer{text-align:center;color:var(--muted);font-size:.75rem;padding:28px 20px;}
+@media(max-width:600px){ th,td{padding:8px 7px;font-size:.82rem;} .tiles{gap:8px;} }
+
+.attente{max-width:640px;margin:38px auto 0;text-align:center;}
+.attente .gros{font-size:2.6rem;line-height:1.15;font-family:'Playfair Display',serif;color:var(--gold);margin-bottom:6px;}
+.attente p{color:var(--dim);margin:14px 0;}
+.faits{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:26px 0 6px;}
+.faits div{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:11px 16px;font-size:.82rem;color:var(--dim);}
+.faits strong{display:block;font-size:1.25rem;color:var(--text);font-family:'DM Mono',monospace;}
+.liens{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:30px;}
+.liens a{display:inline-block;text-decoration:none;font-size:.86rem;font-weight:600;padding:9px 18px;border-radius:22px;
+  border:1px solid rgba(232,201,122,.45);color:var(--gold);}
+.liens a:hover{background:rgba(232,201,122,.12);}
+.liens a.plein{background:rgba(232,201,122,.14);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <span class="kicker">Le tournoi n'a pas encore démarré</span>
+    <h1>❤️ Le Quinté de la Vuelta 2026</h1>
+    <div class="sub">Le classement s'affichera ici dès la première étape</div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="attente">
+    <div class="gros">Départ le<br>Samedi 22 août 2026</div>
+    <p>Il n'y a encore aucun résultat à classer. Cette page se remplira <strong>toute seule</strong>,
+       chaque matin, dès que la première étape aura été jouée.</p>
+
+    <div class="faits">
+      <div><strong>21</strong> étapes</div>
+      <div><strong>5</strong> donnes par jour</div>
+      <div><strong>2</strong> jours de repos</div>
+      <div><strong>23</strong> jours au total</div>
+    </div>
+
+    <p style="font-size:.86rem;color:var(--muted);">
+      Arrivée le dimanche 13 septembre 2026 · repos les lundi 31 août 2026 et lundi 7 septembre 2026<br>
+      Temps d'élimination : <strong style="color:var(--red);">−25 IMP</strong> ·
+      bonifications +10 / +6 / +4 par rang
+    </p>
+
+    <div class="liens">
+      <a class="plein" href="https://chrisblb.github.io/funbridge/quintes-grands-tours.html">ⓘ Le règlement complet</a>
+      <a href="https://chrisblb.github.io/funbridge/inscription.html">✉️ S'inscrire</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  Tournois organisés par <strong style="color:rgba(232,201,122,0.7)">chrisblb</strong> ·
+  <a href="https://chrisblb.github.io/funbridge/presentation.html">Présentation des tournois</a>
+</footer>
+
+</body>
+</html>
