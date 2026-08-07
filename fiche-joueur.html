@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fiche joueur — Tournois de bridge de chrisblb</title>
+<meta name="theme-color" content="#0f1623">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',-apple-system,sans-serif;background:#0f1623;color:#e2e8f0;line-height:1.6;padding-bottom:50px}
+header{text-align:center;padding:44px 20px 26px;background:linear-gradient(180deg,#0a0f1a,#0f1623);border-bottom:1px solid rgba(255,255,255,.07)}
+header h1{font-family:'Playfair Display',serif;font-size:clamp(1.5rem,5vw,2.3rem);color:#e8c97a;margin-bottom:8px}
+header .tagline{color:rgba(255,255,255,.45);font-size:.8rem;letter-spacing:.18em;text-transform:uppercase}
+header .maj{color:rgba(255,255,255,.5);margin-top:12px;font-size:.86rem}
+.back{display:inline-block;margin-top:14px;color:#c4a8f0;text-decoration:none;font-size:.88rem;font-weight:600}
+.back:hover{text-decoration:underline}
+.wrap{max-width:1000px;margin:0 auto;padding:0 16px}
+.intro{max-width:760px;margin:24px auto 0;text-align:center;color:rgba(255,255,255,.7);font-size:.96rem}
+
+.controls{background:#151d2e;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;margin:22px auto 0;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end}
+.field{display:flex;flex-direction:column;gap:5px;flex:1 1 200px;position:relative}
+.field label{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.45)}
+input,select{font:inherit;font-size:.95rem;background:#0f1623;color:#e2e8f0;border:1px solid rgba(255,255,255,.16);border-radius:8px;padding:10px 12px;width:100%}
+input:focus,select:focus{outline:none;border-color:#e8c97a}
+.sugg{position:absolute;top:100%;left:0;right:0;z-index:30;background:#1a2436;border:1px solid rgba(255,255,255,.18);border-radius:8px;margin-top:3px;max-height:270px;overflow-y:auto;display:none;box-shadow:0 12px 34px rgba(0,0,0,.55)}
+.sugg.on{display:block}
+.sugg div{padding:9px 12px;cursor:pointer;font-size:.9rem;border-bottom:1px solid rgba(255,255,255,.05)}
+.sugg div:last-child{border-bottom:none}
+.sugg div:hover,.sugg div.sel{background:#2b3550}
+.sugg .meta{color:rgba(255,255,255,.4);font-size:.78rem;margin-left:6px}
+
+.state{text-align:center;padding:46px 16px;color:rgba(255,255,255,.45)}
+.who{margin:28px 0 4px;font-family:'Playfair Display',serif;font-size:1.7rem;color:#fff}
+.who .sub{display:block;font-family:'DM Sans',sans-serif;font-size:.84rem;color:rgba(255,255,255,.45);margin-top:4px}
+h2.sec{font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;color:#c4a8f0;margin:28px 0 12px;padding-bottom:6px;border-bottom:1px solid rgba(196,168,240,.2)}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:13px}
+.card{background:#151d2e;border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:15px;border-top:3px solid var(--c,#e8c97a)}
+.card.absent{opacity:.4;border-top-color:rgba(255,255,255,.2)}
+.card h3{font-size:.95rem;color:var(--c,#e8c97a);margin-bottom:10px}
+.rang{font-size:2rem;font-weight:800;color:#fff;line-height:1}
+.rang small{font-size:.85rem;font-weight:500;color:rgba(255,255,255,.42);margin-left:4px}
+.kv{display:flex;justify-content:space-between;font-size:.85rem;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.kv:last-child{border-bottom:none}
+.kv span:first-child{color:rgba(255,255,255,.5)}
+.pos{color:#6ee7a8}.neg{color:#f87171}
+.tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:.88rem;min-width:640px}
+th,td{padding:9px 10px;text-align:center;border-bottom:1px solid rgba(255,255,255,.07)}
+th{background:#151d2e;color:rgba(255,255,255,.6);font-size:.72rem;text-transform:uppercase;letter-spacing:.06em}
+td:first-child,th:first-child{text-align:left;white-space:nowrap}
+tbody tr:hover{background:rgba(255,255,255,.03)}
+tr.total td{border-top:2px solid rgba(232,201,122,.4);background:rgba(232,201,122,.06);font-weight:600}
+.mut{color:rgba(255,255,255,.25)}
+.cellr{font-weight:700;color:#fff}
+.cells{display:block;font-size:.76rem;color:rgba(255,255,255,.45)}
+.qed{background:#151d2e;border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:14px;margin-bottom:11px}
+.qed h3{font-size:.95rem;color:#e8c97a;margin-bottom:8px}
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:.75rem;font-weight:600}
+.b-ok{background:rgba(110,231,168,.15);color:#6ee7a8}
+.b-out{background:rgba(248,113,113,.15);color:#f87171}
+footer{text-align:center;color:rgba(255,255,255,.3);font-size:.8rem;margin-top:42px;padding:0 16px}
+@media(max-width:560px){.controls{flex-direction:column;align-items:stretch}.rang{font-size:1.6rem}}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🔍 Fiche joueur</h1>
+  <div class="tagline">Tous vos résultats, tous les tournois</div>
+  <div class="maj" id="maj">Chargement…</div>
+  <a class="back" href="presentation.html">← Retour à la présentation</a>
+</header>
+
+<div class="wrap">
+  <p class="intro">Tapez un pseudo pour voir ses résultats mois par mois dans le <strong>Trio Quotidien</strong>,
+  le <strong>SergeLive</strong>, <strong>Les Cadors</strong> et <strong>Les Petits Cadors</strong> — ainsi que
+  sa position dans les <strong>Quintés des Grands Tours</strong>.</p>
+
+  <div class="controls">
+    <div class="field">
+      <label for="q">Joueur</label>
+      <input id="q" type="text" placeholder="Tapez un pseudo…" autocomplete="off" spellcheck="false">
+      <div class="sugg" id="sugg"></div>
+    </div>
+    <div class="field" style="flex:0 1 150px">
+      <label for="an">Année</label>
+      <select id="an"></select>
+    </div>
+    <div class="field" style="flex:0 1 160px">
+      <label for="mo">Mois</label>
+      <select id="mo"></select>
+    </div>
+  </div>
+
+  <div id="out"><div class="state">Chargement des résultats…</div></div>
+</div>
+
+<footer>Les tournois de bridge de chrisblb · données mises à jour chaque matin</footer>
+
+<script>
+(function(){
+'use strict';
+var ORDRE = ['trio','serge','cadors','petitscadors'];
+var MOIS = ['','Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+var DATA = null, JOUEURS = [], SEL = null, curseur = -1;
+/* [pseudo, rang, net, jours, joursPositifs, brut, jokers, prime, gain15] */
+var P_NOM=0, P_RANG=1, P_NET=2, P_JOURS=3, P_POS=4, P_BRUT=5, P_JOK=6, P_PRIME=7, P_G15=8;
+
+function nrm(s){ return String(s == null ? '' : s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim(); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function el(id){ return document.getElementById(id); }
+function kv(k,v){ return '<div class="kv"><span>'+k+'</span>'+v+'</div>'; }
+
+function ligneDe(cle, my, jc){
+  var t = DATA.tournois[cle]; if (!t) return null;
+  var l = t.mois[my]; if (!l) return null;
+  for (var i = 0; i < l.length; i++) if (nrm(l[i][P_NOM]) === jc) return { l: l[i], sur: l.length };
+  return null;
+}
+
+fetch('donnees-joueurs.json').then(function(r){
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
+}).then(function(d){
+  DATA = d;
+  var vus = {};
+  ORDRE.forEach(function(cle){
+    var t = DATA.tournois[cle]; if (!t) return;
+    Object.keys(t.mois).forEach(function(my){
+      t.mois[my].forEach(function(p){
+        var c = nrm(p[P_NOM]);
+        if (!vus[c]) vus[c] = { cle:c, nom:p[P_NOM], jours:0 };
+        vus[c].jours += p[P_JOURS];
+      });
+    });
+  });
+  (DATA.quintes||[]).forEach(function(q){
+    (q.general||[]).concat(q.elimines||[]).forEach(function(l){
+      var c = nrm(l[0]); if (!vus[c]) vus[c] = { cle:c, nom:l[0], jours:0 };
+    });
+  });
+  JOUEURS = Object.keys(vus).map(function(k){ return vus[k]; }).sort(function(a,b){ return b.jours - a.jours; });
+
+  var ans = {};
+  ORDRE.forEach(function(cle){
+    var t = DATA.tournois[cle]; if (!t) return;
+    Object.keys(t.mois).forEach(function(my){ ans[my.slice(0,4)] = true; });
+  });
+  var liste = Object.keys(ans).sort().reverse();
+  el('an').innerHTML = '<option value="">Toutes</option>' + liste.map(function(a){ return '<option value="'+a+'">'+a+'</option>'; }).join('');
+  el('an').value = liste[0] || '';
+  el('mo').innerHTML = '<option value="">Tous</option>' + MOIS.slice(1).map(function(n,i){ return '<option value="'+(i+1)+'">'+n+'</option>'; }).join('');
+  var d2 = new Date();
+  if (String(d2.getFullYear()) === el('an').value) el('mo').value = String(d2.getMonth()+1);
+
+  var g = new Date(DATA.genere);
+  el('maj').textContent = JOUEURS.length + ' joueurs · mis à jour le ' +
+    g.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+  el('out').innerHTML = '<div class="state">Tapez un pseudo pour afficher sa fiche.</div>';
+}).catch(function(e){
+  el('out').innerHTML = '<div class="state">⚠️ Résultats indisponibles (' + esc(e.message) + ')</div>';
+  el('maj').textContent = '';
+});
+
+function suggerer(){
+  var q = nrm(el('q').value), box = el('sugg');
+  if (!q || !JOUEURS.length) { box.className = 'sugg'; return; }
+  var a = [], b = [];
+  for (var i = 0; i < JOUEURS.length && a.length + b.length < 40; i++) {
+    var j = JOUEURS[i];
+    if (j.cle.indexOf(q) === 0) a.push(j); else if (j.cle.indexOf(q) > 0) b.push(j);
+  }
+  var res = a.concat(b).slice(0, 12);
+  if (!res.length) { box.innerHTML = '<div class="mut">Aucun joueur</div>'; box.className = 'sugg on'; return; }
+  curseur = -1;
+  box.innerHTML = res.map(function(j){
+    return '<div data-c="'+esc(j.cle)+'">'+esc(j.nom)+'<span class="meta">'+j.jours+' j</span></div>';
+  }).join('');
+  box.className = 'sugg on';
+  [].forEach.call(box.children, function(n){ n.onclick = function(){ choisir(n.getAttribute('data-c')); }; });
+}
+function choisir(cle){
+  for (var i = 0; i < JOUEURS.length; i++) if (JOUEURS[i].cle === cle) {
+    SEL = cle; el('q').value = JOUEURS[i].nom; el('sugg').className = 'sugg'; rendre(); return;
+  }
+}
+
+function rendre(){
+  if (!SEL) { el('out').innerHTML = '<div class="state">Tapez un pseudo pour afficher sa fiche.</div>'; return; }
+  var nom = SEL;
+  for (var i = 0; i < JOUEURS.length; i++) if (JOUEURS[i].cle === SEL) { nom = JOUEURS[i].nom; break; }
+  var an = el('an').value, mo = el('mo').value;
+  var h = '<div class="who">' + esc(nom) + '<span class="sub">' +
+    (mo && an ? MOIS[+mo] + ' ' + an : (an ? 'Année ' + an : 'Toutes les années')) + '</span></div>';
+  h += (mo && an) ? vueMois(an + '-' + String(mo).padStart(2,'0')) : vuePeriode(an);
+  h += vueQuintes(an);
+  el('out').innerHTML = h;
+}
+
+function vueMois(my){
+  var h = '<h2 class="sec">Résultats du mois</h2><div class="cards">';
+  ORDRE.forEach(function(cle){
+    var t = DATA.tournois[cle]; if (!t) return;
+    var r = ligneDe(cle, my, SEL);
+    if (!r) {
+      h += '<div class="card absent"><h3>'+t.emoji+' '+esc(t.nom)+'</h3>'+
+           '<div class="mut" style="padding:8px 0">N\'a pas joué ce mois-ci</div></div>';
+      return;
+    }
+    var p = r.l;
+    h += '<div class="card" style="--c:'+t.couleur+'"><h3>'+t.emoji+' '+esc(t.nom)+'</h3>'+
+      '<div class="rang">'+p[P_RANG]+'<small>e sur '+r.sur+'</small></div><div style="margin-top:10px">'+
+      kv('Score net','<b class="'+(p[P_NET]>=0?'pos':'neg')+'">'+p[P_NET]+'</b>')+
+      kv('Jours joués','<b>'+p[P_JOURS]+'</b>')+
+      kv('Jours positifs','<b>'+p[P_POS]+' <span class="mut">('+Math.round(p[P_POS]/p[P_JOURS]*100)+'%)</span></b>')+
+      (cle==='serge' ? '' : kv('Jokers utilisés','<b>'+p[P_JOK]+'</b>'))+
+      (p[P_PRIME] ? kv('🔥 Prime régularité','<b>+'+p[P_PRIME]+'</b>') : '')+
+      (p[P_G15] ? kv('⭐ Gain du 15','<b>+'+p[P_G15]+'</b>') : '')+
+      kv('Moyenne / donne','<b class="'+(p[P_BRUT]>=0?'pos':'neg')+'">'+(p[P_BRUT]/p[P_JOURS]/t.donnes).toFixed(2)+'</b>')+
+      '</div></div>';
+  });
+  return h + '</div>';
+}
+
+function vuePeriode(an){
+  var mois = {};
+  ORDRE.forEach(function(cle){
+    var t = DATA.tournois[cle]; if (!t) return;
+    Object.keys(t.mois).forEach(function(my){ if (!an || my.slice(0,4) === an) mois[my] = true; });
+  });
+  var liste = Object.keys(mois).sort().reverse();
+  if (!liste.length) return '<div class="state">Aucun tournoi sur cette période.</div>';
+
+  var stats = {}; ORDRE.forEach(function(c){ stats[c] = { jours:0, meilleur:null, mois:0 }; });
+  var lignes = '', vide = true;
+  liste.forEach(function(my){
+    var cells = '', aJoue = false;
+    ORDRE.forEach(function(cle){
+      var r = ligneDe(cle, my, SEL);
+      if (!r) { cells += '<td class="mut">—</td>'; return; }
+      aJoue = true;
+      var s = stats[cle]; s.jours += r.l[P_JOURS]; s.mois++;
+      if (s.meilleur === null || r.l[P_RANG] < s.meilleur) s.meilleur = r.l[P_RANG];
+      cells += '<td><span class="cellr">'+r.l[P_RANG]+'<span class="mut" style="font-weight:400">/'+r.sur+'</span></span>'+
+               '<span class="cells">'+r.l[P_NET]+' pts · '+r.l[P_JOURS]+' j</span></td>';
+    });
+    if (!aJoue) return;
+    vide = false;
+    lignes += '<tr><td>'+MOIS[+my.slice(5,7)]+' '+my.slice(0,4)+'</td>'+cells+'</tr>';
+  });
+  if (vide) return '<div class="state">Ce joueur n\'apparaît dans aucun tournoi sur cette période.</div>';
+
+  var tot = '<tr class="total"><td>Sur la période</td>';
+  ORDRE.forEach(function(cle){
+    var s = stats[cle];
+    tot += s.mois ? '<td><span class="cellr">meilleur '+s.meilleur+'<sup>e</sup></span><span class="cells">'+s.jours+' j · '+s.mois+' mois</span></td>'
+                  : '<td class="mut">—</td>';
+  });
+  tot += '</tr>';
+
+  return '<h2 class="sec">Mois par mois</h2><div class="tblwrap"><table><thead><tr><th>Mois</th>' +
+    ORDRE.map(function(c){ var t = DATA.tournois[c]; return '<th>'+t.emoji+' '+esc(t.nom)+'</th>'; }).join('') +
+    '</tr></thead><tbody>' + lignes + tot + '</tbody></table></div>' +
+    '<p class="mut" style="font-size:.78rem;margin-top:8px">Chaque case donne le rang sur le nombre de classés, puis le score net et les jours joués.</p>';
+}
+
+function vueQuintes(an){
+  var blocs = '';
+  (DATA.quintes || []).forEach(function(q){
+    if (an && String(q.annee) !== an) return;
+    var g = null, o = null;
+    (q.general  || []).forEach(function(l){ if (nrm(l[0]) === SEL) g = l; });
+    (q.elimines || []).forEach(function(l){ if (nrm(l[0]) === SEL) o = l; });
+    if (!g && !o) return;
+    blocs += '<div class="qed"><h3>'+esc(q.emoji+' '+q.nom)+'</h3>';
+    blocs += g
+      ? '<span class="badge b-ok">Toujours dans le peloton</span><div style="margin-top:9px">'+
+        kv('Rang général','<b>'+g[1]+'<sup>e</sup> sur '+(q.general||[]).length+'</b>')+
+        kv('Total','<b class="'+(g[2]>=0?'pos':'neg')+'">'+g[2]+'</b>')+
+        kv('Étapes jouées','<b>'+g[3]+'</b>')+'</div>'
+      : '<span class="badge b-out">Éliminé</span><div style="margin-top:9px">'+
+        kv('À l\'étape','<b>'+o[1]+'</b>')+kv('Date','<b>'+esc(o[2]||'—')+'</b>')+
+        kv('Motif','<b>'+esc(o[3]||'—')+'</b>')+'</div>';
+    blocs += '</div>';
+  });
+  return blocs ? '<h2 class="sec">Quintés des Grands Tours</h2>' + blocs : '';
+}
+
+el('q').addEventListener('input', suggerer);
+el('q').addEventListener('focus', suggerer);
+el('q').addEventListener('keydown', function(e){
+  var box = el('sugg');
+  if (box.className.indexOf('on') < 0) return;
+  var n = box.children.length;
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    curseur = (curseur + (e.key === 'ArrowDown' ? 1 : n - 1)) % n;
+    [].forEach.call(box.children, function(c,i){ c.className = i === curseur ? 'sel' : ''; });
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+    var c = curseur >= 0 ? box.children[curseur] : box.children[0];
+    if (c && c.getAttribute('data-c')) choisir(c.getAttribute('data-c'));
+  } else if (e.key === 'Escape') box.className = 'sugg';
+});
+document.addEventListener('click', function(e){
+  if (!el('q').contains(e.target) && !el('sugg').contains(e.target)) el('sugg').className = 'sugg';
+});
+el('an').addEventListener('change', rendre);
+el('mo').addEventListener('change', rendre);
+})();
+</script>
+</body>
+</html>

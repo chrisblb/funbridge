@@ -137,6 +137,17 @@ header p.tagline {
 .poster-mini { display: inline-block; margin-left: 8px; padding: 2px 12px; border: 1px solid rgba(255,159,67,0.5); border-radius: 20px; color: #ffb066; font-size: 0.8rem; font-weight: 600; text-decoration: none; white-space: nowrap; transition: all 0.15s; }
 .poster-mini:hover { background: rgba(255,159,67,0.12); border-color: rgba(255,159,67,0.9); }
 
+.result-btn.fiche { border-color: rgba(110,231,168,0.35); background: linear-gradient(135deg, rgba(16,74,52,0.4), rgba(15,22,35,0.6)); }
+.result-btn.fiche:hover { border-color: rgba(110,231,168,0.75); }
+.result-btn.fiche .new-badge { color: #6ee7a8; background: rgba(110,231,168,0.18); border-color: rgba(110,231,168,0.55); }
+.result-btn .new-badge {
+  position: absolute; top: 8px; right: 9px;
+  font-size: 0.62rem; font-weight: 700; color: #6ee7a8;
+  background: rgba(110,231,168,0.18); border: 1px solid rgba(110,231,168,0.5);
+  padding: 2px 8px; border-radius: 9px;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  animation: pulse 2.5s infinite;
+}
 .result-btn .live-badge {
   position: absolute; top: 8px; right: 9px;
   font-size: 0.62rem; font-weight: 700; color: #fde68a;
@@ -316,6 +327,13 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
   </div>
 
   <div class="results-grid secondary">
+    <a class="result-btn fiche" href="https://chrisblb.github.io/funbridge/fiche-joueur.html">
+      <span class="new-badge"><span class="lang-fr">nouveau</span><span class="lang-en" style="display:none">new</span></span>
+      <div class="icon">&#128269;</div>
+      <div class="label lang-fr">Fiche joueur</div>
+      <div class="label lang-en" style="display:none">Player card</div>
+      <div class="sub-label"><span class="lang-fr">Tous vos r&eacute;sultats</span><span class="lang-en" style="display:none">All your results</span></div>
+    </a>
     <a class="result-btn candidats" href="https://chrisblb.github.io/funbridge/candidats-cadors.html">
       <span class="live-badge">live</span>
       <div class="icon">⭐</div>
@@ -378,6 +396,7 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
         <div class="rule-item">🔥 <strong>Prime de régularité</strong> — la plus longue série de jours consécutifs avec un score positif est convertie en points bonus et ajoutée au total mensuel. Les absences sont neutres, un score négatif remet le compteur à zéro <em>(en vigueur depuis juillet 2026)</em> <a class="poster-mini" href="prime-regularite-30jours.svg" target="_blank" rel="noopener">🖼️ Voir le poster</a></div>
         <div class="rule-item">Classement mensuel remis à zéro le 1<sup>er</sup> de chaque mois · Cumul annuel calculé en parallèle</div>
         <div class="rule-item">Le <strong>top 30 mensuel</strong> est invité automatiquement au tournoi <strong>Les Cadors</strong> du mois suivant</div>
+        <div class="rule-item">✨ <strong>Nouveau</strong> — retrouvez tous vos résultats, mois par mois et dans les quatre tournois, sur la <a href="https://chrisblb.github.io/funbridge/fiche-joueur.html" style="color:#6ee7a8;font-weight:600">fiche joueur</a></div>
       </div>
       <div class="note" style="border-left-color:rgba(232,201,122,0.6);background:rgba(232,201,122,0.06);color:rgba(255,255,255,0.78);font-style:normal;">
         ✉️ <strong>Pour recevoir l'invitation aux Cadors</strong> si vous êtes dans le top 30, pensez à me communiquer votre adresse email via le bouton <strong>« Communiquer mon email »</strong> en haut de cette page — sans email je ne peux pas vous envoyer le mot de passe du tournoi.
@@ -606,6 +625,7 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
         <div class="rule-item">🔥 <strong>Consistency bonus</strong> — the longest consecutive streak of days with a positive score is converted into bonus points and added to the monthly total. Absences are neutral, a negative score resets the counter to zero <em>(in effect from July 2026)</em> <a class="poster-mini" href="prime-regularite-30jours.svg" target="_blank" rel="noopener">🖼️ See the poster <em style="font-weight:400">(French)</em></a></div>
         <div class="rule-item">Monthly ranking reset on the 1<sup>st</sup> of each month · Annual cumulative calculated in parallel</div>
         <div class="rule-item">The <strong>monthly top 30</strong> is automatically invited to the <strong>Les Cadors</strong> tournament the following month</div>
+        <div class="rule-item">✨ <strong>New</strong> — find all your results, month by month and across all four tournaments, on the <a href="https://chrisblb.github.io/funbridge/fiche-joueur.html" style="color:#6ee7a8;font-weight:600">player card</a></div>
       </div>
       <div class="note" style="border-left-color:rgba(232,201,122,0.6);background:rgba(232,201,122,0.06);color:rgba(255,255,255,0.78);font-style:normal;">
         ✉️ <strong>To receive your Cadors invitation</strong> if you are in the top 30, remember to share your email address via the <strong>« Share my email »</strong> button at the top of this page — without an email I cannot send you the tournament password.
