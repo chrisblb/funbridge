@@ -45,6 +45,12 @@ h2.sec{font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;color:#c4a8
 .kv:last-child{border-bottom:none}
 .kv span:first-child{color:rgba(255,255,255,.5)}
 .pos{color:#6ee7a8}.neg{color:#f87171}
+.detail-btn{margin-top:10px;width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#e2e8f0;border-radius:7px;padding:7px;font-size:.8rem;cursor:pointer;font-family:inherit}
+.detail-btn:hover{background:rgba(255,255,255,.11)}
+.jours{margin-top:10px;display:none;flex-wrap:wrap;gap:4px}
+.jours.on{display:flex}
+.j{font-size:.7rem;padding:3px 6px;border-radius:5px;background:rgba(255,255,255,.06);white-space:nowrap}
+.j b{font-weight:700}
 .tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 table{width:100%;border-collapse:collapse;font-size:.88rem;min-width:640px}
 th,td{padding:9px 10px;text-align:center;border-bottom:1px solid rgba(255,255,255,.07)}
@@ -106,7 +112,7 @@ var ORDRE = ['trio','serge','cadors','petitscadors'];
 var MOIS = ['','Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
 var DATA = null, JOUEURS = [], SEL = null, curseur = -1;
 /* [pseudo, rang, net, jours, joursPositifs, brut, jokers, prime, gain15] */
-var P_NOM=0, P_RANG=1, P_NET=2, P_JOURS=3, P_POS=4, P_BRUT=5, P_JOK=6, P_PRIME=7, P_G15=8;
+var P_NOM=0, P_RANG=1, P_NET=2, P_JOURS=3, P_POS=4, P_BRUT=5, P_JOK=6, P_PRIME=7, P_G15=8, P_JJ=9;
 
 function nrm(s){ return String(s == null ? '' : s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim(); }
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -197,6 +203,14 @@ function rendre(){
   h += (mo && an) ? vueMois(an + '-' + String(mo).padStart(2,'0')) : vuePeriode(an);
   h += vueQuintes(an);
   el('out').innerHTML = h;
+  [].forEach.call(document.querySelectorAll('.detail-btn'), function(b){
+    b.onclick = function(){
+      var z = document.getElementById(b.getAttribute('data-for'));
+      var ouvert = z.className.indexOf('on') < 0;
+      z.className = ouvert ? 'jours on' : 'jours';
+      b.textContent = ouvert ? 'Masquer le détail' : 'Détail jour par jour';
+    };
+  });
 }
 
 function vueMois(my){
@@ -219,9 +233,25 @@ function vueMois(my){
       (p[P_PRIME] ? kv('🔥 Prime régularité','<b>+'+p[P_PRIME]+'</b>') : '')+
       (p[P_G15] ? kv('⭐ Gain du 15','<b>+'+p[P_G15]+'</b>') : '')+
       kv('Moyenne / donne','<b class="'+(p[P_BRUT]>=0?'pos':'neg')+'">'+(p[P_BRUT]/p[P_JOURS]/t.donnes).toFixed(2)+'</b>')+
-      '</div></div>';
+      '</div>'+
+      (p[P_JJ] && p[P_JJ].length
+        ? '<button class="detail-btn" type="button" data-for="d-'+cle+'">Détail jour par jour</button>'+
+          '<div class="jours" id="d-'+cle+'">'+journees(p[P_JJ])+'</div>'
+        : '')+
+      '</div>';
   });
   return h + '</div>';
+}
+
+/* jj : un score par quantieme, null si non joue. */
+function journees(jj){
+  var out = [];
+  for (var i = 0; i < jj.length; i++) {
+    if (jj[i] === null) continue;
+    out.push('<span class="j">'+String(i+1).padStart(2,'0')+' <b class="'+(jj[i]>=0?'pos':'neg')+'">'+
+             (jj[i]>0?'+':'')+jj[i]+'</b></span>');
+  }
+  return out.length ? out.join('') : '<span class="mut">aucune journée</span>';
 }
 
 function vuePeriode(an){
