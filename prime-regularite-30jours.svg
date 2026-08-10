@@ -195,4 +195,8 @@
 <text x="1020" y="834" font-size="16" fill="#212121">Les jours non joués (✕) ne coupent pas la série ;</text>
 <text x="1020" y="856" font-size="16" fill="#212121">seuls les scores négatifs (−) l’arrêtent.</text>
 <text x="1020" y="878" font-size="15" fill="#1b5e20" font-weight="700">Un score de 0 est traité comme positif.</text>
+<a href="https://chrisblb.github.io/funbridge/presentation.html" target="_top">
+<rect x="40" y="882" width="352" height="32" rx="16" fill="#1b5e20" fill-opacity="0.08" stroke="#1b5e20" stroke-width="1.5"/>
+<text x="216" y="903" text-anchor="middle" font-size="16" font-weight="700" fill="#1b5e20">&#8592; Retour a la presentation des tournois</text>
+</a>
 </svg>
