@@ -96,62 +96,945 @@ tr.podium2 td,tr.podium3 td{font-weight:600;}
 footer{text-align:center;color:var(--muted);font-size:.75rem;padding:28px 20px;}
 @media(max-width:600px){ th,td{padding:8px 7px;font-size:.82rem;} .tiles{gap:8px;} }
 
-.attente{max-width:640px;margin:38px auto 0;text-align:center;}
-.attente .gros{font-size:2.6rem;line-height:1.15;font-family:'Playfair Display',serif;color:var(--gold);margin-bottom:6px;}
-.attente p{color:var(--dim);margin:14px 0;}
-.faits{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:26px 0 6px;}
-.faits div{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:11px 16px;font-size:.82rem;color:var(--dim);}
-.faits strong{display:block;font-size:1.25rem;color:var(--text);font-family:'DM Mono',monospace;}
-.liens{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:30px;}
-.liens a{display:inline-block;text-decoration:none;font-size:.86rem;font-weight:600;padding:9px 18px;border-radius:22px;
-  border:1px solid rgba(232,201,122,.45);color:var(--gold);}
-.liens a:hover{background:rgba(232,201,122,.12);}
-.liens a.plein{background:rgba(232,201,122,.14);}
+/* ═══ Les podiums du jour (la vraie Vuelta / nos joueurs) ═══
+   Deux colonnes côte à côte sur grand écran, l'une sous l'autre sur
+   téléphone. La colonne de gauche est la course réelle, celle de droite
+   la nôtre : deux cadres identiques pour que l'œil compare tout seul. */
+.podiums{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.pod-col{background:var(--panel);border:1px solid var(--border);border-radius:12px;
+  padding:0 0 8px;overflow:hidden;}
+.pod-h{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:10px 13px;border-bottom:1px solid var(--border);}
+.pod-h--eux{background:rgba(239,68,68,0.16);color:var(--red);}
+.pod-h--nous{background:rgba(232,201,122,0.12);color:var(--gold);}
+.pod-t{font-size:.67rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);
+  padding:11px 13px 5px;}
+.pod-v{text-transform:none;letter-spacing:0;color:var(--dim);font-size:.72rem;}
+.pod-l{display:flex;align-items:baseline;gap:9px;padding:5px 13px;font-size:.86rem;}
+.pod-r{flex:0 0 20px;height:20px;line-height:20px;text-align:center;border-radius:6px;
+  font-family:'DM Mono',monospace;font-size:.72rem;font-weight:600;
+  background:rgba(255,255,255,0.07);color:var(--dim);}
+.pod-r.r1{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-bd);}
+.pod-n{flex:1 1 auto;min-width:0;}
+.pod-p{font-family:'DM Mono',monospace;font-size:.66rem;color:var(--muted);}
+.pod-e{display:block;font-size:.7rem;color:var(--muted);}
+.pod-s{flex:0 0 auto;font-family:'DM Mono',monospace;font-size:.8rem;color:var(--dim);white-space:nowrap;}
+.pod-s.pos{color:var(--green);} .pod-s.neg{color:var(--red);}
+.pod-vide{padding:6px 13px 10px;font-size:.78rem;color:var(--muted);}
+@media(max-width:600px){ .podiums{grid-template-columns:1fr;} }
+
+.retour{display:inline-block;background:rgba(255,255,255,.08);color:#fff;text-decoration:none;
+  border:1px solid rgba(255,255,255,.28);font-size:.74rem;font-weight:500;padding:4px 12px;
+  border-radius:20px;margin-top:10px;letter-spacing:.02em;}
+.retour:hover{background:rgba(255,255,255,.14);}
 </style>
 </head>
 <body>
 
 <header>
   <div class="wrap">
-    <span class="kicker">Le tournoi n'a pas encore démarré</span>
-    <h1>❤️ Le Quinté de la Vuelta 2026</h1>
-    <div class="sub">Le classement s'affichera ici dès la première étape</div>
+    <span class="kicker" id="kicker" style="display:none;"></span>
+    <h1 id="titre">❤️ Le Quinté de la Vuelta 2026</h1>
+    <div class="sub" id="sstitre">chargement…</div>
+    <a class="retour" href="https://chrisblb.github.io/funbridge/quintes-grands-tours.html">ⓘ Le règlement des Quintés</a>
   </div>
 </header>
 
 <div class="wrap">
-  <div class="attente">
-    <div class="gros">Départ le<br>Samedi 22 août 2026</div>
-    <p>Il n'y a encore aucun résultat à classer. Cette page se remplira <strong>toute seule</strong>,
-       chaque matin, dès que la première étape aura été jouée.</p>
+  <div id="erreur"></div>
+  <div class="tiles" id="tiles"></div>
 
-    <div class="faits">
-      <div><strong>23</strong> étapes</div>
-      <div><strong>5</strong> donnes par jour</div>
-      <div><strong>23</strong> jours d'affilée</div>
-      <div><strong>2</strong> absences tolérées</div>
-    </div>
+  <section id="sec-podiums" style="display:none;">
+    <h2>Les podiums du jour</h2>
+    <div class="h2sub" id="podiums-sub"></div>
+    <div class="podiums" id="podiums"></div>
+  </section>
 
-    <p style="font-size:.86rem;color:var(--muted);">
-      Arrivée le dimanche 13 septembre 2026 · aucun jour de repos, tous les jours sont courus<br>
-      Temps d'élimination : <strong style="color:var(--red);">−25 IMP</strong> ·
-      bonifications +10 / +6 / +4 par rang<br>
-      2 absences tolérées, la 3<sup>e</sup> élimine ·
-      <strong>+10</strong> à l'arrivée pour qui n'aura pas manqué un seul jour
-    </p>
-
-    <div class="liens">
-      <a class="plein" href="https://chrisblb.github.io/funbridge/quintes-grands-tours.html">ⓘ Le règlement complet</a>
-      <a href="https://chrisblb.github.io/funbridge/inscription.html">✉️ S'inscrire</a>
-      <a href="https://chrisblb.github.io/funbridge/presentation.html">← Retour à la présentation</a>
-    </div>
+  <div class="recherche">
+    <input class="search-box" type="text" id="q" placeholder="Rechercher un joueur&hellip;"
+           oninput="chercher(this.value)" autocomplete="off" autocorrect="off" spellcheck="false">
+    <button class="razb" id="razb" onclick="razRecherche()" style="display:none;">&times; Effacer</button>
+    <span class="rq" id="rq"></span>
   </div>
+
+  <section>
+    <h2>Classement général</h2>
+    <div class="h2sub" id="gen-sub"></div>
+    <div class="card scroll"><div id="general"></div></div>
+  </section>
+
+  <section>
+    <h2>Étape par étape</h2>
+    <div class="h2sub">Le détail du jour : rang, score joué, bonification, score retenu.</div>
+    <div class="etapes-nav" id="nav"></div>
+    <div class="card scroll"><div id="etape"></div></div>
+  </section>
+
+  <section>
+    <h2>Sortants</h2>
+    <div class="h2sub">Hors délai sous le seuil, ou abandon pour étape non jouée.</div>
+    <div class="card scroll"><div id="sortants"></div></div>
+  </section>
+
+  <section id="sec-intrus" style="display:none;">
+    <h2>Joueurs éliminés qui continuent de jouer</h2>
+    <div class="h2sub">Leurs résultats sont écartés du classement.</div>
+    <div class="card scroll"><div id="intrus"></div></div>
+  </section>
+
+  <section id="sec-horspeloton" style="display:none;">
+    <h2>Joueurs présents mais pas au départ du tour</h2>
+    <div class="h2sub">Ils jouent, mais n'étaient pas partants le premier jour : leurs résultats ne sont pas comptés.</div>
+    <div class="card scroll"><div id="horspeloton"></div></div>
+  </section>
 </div>
 
 <footer>
   Tournois organisés par <strong style="color:rgba(232,201,122,0.7)">chrisblb</strong> ·
-  <a href="https://chrisblb.github.io/funbridge/presentation.html">Présentation des tournois</a>
+  <a href="https://chrisblb.github.io/funbridge/presentation.html">Présentation des tournois</a> · <a href="vuelta-visuel-current.png">🖼️ L'image du jour</a><br>
+  Mis à jour le 23 août 2026 à 06:00 · calculé dans votre navigateur par le moteur <code>quintes-moteur.js</code>
 </footer>
 
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   MOTEUR DES QUINTÉS DES GRANDS TOURS
+   Giro · Tour · Vuelta — règles arrêtées avec maki21 le 29/07/2026
+
+   UN SEUL moteur, partagé par le cron, la page de résultats et les
+   vérifications. Ne jamais en recopier la logique ailleurs.
+
+   Utilisable tel quel dans un navigateur (window.QuintesMoteur)
+   et sous Node (require).
+   ══════════════════════════════════════════════════════════════════════ */
+(function (racine, fabrique) {
+  var M = fabrique();
+  if (typeof module === 'object' && module.exports) module.exports = M;
+  else racine.QuintesMoteur = M;
+})(typeof self !== 'undefined' ? self : this, function () {
+  'use strict';
+
+  var DEFAUTS = {
+    seuilElimination: -20,   // score BRUT strictement inférieur => éliminé
+    bonifications: [10, 6, 4], // par RANG : 1er, 2e, 3e
+    nbEtapes: 23,            // 23 jours d'affilée : un grand tour, sans jour de repos
+    nbDonnes: 5,             // sert à reconnaître les absents (voir scoreNonJoue)
+    malusParDonneNonJouee: 24,
+    absencesTolerees: 2,     // la 3e étape non jouée élimine
+    bonusAssiduite: 10       // à l'arrivée, pour qui n'a pas manqué un seul jour
+  };
+
+  function cle(p) { return String(p || '').trim().toLowerCase(); }
+
+  /* ── Classement d'une étape ────────────────────────────────────────────
+     Rang « dense » : chaque score DISTINCT vaut un rang.
+     3 joueurs à +19 occupent tous le rang 2, et le score suivant est
+     au rang 3 — c'est ce qui permet à 17 joueurs d'être bonifiés.
+     ------------------------------------------------------------------- */
+  function classerEtape(resultats, opts) {
+    opts = opts || {};
+    var bonifs = opts.bonifications || DEFAUTS.bonifications;
+    var avecBonif = opts.avecBonification !== false;   // faux sur un contre-la-montre
+
+    var tries = resultats.slice().sort(function (a, b) { return b.score - a.score; });
+
+    var rang = 0, scorePrecedent = null;
+    return tries.map(function (r) {
+      if (scorePrecedent === null || r.score !== scorePrecedent) {
+        rang += 1;                    // nouveau score distinct => nouveau rang
+        scorePrecedent = r.score;
+      }
+      var bonif = (avecBonif && rang <= bonifs.length) ? bonifs[rang - 1] : 0;
+      return {
+        pseudo: r.pseudo,
+        rang: rang,
+        brut: r.score,
+        bonification: bonif,
+        retenu: r.score + bonif
+      };
+    });
+  }
+
+  /* ── Déroulé complet d'un tour ─────────────────────────────────────────
+     jours : [{ date, type: 'etape' | 'clm', resultats: [{pseudo, score}] }]
+     Le peloton est figé par les partants du PREMIER jour.
+
+     Tous les jours sont courus — il n'y a plus de jour de repos depuis le
+     12/08/2026. Une étape non jouée n'élimine plus sur-le-champ : elle
+     compte une absence, et c'est le DÉPASSEMENT du quota qui élimine.
+     Avec le réglage par défaut (2 tolérées), la 3e absence est fatale.
+
+     Qui traverse le tour sans manquer un seul jour touche le bonus
+     d'assiduité — mais seulement à l'arrivée, une fois la dernière étape
+     courue. Tant que le tour roule, « sansFaute » dit simplement que le
+     joueur y a encore droit.
+     ------------------------------------------------------------------- */
+  function calculerTour(entree) {
+    var cfg = Object.assign({}, DEFAUTS, entree.config || {});
+    var jours = entree.jours || [];
+    if (!jours.length) {
+      return { termine: false, peloton: [], etapes: [], general: [], elimines: [], intrus: [], horsPeloton: [] };
+    }
+
+    // 1. Le peloton = les partants du premier jour
+    var peloton = {};   // clé -> pseudo affiché
+    (jours[0].resultats || []).forEach(function (r) { peloton[cle(r.pseudo)] = r.pseudo; });
+
+    var elimine = {};   // clé -> { etape, date, motif }
+    var total = {};     // clé -> cumul
+    var joue = {};      // clé -> nombre d'étapes jouées
+    var absent = {};    // clé -> nombre d'étapes manquées
+    Object.keys(peloton).forEach(function (k) { total[k] = 0; joue[k] = 0; absent[k] = 0; });
+    var quota = Number(cfg.absencesTolerees);
+    if (!Number.isFinite(quota) || quota < 0) quota = DEFAUTS.absencesTolerees;
+
+    var etapes = [], intrus = [], horsPeloton = [], numEtape = 0;
+
+    jours.forEach(function (j) {
+      numEtape += 1;
+
+      var presents = {}, presentsPseudo = {};
+      (j.resultats || []).forEach(function (r) {
+        presents[cle(r.pseudo)] = r.score;
+        presentsPseudo[cle(r.pseudo)] = r.pseudo;
+      });
+
+      // ── Étape sans le moindre résultat : elle n'a pas eu lieu
+      //    Soit elle n'est pas encore importée (tour en cours), soit le
+      //    tournoi ne s'est pas tenu ce jour-là. Le peloton entier ne peut
+      //    pas abandonner le même jour : on ne classe ni n'élimine personne.
+      //    Sans ce garde-fou, un tour EN COURS montrait tous ses joueurs en
+      //    abandon dès le lendemain de la dernière journée importée —
+      //    constaté le 02/08/2026 sur le banc d'essai de la Vuelta.
+      if (!Object.keys(presents).length) {
+        etapes.push({
+          date: j.date, numero: numEtape, type: j.type || 'etape',
+          classement: [], sortants: [], absents: [], presents: 0, nonJouee: true
+        });
+        return;
+      }
+
+      // ── Présent ce jour-là mais absent du peloton : il joue, mais n'a
+      //    jamais été partant. Ce n'est ni un abandon ni une élimination,
+      //    c'est un joueur qui n'a jamais démarré la course. Signalé, jamais
+      //    classé — sans quoi il restait invisible et silencieux.
+      Object.keys(presents).forEach(function (k) {
+        if (!(k in peloton)) {
+          horsPeloton.push({ pseudo: presentsPseudo[k], date: j.date, etape: numEtape, score: presents[k] });
+        }
+      });
+
+      // ── Qui est encore en course et a joué ?
+      var enCourse = [], sortants = [], absents = [];
+      Object.keys(peloton).forEach(function (k) {
+        if (elimine[k]) {
+          // éliminé qui rejoue : signalé, jamais classé
+          if (k in presents) {
+            intrus.push({ pseudo: peloton[k], date: j.date, etape: numEtape, score: presents[k] });
+          }
+          return;
+        }
+        if (k in presents) {
+          enCourse.push({ pseudo: peloton[k], score: presents[k], _k: k });
+        } else {
+          // Étape non jouée : une absence de plus. Le quota dépassé élimine,
+          // et c'est cette liste-là que le cron transforme en courrier.
+          absent[k] += 1;
+          absents.push({ pseudo: peloton[k], absences: absent[k], etape: numEtape, date: j.date });
+          if (absent[k] > quota) {
+            elimine[k] = { etape: numEtape, date: j.date, motif: 'absences', absences: absent[k] };
+            sortants.push({ pseudo: peloton[k], motif: 'absences', absences: absent[k], etape: numEtape });
+          }
+        }
+      });
+
+      // ── Classement + bonifications (aucune sur un contre-la-montre)
+      var classement = classerEtape(enCourse, {
+        bonifications: cfg.bonifications,
+        avecBonification: j.type !== 'clm'
+      });
+
+      // ── Cumul, puis éliminations « hors délai »
+      //    L'étape fatale COMPTE : la sortie prend effet à partir de la suivante.
+      classement.forEach(function (l) {
+        var k = cle(l.pseudo);
+        total[k] += l.retenu;
+        joue[k] += 1;
+        if (l.brut < cfg.seuilElimination) {
+          elimine[k] = { etape: numEtape, date: j.date, motif: 'hors délai', score: l.brut };
+          sortants.push({ pseudo: l.pseudo, motif: 'hors délai', etape: numEtape, score: l.brut });
+        }
+      });
+
+      etapes.push({
+        date: j.date, numero: numEtape, type: j.type || 'etape',
+        classement: classement, sortants: sortants, absents: absents,
+        presents: classement.length
+      });
+    });
+
+    /* Le tour est arrivé quand sa dernière étape a été courue. Tant qu'elle
+       ne l'est pas, le bonus d'assiduité n'est pas attribué : il se gagne en
+       franchissant la ligne, pas en menant la course. */
+    var termine = etapes.length > 0 && !etapes[etapes.length - 1].nonJouee;
+    var bonusA = Number(cfg.bonusAssiduite);
+    if (!Number.isFinite(bonusA)) bonusA = DEFAUTS.bonusAssiduite;
+
+    // ── Classement général : uniquement ceux encore en course
+    var general = Object.keys(peloton)
+      .filter(function (k) { return !elimine[k]; })
+      .map(function (k) {
+        var sansFaute = absent[k] === 0;
+        var bonus = (termine && sansFaute) ? bonusA : 0;
+        return {
+          pseudo: peloton[k], total: total[k] + bonus, etapesJouees: joue[k],
+          absences: absent[k], sansFaute: sansFaute, bonusAssiduite: bonus
+        };
+      })
+      .sort(function (a, b) { return b.total - a.total; });
+
+    var rangG = 0, precG = null;
+    general.forEach(function (l) {
+      if (precG === null || l.total !== precG) { rangG += 1; precG = l.total; }
+      l.rang = rangG;
+    });
+
+    // ── Les sortis, en bas de tableau, avec leur motif
+    var elimines = Object.keys(elimine).map(function (k) {
+      return {
+        pseudo: peloton[k], etape: elimine[k].etape, date: elimine[k].date,
+        motif: elimine[k].motif, score: elimine[k].score,
+        absences: absent[k], total: total[k], etapesJouees: joue[k]
+      };
+    }).sort(function (a, b) { return a.etape - b.etape; });
+
+    return {
+      config: cfg,
+      termine: termine,
+      quota: quota,
+      peloton: Object.keys(peloton).map(function (k) { return peloton[k]; }),
+      etapes: etapes,
+      general: general,
+      elimines: elimines,
+      intrus: intrus,
+      horsPeloton: horsPeloton
+    };
+  }
+
+  /* ────────────────────────────────────────────────────────────────────
+     LE CALENDRIER D'UNE ÉDITION
+
+     Une édition, c'est une date de départ, un nombre d'étapes, et des
+     contre-la-montre désignés par leur numéro d'étape. La date de fin ne
+     se saisit pas : elle se déduit.
+
+     Depuis le 12/08/2026 il n'y a plus de jour de repos : tous les jours
+     sont courus, une étape par jour, sans trou.
+     ──────────────────────────────────────────────────────────────────── */
+  function construireCalendrier(edition, source) {
+    if (!edition || !edition.debut) throw new Error('édition sans date de départ');
+    var nbEtapes = Number(edition.nbEtapes) || DEFAUTS.nbEtapes;
+    var clm   = edition.contreLaMontre || [];
+    var src   = source || {};
+
+    // Midi UTC : à l'abri des changements d'heure, quel que soit le fuseau.
+    var d0 = Date.UTC(+edition.debut.slice(0, 4),
+                      +edition.debut.slice(5, 7) - 1,
+                      +edition.debut.slice(8, 10), 12);
+
+    var jours = [];
+
+    for (var i = 0; i < nbEtapes; i++) {
+      var date = new Date(d0 + i * 86400000).toISOString().slice(0, 10);
+      var num = i + 1;
+      var j = src[date];
+      var res = (j && j.results ? j.results : []).map(function (r) {
+        return { pseudo: r.nickname, score: r.score };
+      });
+      jours.push({
+        date: date,
+        type: clm.indexOf(num) >= 0 ? 'clm' : 'etape',
+        numero: num,
+        resultats: res
+      });
+    }
+    return jours;
+  }
+
+  /* Fusionne les réglages en cascade : défauts communs, puis épreuve,
+     puis édition — la valeur la plus précise l'emporte. Renvoie un objet
+     complet, prêt à calculer et à afficher. null si la clé n'existe pas. */
+  function resoudreEdition(reglages, cle) {
+    var r  = reglages || {};
+    var ed = (r.editions || {})[cle];
+    if (!ed) return null;
+    var ep  = (r.epreuves || {})[ed.epreuve] || {};
+    var def = r.defauts || {};
+
+    function pris(nom) {
+      if (ed[nom] !== undefined && ed[nom] !== null) return ed[nom];
+      if (def[nom] !== undefined && def[nom] !== null) return def[nom];
+      return DEFAUTS[nom];
+    }
+
+    return {
+      cle: cle,
+      epreuve: ed.epreuve,
+      annee: ed.annee,
+      nom: (ep.nom || ed.epreuve || '?') + ' ' + (ed.annee || ''),
+      emoji: ep.emoji || '🚴',
+      essai: !!ep.essai,
+      debut: ed.debut || null,
+      nbEtapes: pris('nbEtapes'),
+      contreLaMontre: ed.contreLaMontre || [],
+      seuilElimination: pris('seuilElimination'),
+      bonifications: pris('bonifications'),
+      absencesTolerees: pris('absencesTolerees'),
+      bonusAssiduite: pris('bonusAssiduite'),
+      nbDonnes: pris('nbDonnes'),
+      malusParDonneNonJouee: pris('malusParDonneNonJouee'),
+      // Mot attendu dans le nom du fichier CSV, une fois retire le prefixe
+      // « Funbridge-private-tournament- » : cest le garde-fou de limport.
+      motCle: (ed.motCle || ep.motCle || ed.epreuve || '').toLowerCase(),
+      source: ed.source || null
+    };
+  }
+
+  /* ────────────────────────────────────────────────────────────────────
+     LES ABSENTS
+
+     Funbridge n'omet pas un joueur qui n'a pas joué : il lui met le malus
+     plein, -24 IMP par donne du jour. Sur les Cadors (4 donnes) cela fait
+     -96 ; sur un Quinté (5 donnes) ce sera -120.
+
+     Ces lignes ne sont pas des résultats, ce sont des absences. Il faut
+     les écarter à l'import, sinon le joueur est classé « hors délai » avec
+     un score aberrant au lieu d'« abandon », et sa présence fantôme décale
+     les rangs — donc les bonifications — de tous les autres.
+
+     Le cron de 6h applique cette règle depuis toujours sur le Trio et les
+     Cadors. Elle est ici pour que l'import manuel fasse exactement pareil.
+     ──────────────────────────────────────────────────────────────────── */
+  function scoreNonJoue(edition) {
+    var donnes = Number((edition && edition.nbDonnes) || DEFAUTS.nbDonnes);
+    var malus  = Number((edition && edition.malusParDonneNonJouee) || DEFAUTS.malusParDonneNonJouee);
+    if (!donnes || !malus) return null;
+    return -(donnes * malus);
+  }
+
+  function estAbsent(ligne, edition) {
+    var seuil = scoreNonJoue(edition);
+    return seuil !== null && Number(ligne.score) === seuil;
+  }
+
+  /* Le point d'entrée unique : une édition + ses résultats bruts,
+     et tout le reste en découle. C'est ce qu'appellent la page de
+     gestion, la page de classement et, plus tard, le cron. */
+  function calculerEdition(edition, source) {
+    var jours = construireCalendrier(edition, source);
+    return {
+      edition: edition,
+      jours: jours,
+      resultat: calculerTour({
+        config: {
+          seuilElimination: edition.seuilElimination,
+          bonifications: edition.bonifications,
+          absencesTolerees: edition.absencesTolerees,
+          bonusAssiduite: edition.bonusAssiduite
+        },
+        jours: jours
+      })
+    };
+  }
+
+  return {
+    DEFAUTS: DEFAUTS,
+    classerEtape: classerEtape,
+    calculerTour: calculerTour,
+    construireCalendrier: construireCalendrier,
+    scoreNonJoue: scoreNonJoue,
+    estAbsent: estAbsent,
+    resoudreEdition: resoudreEdition,
+    calculerEdition: calculerEdition
+  };
+});
+
+</script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   AFFICHAGE DES QUINTÉS DES GRANDS TOURS
+
+   Le dessin du classement, écrit UNE SEULE FOIS. Utilisé par la page de
+   classement, par la page de gestion, et plus tard par la page publiée
+   sur GitHub. Ne jamais en recopier un morceau ailleurs : c'est
+   exactement comme ça que SergeLive s'est retrouvé avec quatre moteurs
+   qui divergeaient.
+
+   La page hôte fournit des emplacements, repérés par leur identifiant.
+   Tous sont facultatifs : ce qui manque est simplement ignoré, ce qui
+   permet à une page d'afficher seulement une partie du classement.
+
+     titre · kicker · sstitre · note-essai · erreur
+     tiles · gen-sub · general · nav · etape · sortants · sec-intrus · intrus
+     sec-podiums · podiums · podiums-sub
+     sec-horspeloton · horspeloton
+     q · razb · rq                        (la recherche)
+
+   Le calcul, lui, n'est pas ici : il est dans quintes-moteur.js.
+   ══════════════════════════════════════════════════════════════════════ */
+(function (racine, fabrique) {
+  var A = fabrique();
+  if (typeof module === 'object' && module.exports) module.exports = A;
+  else racine.QuintesAffichage = A;
+})(typeof self !== 'undefined' ? self : this, function () {
+  'use strict';
+
+  var JOURS = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+  var MOIS  = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+
+  function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function jourUTC(iso){ return new Date(iso+'T12:00:00Z'); }
+  function libDate(iso){ var d=jourUTC(iso); return JOURS[d.getUTCDay()]+' '+d.getUTCDate()+' '+MOIS[d.getUTCMonth()]; }
+  function sgn(n){ return (n>0?'+':'')+n; }
+  function cls(n){ return n>0?'pos':(n<0?'neg':'zero'); }
+
+  // Recherche insensible aux accents et à la casse : « camELEon » trouve « Caméléon_ ».
+  function norm(s){
+    return String(s==null?'':s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  }
+
+  // ── Accès tolérant au DOM : un emplacement absent n'est pas une erreur ──
+  function el(id){ return document.getElementById(id); }
+  function poser(id, html){ var e = el(id); if (e) e.innerHTML = html; }
+  function texte(id, t){ var e = el(id); if (e) e.textContent = t; }
+
+  var ETAT = null, etapeVue = null, RECHERCHE = '';
+
+  function correspond(pseudo){ return !RECHERCHE || norm(pseudo).indexOf(RECHERCHE) >= 0; }
+
+  function chercher(q){
+    RECHERCHE = norm(String(q).trim());
+    var b = el('razb'); if (b) b.style.display = RECHERCHE ? '' : 'none';
+    if (ETAT) rendre();
+  }
+
+  function razRecherche(){
+    var q = el('q');
+    if (q) q.value = '';
+    chercher('');
+    if (q) q.focus();
+  }
+
+  function erreur(msg){
+    poser('erreur', '<div class="err">' + esc(msg) + '</div>');
+    texte('sstitre', '—');
+  }
+
+  // Efface tout : on change d'édition, rien de l'ancienne ne doit rester.
+  function vider(){
+    ETAT = null; etapeVue = null;
+    ['tiles','general','nav','etape','sortants','intrus','horspeloton','podiums','erreur'].forEach(function(id){ poser(id, ''); });
+    texte('gen-sub', '');
+    var s = el('sec-intrus'); if (s) s.style.display = 'none';
+    var sh = el('sec-horspeloton'); if (sh) sh.style.display = 'none';
+  }
+
+  /* Point d'entrée. etat = {
+       edition,            l'édition résolue (nom, emoji, seuil, source…)
+       jours,              le calendrier
+       resultat,           ce que renvoie QuintesMoteur.calculerTour
+       forcee,             date de rejeu, ou rien
+       majTitrePage        false pour ne pas toucher au titre de l'onglet
+     } */
+  function afficher(etat){
+    ETAT = etat;
+    etapeVue = null;
+    poser('erreur', '');
+    rendre();
+  }
+
+  function libSource(s){
+    if (s === 'cadors') return 'des Cadors';
+    if (s === 'propre') return 'importés à la main';
+    return s ? esc(s) : 'aucune source';
+  }
+
+  function tuile(v,l,c){
+    return '<div class="tile ' + (c||'') + '"><div class="v">' + v + '</div><div class="l">' + l + '</div></div>';
+  }
+
+  function rendre(){
+    if (!ETAT) return;
+    var r = ETAT.resultat, ed = ETAT.edition, jours = ETAT.jours;
+
+    // ── En-tête
+    texte('titre', ed.emoji + ' ' + ed.nom);
+    if (ETAT.majTitrePage !== false) document.title = ed.nom + ' — Quintés des Grands Tours';
+    var kick = el('kicker');
+    if (kick) {
+      kick.textContent = ed.essai ? 'Jeu de test privé' : 'Classement du tour';
+      kick.style.display = '';
+    }
+    // L'encart « ceci est un jeu de test » ne concerne que les galops d'essai.
+    var note = el('note-essai');
+    if (note) note.style.display = ed.essai ? '' : 'none';
+    if (ETAT.forcee && kick) {
+      kick.textContent = 'Rejeu — fenêtre forcée au ' + ETAT.forcee;
+      kick.style.background = 'var(--violet)';
+      kick.style.color = '#fff';
+    }
+
+    var courues = r.etapes.filter(function(e){ return e.presents>0; }).length;
+
+    /* Combien d'absences éliminent, et comment le dire. Le chiffre vient du
+       réglage : rien n'est écrit en dur, un tour plus indulgent s'affichera
+       tout seul avec le bon nombre. */
+    var fatale = (r.quota === undefined ? 2 : r.quota) + 1;
+    var libMotif = function(e){
+      return e.motif === 'absences' ? (e.absences || fatale) + ' absences' : e.motif;
+    };
+    poser('sstitre',
+      'Du ' + libDate(jours[0].date) + ' au ' + libDate(jours[jours.length-1].date) +
+      ' · seuil d\'élimination <strong>' + sgn(r.config.seuilElimination) + ' IMP</strong>' +
+      ' · résultats <strong>' + libSource(ed.source) + '</strong>');
+
+    // ── Tuiles
+    /* Quatre tuiles, pas sept : partants = en course + sortants, et le
+       detail par motif est deja dans le tableau des sortants, qui nomme
+       chaque joueur, son etape et sa cause. Un compteur de plus n'aidait
+       personne — il fallait le soustraire pour le comprendre. */
+    poser('tiles',
+      tuile(r.peloton.length, 'Partants') +
+      tuile(r.general.length, 'En course', 'g') +
+      tuile(r.elimines.length, 'Sortants', 'r') +
+      tuile(courues + ' / ' + ed.nbEtapes, 'Étapes courues'));
+
+    // ── Classement général
+    if (!courues) {
+      poser('general',
+        '<div class="vide">Le tour n\'a pas encore commencé.<br>La première étape est le ' + libDate(jours[0].date) +
+        ' — ses résultats apparaîtront une fois la journée importée.</div>');
+      texte('gen-sub', '');
+    } else {
+      texte('gen-sub',
+        r.general.length + ' joueur' + (r.general.length>1?'s':'') + ' encore en course · cumul bonifications comprises' +
+        (r.termine ? ' et bonus d\'assiduité attribué' : ' · le bonus d\'assiduité s\'ajoutera à l\'arrivée'));
+      var vus = r.general.filter(function(l){ return correspond(l.pseudo); });
+      if (!vus.length) {
+        poser('general', '<div class="vide">Aucun joueur en course ne correspond à cette recherche.</div>');
+      } else {
+        var h = '<table><thead><tr><th>Rang</th><th>Joueur</th><th class="num">Total</th>' +
+                '<th class="num">Étapes</th><th class="num">Absences</th></tr></thead><tbody>';
+        vus.forEach(function(l){
+          /* Le bonus n'est acquis qu'a l'arrivee : rien a cote du pseudo tant
+             que le tour roule. L'etat du joueur se lit dans la colonne
+             Absences, ou la couleur dit tout sans decaler une colonne. */
+          var marque = l.bonusAssiduite
+            ? ' <span class="tag sf">assiduité +' + l.bonusAssiduite + '</span>' : '';
+          /* Vert tant que rien n'est manque, rouge a la derniere absence
+             avant l'elimination, orange entre les deux. Les paliers se
+             deduisent du quota : un tour plus indulgent se colore seul. */
+          var quota = fatale - 1;
+          var pab = !l.absences ? 'v0' : (l.absences >= quota ? 'v2' : 'v1');
+          var pabTitre = !l.absences ? 'aucune absence'
+            : l.absences + ' absence' + (l.absences > 1 ? 's' : '') +
+              ' — la ' + fatale + 'e élimine';
+          h += '<tr class="' + (l.rang<=3 ? 'podium'+l.rang : '') + '">' +
+            '<td class="rang">' + (l.rang===1?'🥇':l.rang===2?'🥈':l.rang===3?'🥉':l.rang) + '</td>' +
+            '<td>' + esc(l.pseudo) + marque + '</td>' +
+            '<td class="num ' + cls(l.total) + '">' + sgn(l.total) + '</td>' +
+            '<td class="num zero">' + l.etapesJouees + '</td>' +
+            '<td class="num"><span class="pab ' + pab + '" title="' + pabTitre + '">' +
+              l.absences + '</span></td></tr>';
+        });
+        poser('general', h + '</tbody></table>');
+      }
+    }
+
+    // ── Compteur de recherche : on cherche dans TOUT le peloton du départ
+    var rq = el('rq');
+    if (rq) {
+      if (!RECHERCHE) {
+        rq.textContent = '';
+      } else {
+        var trouves = r.peloton.filter(correspond);
+        if (!trouves.length) {
+          rq.innerHTML = 'aucun joueur trouvé';
+        } else {
+          rq.innerHTML = '<b>' + trouves.length + '</b> joueur' + (trouves.length>1?'s':'') + ' trouvé' +
+            (trouves.length>1?'s':'') + ' : ' + trouves.map(function(p){
+              var sorti = r.elimines.filter(function(e){ return e.pseudo===p; })[0];
+              return esc(p) + (sorti ? ' <span class="tag ' + (sorti.motif==='absences'?'ab':'hd') +
+                     '">sorti ét.' + sorti.etape + '</span>' : '');
+            }).join(' · ');
+        }
+      }
+    }
+
+    // ── Navigation des étapes
+    if (el('nav')) {
+      var nav = '';
+      r.etapes.forEach(function(e, i){
+        var vide = e.presents===0;
+        var c = 'eb' + (e.type==='clm'?' clm':'') + (vide?' vide':'');
+        var lib = e.type==='clm' ? '⏱️' + e.numero : e.numero;
+        nav += '<div class="' + c + '" data-i="' + i + '" title="' + libDate(e.date) + '">' + lib + '</div>';
+      });
+      poser('nav', nav);
+      document.querySelectorAll('#nav .eb').forEach(function(b){
+        b.addEventListener('click', function(){
+          if (b.classList.contains('vide')) return;
+          etapeVue = parseInt(b.getAttribute('data-i'),10);
+          rendreEtape();
+        });
+      });
+    }
+
+    // dernière étape disputée par défaut
+    if (etapeVue === null) {
+      for (var k=r.etapes.length-1;k>=0;k--){
+        if (r.etapes[k].presents>0){ etapeVue=k; break; }
+      }
+      if (etapeVue === null) etapeVue = 0;
+    }
+    rendreEtape();
+    rendrePodiums();
+
+    // ── Sortants
+    var sortVus = r.elimines.filter(function(e){ return correspond(e.pseudo); });
+    if (!r.elimines.length) {
+      poser('sortants', '<div class="vide">Aucun sortant : le peloton est au complet.</div>');
+    } else if (!sortVus.length) {
+      poser('sortants', '<div class="vide">Aucun sortant ne correspond à cette recherche.</div>');
+    } else {
+      var s = '<table><thead><tr><th>Étape</th><th>Joueur</th><th>Motif</th><th class="num">Score</th><th class="num">Total acquis</th></tr></thead><tbody>';
+      sortVus.forEach(function(e){
+        s += '<tr><td class="rang">' + e.etape + '</td><td>' + esc(e.pseudo) + '</td>' +
+          '<td><span class="tag ' + (e.motif==='absences'?'ab':'hd') + '">' + libMotif(e) + '</span></td>' +
+          '<td class="num ' + (e.score!==undefined?cls(e.score):'zero') + '">' + (e.score!==undefined?sgn(e.score):'—') + '</td>' +
+          '<td class="num zero">' + sgn(e.total) + '</td></tr>';
+      });
+      poser('sortants', s + '</tbody></table>');
+    }
+
+    // ── Intrus : les éliminés qui continuent de jouer
+    var sec = el('sec-intrus');
+    if (r.intrus.length) {
+      var par = {};
+      r.intrus.forEach(function(x){ par[x.pseudo] = (par[x.pseudo]||0)+1; });
+      var t = '<table><thead><tr><th>Joueur</th><th class="num">Étapes jouées après élimination</th></tr></thead><tbody>';
+      Object.keys(par).sort(function(a,b){ return par[b]-par[a]; }).forEach(function(p){
+        t += '<tr><td>' + esc(p) + '</td><td class="num">' + par[p] + '</td></tr>';
+      });
+      poser('intrus', t + '</tbody></table>');
+      if (sec) sec.style.display = '';
+    } else if (sec) {
+      sec.style.display = 'none';
+    }
+
+    // ── Hors peloton : présents un jour, mais pas au départ du tour
+    var secHP = el('sec-horspeloton');
+    if (r.horsPeloton.length) {
+      var parHP = {};
+      r.horsPeloton.forEach(function(x){
+        if (!parHP[x.pseudo]) parHP[x.pseudo] = { n: 0, premiere: x.date };
+        parHP[x.pseudo].n += 1;
+      });
+      var th = '<table><thead><tr><th>Joueur</th><th>Première apparition</th><th class="num">Étapes jouées</th></tr></thead><tbody>';
+      Object.keys(parHP).sort(function(a,b){ return a.localeCompare(b); }).forEach(function(p){
+        th += '<tr><td>' + esc(p) + '</td><td>' + libDate(parHP[p].premiere) + '</td><td class="num">' + parHP[p].n + '</td></tr>';
+      });
+      poser('horspeloton', th + '</tbody></table>');
+      if (secHP) secHP.style.display = '';
+    } else if (secHP) {
+      secHP.style.display = 'none';
+    }
+  }
+
+  /* ══ Les podiums du jour : la vraie course et la nôtre, côte à côte ══
+     Colonne de gauche : ce que l'organisateur de la Vuelta a publié, lu
+     par le cron du matin et recopié tel quel dans la page — rien n'est
+     calculé ici. Colonne de droite : nos joueurs, tels que le moteur les a
+     classés, sans le moindre recalcul.
+     Si les résultats officiels manquent, on le dit et on montre les nôtres :
+     on n'affiche jamais un chiffre dont on n'est pas sûr. */
+
+  // Les rangs 1 à 3 « denses » : tous les ex æquo d'un rang restent ensemble,
+  // exactement comme pour les bonifications — trois rangs, pas trois joueurs.
+  function troisRangs(lignes, champ){
+    var groupes = [], parRang = {};
+    (lignes || []).forEach(function(l){
+      if (!l || l.rang > 3) return;
+      if (!parRang[l.rang]) {
+        parRang[l.rang] = { rang: l.rang, score: l[champ], joueurs: [] };
+        groupes.push(parRang[l.rang]);
+      }
+      parRang[l.rang].joueurs.push(l.pseudo);
+    });
+    return groupes.sort(function(a,b){ return a.rang - b.rang; });
+  }
+
+  function lignePod(rang, nom, detail, score, classeScore){
+    return '<div class="pod-l"><span class="pod-r r' + rang + '">' + rang + '</span>' +
+      '<span class="pod-n">' + nom + (detail ? '<span class="pod-e">' + detail + '</span>' : '') + '</span>' +
+      '<span class="pod-s ' + (classeScore || '') + '">' + score + '</span></div>';
+  }
+
+  function blocNous(titre, groupes){
+    if (!groupes.length) return '';
+    var h = '<div class="pod-t">' + titre + '</div>';
+    groupes.forEach(function(g){
+      h += lignePod(g.rang, g.joueurs.map(esc).join(', '), '', sgn(g.score), cls(g.score));
+    });
+    return h;
+  }
+
+  function blocEux(titre, podium){
+    if (!podium || !podium.length) return '';
+    var h = '<div class="pod-t">' + titre + '</div>';
+    podium.forEach(function(c){
+      // Le premier n'a pas d'écart : on montre son temps, les autres leur retard.
+      h += lignePod(c.rang, esc(c.nom) + (c.pays ? ' <span class="pod-p">' + esc(c.pays) + '</span>' : ''),
+                    esc(c.equipe || ''), esc(c.ecart || c.temps || ''), '');
+    });
+    return h;
+  }
+
+  function rendrePodiums(){
+    var box = el('podiums');
+    if (!box || !ETAT) return;
+    var sec = el('sec-podiums');
+    var montrer = function(oui){ if (sec) sec.style.display = oui ? '' : 'none'; };
+
+    var r = ETAT.resultat, off = ETAT.vueltaOfficielle || null;
+
+    // La dernière étape courue : c'est d'elle qu'on parle le matin, quelle
+    // que soit l'étape que le lecteur consulte plus bas dans la page.
+    var derniere = null;
+    for (var i = r.etapes.length - 1; i >= 0; i--) {
+      if (r.etapes[i].presents > 0) { derniere = r.etapes[i]; break; }
+    }
+    if (!derniere) { montrer(false); return; }
+
+    var nous = blocNous('Étape ' + derniere.numero, troisRangs(derniere.classement, 'retenu')) +
+               blocNous('Classement général', troisRangs(r.general, 'total'));
+
+    var eux;
+    if (off && off.etape) {
+      eux = blocEux('Étape ' + off.etape.numero +
+                    (off.etape.parcours ? ' <span class="pod-v">' + esc(off.etape.parcours) + '</span>' : ''),
+                    off.etape.podium) +
+            blocEux('Classement général', off.general);
+    } else if (off && off.repos) {
+      eux = '<div class="pod-t">Jour de repos</div>' +
+            '<div class="pod-vide">Le peloton se repose : pas d\'étape ce jour-là.</div>' +
+            blocEux('Classement général', off.general);
+    } else {
+      eux = '<div class="pod-vide">Résultats officiels non disponibles ce matin.</div>';
+    }
+
+    var lien = (off && off.source)
+      ? ' · <a href="' + esc(off.source) + '" target="_blank" rel="noopener">lavuelta.es</a>'
+      : '';
+
+    poser('podiums-sub', 'Les trois premiers rangs, le ' + libDate(derniere.date) + lien);
+    box.innerHTML =
+      '<div class="pod-col"><div class="pod-h pod-h--eux">\uD83D\uDEB4 La vraie Vuelta</div>' + eux + '</div>' +
+      '<div class="pod-col"><div class="pod-h pod-h--nous">\u2660\uFE0F Nos joueurs</div>' + nous + '</div>';
+    montrer(true);
+  }
+
+  function rendreEtape(){
+    if (!ETAT) return;
+    var box = el('etape');
+    if (!box) return;
+    var e = ETAT.resultat.etapes[etapeVue];
+    if (!e) { box.innerHTML = ''; return; }
+
+    document.querySelectorAll('#nav .eb').forEach(function(b){
+      b.classList.toggle('on', parseInt(b.getAttribute('data-i'),10)===etapeVue);
+    });
+
+    if (!e.classement.length) {
+      box.innerHTML = '<div class="vide">Étape ' + e.numero + ' — ' + libDate(e.date) +
+        '<br>Résultats pas encore importés.</div>';
+      return;
+    }
+
+    var titre = 'Étape ' + e.numero + ' · ' + libDate(e.date) +
+      (e.type==='clm' ? ' <span class="tag clm">contre-la-montre — aucune bonification</span>' : '') +
+      (e.sortants.length ? ' <span class="tag hd">' + e.sortants.length + ' sortant' + (e.sortants.length>1?'s':'') + '</span>' : '');
+
+    var lignes = e.classement.filter(function(l){ return correspond(l.pseudo); });
+    var h = '<div style="padding:13px 12px 4px;font-size:.86rem;color:var(--dim);">' + titre + '</div>';
+    if (!lignes.length) {
+      box.innerHTML = h + '<div class="vide">Aucun joueur de cette étape ne correspond à la recherche.</div>';
+      return;
+    }
+    h += '<table><thead><tr><th>Rang</th><th>Joueur</th><th class="num">Joué</th><th class="num">Bonif.</th><th class="num">Retenu</th></tr></thead><tbody>';
+    lignes.forEach(function(l){
+      var sort = e.sortants.filter(function(s){ return s.pseudo===l.pseudo; })[0];
+      h += '<tr><td class="rang">' + l.rang + '</td>' +
+        '<td>' + esc(l.pseudo) + (sort ? ' <span class="tag ' + (sort.motif==='absences'?'ab':'hd') + '">' +
+          (sort.motif==='absences' ? sort.absences + ' absences' : sort.motif) + '</span>' : '') + '</td>' +
+        '<td class="num ' + cls(l.brut) + '">' + sgn(l.brut) + '</td>' +
+        '<td class="num ' + (l.bonification?'bonif':'zero') + '">' + (l.bonification?'+'+l.bonification:'—') + '</td>' +
+        '<td class="num ' + cls(l.retenu) + '"><strong>' + sgn(l.retenu) + '</strong></td></tr>';
+    });
+    h += '</tbody></table>';
+
+    /* Les absents du jour ne sont pas dans le classement : sans cette ligne
+       ils disparaissent de l'écran. Chacun porte son compte, et celui qui
+       vient de dépasser le quota est nommé comme éliminé. */
+    var fat = (ETAT.resultat.quota === undefined ? 2 : ETAT.resultat.quota) + 1;
+    var abs = e.absents || [];
+    if (abs.length) {
+      h += '<div style="padding:11px 12px;font-size:.8rem;color:var(--muted);border-top:1px solid var(--border);">' +
+        'Absent' + (abs.length>1?'s':'') + ' ce jour : ' +
+        abs.map(function(a){
+          return '<strong>' + esc(a.pseudo) + '</strong> (' + a.absences +
+                 (a.absences >= fat ? ' — éliminé)' : (a.absences>1?'e':'re') + ' absence)');
+        }).join(', ') + '</div>';
+    }
+    box.innerHTML = h;
+  }
+
+  return {
+    afficher: afficher,
+    rendre: rendre,
+    rendreEtape: rendreEtape,
+    rendrePodiums: rendrePodiums,
+    chercher: chercher,
+    razRecherche: razRecherche,
+    erreur: erreur,
+    vider: vider,
+    libDate: libDate,
+    sgn: sgn,
+    cls: cls,
+    esc: esc
+  };
+});
+
+</script>
+<script>
+/* Page autonome : les données sont dans la page, il n'y a rien à aller
+   chercher. Le calcul est le même que sur le NUC, au caractère près. */
+var EDITION = {"cle":"vuelta-2026","epreuve":"vuelta","annee":2026,"nom":"Le Quinté de la Vuelta 2026","emoji":"❤️","essai":false,"debut":"2026-08-22","nbEtapes":23,"contreLaMontre":[1,18],"seuilElimination":-25,"bonifications":[10,6,4],"absencesTolerees":2,"bonusAssiduite":10,"nbDonnes":5,"malusParDonneNonJouee":24,"motCle":"vuelta","source":"propre"};
+var JOURS   = {"2026-08-22":{"date":"2026-08-22","results":[{"nickname":"Macigno","score":29},{"nickname":"AleksK","score":22},{"nickname":"Sorbonne","score":19},{"nickname":"Vrepet","score":14},{"nickname":"LoekF","score":14},{"nickname":"chris duroselle","score":13},{"nickname":"RobOM","score":12},{"nickname":"gegeceyrat","score":12},{"nickname":"Chris92370","score":9},{"nickname":"Ulina","score":8},{"nickname":"miptit","score":8},{"nickname":"joker 4453","score":8},{"nickname":"saint mathieu","score":8},{"nickname":"werner67","score":7},{"nickname":"gemyloya","score":7},{"nickname":"gérard Pirogue","score":7},{"nickname":"effekappa","score":7},{"nickname":"Nihao","score":7},{"nickname":"benli74","score":6},{"nickname":"Felix33","score":6},{"nickname":"spidom","score":5},{"nickname":"Tannhaüser","score":4},{"nickname":"christian dozol","score":3},{"nickname":"Chbrb","score":3},{"nickname":"arbaz","score":3},{"nickname":"mc roy","score":3},{"nickname":"Miguel Cerquinho","score":2},{"nickname":"maki21","score":2},{"nickname":"Huhe","score":2},{"nickname":"asb10","score":2},{"nickname":"boccapere","score":2},{"nickname":"Mat Cauthon","score":2},{"nickname":"G-3-D","score":2},{"nickname":"moniquebridge","score":2},{"nickname":"Pacboy","score":2},{"nickname":"Francis de Lucy","score":1},{"nickname":"Gilles Cuenat","score":1},{"nickname":"mire75","score":1},{"nickname":"Crouky","score":1},{"nickname":"pixelie","score":1},{"nickname":"anna57","score":1},{"nickname":"jr61","score":1},{"nickname":"Frepel","score":1},{"nickname":"JMDEL","score":0},{"nickname":"LAURENT 54","score":0},{"nickname":"Geo 40","score":0},{"nickname":"saluki24","score":0},{"nickname":"Loulou64","score":0},{"nickname":"nanteau77","score":0},{"nickname":"Gecor","score":0},{"nickname":"Caméléon_","score":-1},{"nickname":"Pom Cannelle","score":-1},{"nickname":"Teresa  Cerquinho","score":-1},{"nickname":"todm","score":-2},{"nickname":"loudel","score":-2},{"nickname":"xtremis","score":-2},{"nickname":"chris3d","score":-2},{"nickname":"ZOE e-Rallye","score":-2},{"nickname":"ouinon","score":-2},{"nickname":"hymo","score":-3},{"nickname":"thierry63","score":-3},{"nickname":"jaarco","score":-4},{"nickname":"PAAP","score":-4},{"nickname":"geronimo1","score":-4},{"nickname":"Cracou","score":-5},{"nickname":"Roger Leclerc","score":-5},{"nickname":"Prochutto","score":-7},{"nickname":"mn70","score":-7},{"nickname":"Meszaros","score":-7},{"nickname":"KRISBI","score":-7},{"nickname":"boumidog","score":-9},{"nickname":"Richard1729","score":-10},{"nickname":"mistral","score":-11},{"nickname":"Philipo","score":-12},{"nickname":"Benji57","score":-12},{"nickname":"Lilou Bragart","score":-12},{"nickname":"BAZINVAL","score":-14},{"nickname":"johane","score":-17},{"nickname":"miranela","score":-19},{"nickname":"chrisblb","score":-19},{"nickname":"dominique parant","score":-26}]}};
+/* Les classements de la VRAIE Vuelta, lus le matin meme sur le site de
+   l'organisateur. Absents (site muet, jour de repos hors course) : la
+   colonne le dit, elle n'invente rien. */
+var VUELTA_OFF = {"repos":false,"etape":{"numero":1,"date":"2026-08-22","parcours":"Monaco > Monaco","podium":[{"rang":1,"nom":"Tadej POGACAR","pays":"SLO","equipe":"UAE TEAM EMIRATES XRG","temps":"00h 10' 57''","ecart":""},{"rang":2,"nom":"Ethan Edward HAYTER","pays":"GBR","equipe":"SOUDAL QUICK-STEP","temps":"00h 10' 57''","ecart":""},{"rang":3,"nom":"Joshua Michael TARLING","pays":"GBR","equipe":"NETCOMPANY INEOS CYCLING TEAM","temps":"00h 11' 01''","ecart":"+ 00h 00' 04''"}]},"general":[{"rang":1,"nom":"Tadej POGACAR","pays":"SLO","equipe":"UAE TEAM EMIRATES XRG","temps":"00h 10' 57''","ecart":""},{"rang":2,"nom":"Ethan Edward HAYTER","pays":"GBR","equipe":"SOUDAL QUICK-STEP","temps":"00h 10' 57''","ecart":""},{"rang":3,"nom":"Joshua Michael TARLING","pays":"GBR","equipe":"NETCOMPANY INEOS CYCLING TEAM","temps":"00h 11' 01''","ecart":"+ 00h 00' 04''"}],"source":"https://www.lavuelta.es/en/rankings/stage-1"};
+
+function chercher(q){ QuintesAffichage.chercher(q); }
+function razRecherche(){ QuintesAffichage.razRecherche(); }
+
+try {
+  var c = QuintesMoteur.calculerEdition(EDITION, JOURS);
+  QuintesAffichage.afficher({ edition: EDITION, jours: c.jours, resultat: c.resultat,
+                             vueltaOfficielle: VUELTA_OFF });
+} catch (e) {
+  QuintesAffichage.erreur('Impossible de calculer le classement : ' + e.message);
+}
+</script>
 </body>
 </html>
