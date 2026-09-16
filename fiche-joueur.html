@@ -108,11 +108,14 @@ footer{text-align:center;color:rgba(255,255,255,.3);font-size:.8rem;margin-top:4
 <script>
 (function(){
 'use strict';
-var ORDRE = ['trio','serge','cadors','petitscadors'];
+var ORDRE = ['trio','serge','cadors','petitscadors','quintequotidien'];
 var MOIS = ['','Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
 var DATA = null, JOUEURS = [], SEL = null, curseur = -1;
-/* [pseudo, rang, net, jours, joursPositifs, brut, jokers, prime, gain15] */
-var P_NOM=0, P_RANG=1, P_NET=2, P_JOURS=3, P_POS=4, P_BRUT=5, P_JOK=6, P_PRIME=7, P_G15=8, P_JJ=9;
+/* [pseudo, rang, net, jours, joursPositifs, brut, jokers, prime, gain15, jours[], primesRang]
+   primesRang (11e case) n'existe que pour les tournois qui en distribuent — le
+   Quinté Quotidien depuis le 17/09/2026. Elle a été ajoutée APRÈS jours[] pour
+   que toutes les positions déjà lues ici gardent leur rang. */
+var P_NOM=0, P_RANG=1, P_NET=2, P_JOURS=3, P_POS=4, P_BRUT=5, P_JOK=6, P_PRIME=7, P_G15=8, P_JJ=9, P_PRANG=10;
 
 function nrm(s){ return String(s == null ? '' : s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim(); }
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -232,6 +235,7 @@ function vueMois(my){
       (cle==='serge' ? '' : kv('Jokers utilisés','<b>'+p[P_JOK]+'</b>'))+
       (p[P_PRIME] ? kv('🔥 Prime régularité','<b>+'+p[P_PRIME]+'</b>') : '')+
       (p[P_G15] ? kv('⭐ Gain du 15','<b>+'+p[P_G15]+'</b>') : '')+
+      (p[P_PRANG] ? kv('🖐️ Primes de rang','<b>+'+p[P_PRANG]+'</b>') : '')+
       kv('Moyenne / donne','<b class="'+(p[P_BRUT]>=0?'pos':'neg')+'">'+(p[P_BRUT]/p[P_JOURS]/t.donnes).toFixed(2)+'</b>')+
       '</div>'+
       (p[P_JJ] && p[P_JJ].length
