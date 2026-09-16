@@ -12,6 +12,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--purple);min-height:100vh;
 header{text-align:center;margin-bottom:32px;}
 .back{display:inline-block;margin-top:14px;color:#c4a8f0;text-decoration:none;font-size:.88rem;font-weight:600;}
 .back:hover{text-decoration:underline;}
+/* ── BOUTON LANGUE ── (même mécanique que le formulaire d'inscription) */
+.lang-btn{margin-top:12px;display:inline-flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);
+  font-size:0.8rem;font-weight:500;padding:5px 14px;border-radius:30px;
+  border:1px solid rgba(255,255,255,0.2);cursor:pointer;font-family:'DM Sans',sans-serif;
+  transition:all 0.15s;width:auto;}
+.lang-btn:hover{background:rgba(255,255,255,0.14);color:#fff;}
 .suits{font-size:28px;letter-spacing:4px;color:var(--gold);}
 h1{font-family:'Playfair Display',serif;color:var(--gold-light);font-size:1.7rem;margin:10px 0 4px;}
 .subtitle{color:rgba(255,255,255,0.45);font-size:0.78rem;letter-spacing:2px;text-transform:uppercase;}
@@ -36,48 +43,110 @@ button[type=submit]:hover{background:var(--purple-mid);}
 
 <header>
   <div class="suits">&#9824; &#9829; &#9830; &#9827;</div>
-  <h1>Tournois privés chrisblb</h1>
-  <div class="subtitle">Funbridge — Communiquer votre email</div>
-  <a class="back" href="presentation.html">&larr; Retour à la présentation</a>
+  <h1 class="lang-fr">Tournois privés chrisblb</h1>
+  <h1 class="lang-en" style="display:none">chrisblb's private tournaments</h1>
+  <div class="subtitle lang-fr">Funbridge — Communiquer votre email</div>
+  <div class="subtitle lang-en" style="display:none">Funbridge — Send me your email</div>
+  <a class="back lang-fr" href="presentation.html">&larr; Retour à la présentation</a>
+  <a class="back lang-en" style="display:none" href="presentation-en.html">&larr; Back to the tournament overview</a>
+  <br>
+  <button class="lang-btn" id="lang-btn" type="button">&#127468;&#127463; English</button>
 </header>
 
 <div class="card">
   <form id="emailForm" action="https://bridge.3050.fr/submit-email" method="POST">
 
-    <div class="info-box">
+    <div class="info-box lang-fr">
       <strong>Pourquoi votre adresse email ?</strong>
       J'organise plusieurs tournois — le Trio, SergeLive, Les Cadors, Les Petits Cadors, ainsi que les
       Quintés des Grands Tours (Vuelta, Giro, Tour de France) — et j'ai besoin de votre email pour
       pouvoir vous contacter. Elle ne sert qu'à cela et n'est communiquée à personne.
     </div>
+    <div class="info-box lang-en" style="display:none">
+      <strong>Why your email address?</strong>
+      I run several tournaments — the Trio, SergeLive, Les Cadors, Les Petits Cadors, and the
+      Grand Tour Quintés (Vuelta, Giro, Tour de France) — and I need your email to be able to
+      contact you. It is used for nothing else and is never passed on to anyone.
+    </div>
 
     <div class="field">
-      <label for="pseudo">Pseudo Funbridge *</label>
+      <label class="lang-fr" for="pseudo">Pseudo Funbridge *</label>
+      <label class="lang-en" style="display:none" for="pseudo">Funbridge nickname *</label>
       <input type="text" id="pseudo" name="pseudo" placeholder="Votre pseudo sur Funbridge" required autocomplete="off" autocorrect="off" spellcheck="false">
     </div>
 
     <div class="field">
-      <label for="email">Adresse email *</label>
+      <label class="lang-fr" for="email">Adresse email *</label>
+      <label class="lang-en" style="display:none" for="email">Email address *</label>
       <input type="email" id="email" name="email" placeholder="votre@email.fr" required>
     </div>
 
     <div class="field">
-      <label for="message">Message éventuel</label>
+      <label class="lang-fr" for="message">Message éventuel</label>
+      <label class="lang-en" style="display:none" for="message">Message (optional)</label>
       <textarea id="message" name="message" placeholder="Vos questions ou remarques…"></textarea>
     </div>
 
-    <button type="submit">Envoyer</button>
+    <button type="submit"><span class="lang-fr">Envoyer</span><span class="lang-en" style="display:none">Send</span></button>
   </form>
 
   <div class="success" id="successMsg">
     <div class="check">&#9989;</div>
-    <p>Merci, votre adresse est enregistrée !</p>
+    <p class="lang-fr">Merci, votre adresse est enregistrée !</p>
+    <p class="lang-en" style="display:none">Thank you, your address has been saved!</p>
   </div>
 </div>
 
-<div class="footer">Organisé par chrisblb sur Funbridge</div>
+<div class="footer">
+  <span class="lang-fr">Organisé par chrisblb sur Funbridge</span>
+  <span class="lang-en" style="display:none">Organised by chrisblb on Funbridge</span>
+</div>
 
 <script>
+/* Bilingue depuis le 16/09/2026 : ce formulaire est envoyé à des joueurs
+   étrangers (ceux dont l'adresse manque pour Les Cadors), il ne pouvait pas
+   rester en français seul. Même mécanique que inscription.html, et la même
+   préférence retenue ('pblang') : qui a choisi l'anglais là-bas le retrouve ici. */
+var MOTS = {
+  fr: {
+    titre: 'Tournois privés chrisblb — Communiquer votre email',
+    pseudo: 'Votre pseudo sur Funbridge',
+    email: 'votre@email.fr',
+    message: 'Vos questions ou remarques…',
+    erreur: "Une erreur s'est produite. Merci de réessayer.",
+    bouton: '🇬🇧 English'
+  },
+  en: {
+    titre: "chrisblb's private tournaments — Send me your email",
+    pseudo: 'Your nickname on Funbridge',
+    email: 'your@email.com',
+    message: 'Your questions or comments…',
+    erreur: 'Something went wrong. Please try again.',
+    bouton: '🇫🇷 Français'
+  }
+};
+
+function setLang(lang) {
+  try { localStorage.setItem('pblang', lang); } catch (e) {}
+  document.querySelectorAll('.lang-fr').forEach(function(el){ el.style.display = lang === 'fr' ? '' : 'none'; });
+  document.querySelectorAll('.lang-en').forEach(function(el){ el.style.display = lang === 'en' ? '' : 'none'; });
+  var m = MOTS[lang];
+  document.title = m.titre;
+  document.getElementById('pseudo').placeholder = m.pseudo;
+  document.getElementById('email').placeholder = m.email;
+  document.getElementById('message').placeholder = m.message;
+  document.getElementById('lang-btn').innerHTML = m.bouton;
+  document.documentElement.lang = lang;
+}
+
+var pref = 'fr';
+try { pref = localStorage.getItem('pblang') || 'fr'; } catch (e) {}
+setLang(pref === 'en' ? 'en' : 'fr');
+
+document.getElementById('lang-btn').addEventListener('click', function() {
+  setLang(document.documentElement.lang === 'en' ? 'fr' : 'en');
+});
+
 var form = document.getElementById('emailForm');
 form.addEventListener('submit', async function(e) {
   e.preventDefault();
@@ -92,10 +161,10 @@ form.addEventListener('submit', async function(e) {
       form.style.display = 'none';
       document.getElementById('successMsg').style.display = 'block';
     } else {
-      alert("Une erreur s'est produite. Merci de réessayer.");
+      alert(MOTS[document.documentElement.lang === 'en' ? 'en' : 'fr'].erreur);
     }
   } catch (err) {
-    alert("Une erreur s'est produite. Merci de réessayer.");
+    alert(MOTS[document.documentElement.lang === 'en' ? 'en' : 'fr'].erreur);
   }
 });
 </script>
