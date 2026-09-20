@@ -88,6 +88,14 @@ button[type=submit]:disabled{opacity:.6;cursor:default;}
     </div>
 
     <div class="field">
+      <div class="question lang-fr">Les bonus quotidiens aux cinq premiers (5-4-3-2-1) ?</div>
+      <div class="question lang-en" style="display:none">The daily bonuses for the top five (5-4-3-2-1)?</div>
+      <label class="choix"><input type="radio" name="bonus" value="plait"><span class="lang-fr">Ça me plaît, ça rend le jeu plus vivant</span><span class="lang-en" style="display:none">I like it, it makes the game livelier</span></label>
+      <label class="choix"><input type="radio" name="bonus" value="egal"><span class="lang-fr">Ça m'est égal</span><span class="lang-en" style="display:none">I don't mind either way</span></label>
+      <label class="choix"><input type="radio" name="bonus" value="fausse"><span class="lang-fr">Ça fausse le classement</span><span class="lang-en" style="display:none">It distorts the ranking</span></label>
+    </div>
+
+    <div class="field">
       <div class="question lang-fr">Le Quinté devrait-il un jour remplacer le Trio ?</div>
       <div class="question lang-en" style="display:none">Should the Quinté eventually replace the Trio?</div>
       <label class="choix"><input type="radio" name="remplacer" value="oui"><span class="lang-fr">Oui</span><span class="lang-en" style="display:none">Yes</span></label>
