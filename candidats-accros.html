@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Candidats LesAccros — Octobre 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#0f1623;color:#e2e8f0;min-height:100vh;line-height:1.6}
+header{text-align:center;padding:50px 20px 30px;background:linear-gradient(180deg,#0a0f1a 0%,#0f1623 100%);border-bottom:1px solid rgba(255,255,255,0.07)}
+header h1{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,5vw,2.5rem);color:#f0c46e;margin-bottom:8px}
+header .tagline{color:rgba(255,255,255,0.45);font-size:0.82rem;letter-spacing:0.18em;text-transform:uppercase}
+header .update{color:rgba(255,255,255,0.55);margin-top:14px;font-size:0.9rem}
+header .retour-presentation{display:inline-block;margin-top:16px;background:rgba(240,196,110,.14);border:1px solid rgba(240,196,110,.45);color:#f0c46e;text-decoration:none;font-size:.85rem;font-weight:600;padding:7px 16px;border-radius:20px}
+header .retour-presentation:hover{background:rgba(240,196,110,.26)}
+.intro{max-width:760px;margin:30px auto 0;padding:0 24px;text-align:center;color:rgba(255,255,255,0.75);font-size:1rem;line-height:1.75}
+.intro strong{color:#fde68a}
+.funnel-section{max-width:1000px;margin:40px auto 30px;padding:0 20px;text-align:center}
+.funnel-section h2{font-family:'Playfair Display',serif;color:#f0c46e;font-size:1.5rem;margin-bottom:20px}
+.candidates{max-width:1100px;margin:30px auto 50px;padding:0 16px}
+.candidates h2{font-family:'Playfair Display',serif;color:#f0c46e;font-size:1.4rem;margin-bottom:8px;text-align:center}
+.candidates .meta{text-align:center;color:rgba(255,255,255,0.5);margin-bottom:18px;font-size:0.88rem}
+.legend{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:20px;font-size:0.78rem}
+.legend .item{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,0.7)}
+.b{display:inline-block;padding:2px 9px;border-radius:12px;font-size:0.72rem;font-weight:700;letter-spacing:0.02em}
+.b-trio{background:rgba(232,201,122,0.22);color:#fde68a;border:1px solid rgba(232,201,122,0.4)}
+.b-serge{background:rgba(109,184,232,0.22);color:#9ed1f0;border:1px solid rgba(109,184,232,0.4)}
+.b-quinte{background:rgba(110,231,183,0.22);color:#6ee7b7;border:1px solid rgba(110,231,183,0.4)}
+table{width:100%;border-collapse:separate;border-spacing:0;background:rgba(255,255,255,0.03);border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,0.08)}
+thead th{background:rgba(240,196,110,0.16);color:#f0c46e;padding:12px 10px;text-align:left;font-size:0.78rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;border-bottom:1px solid rgba(240,196,110,0.3)}
+thead th.rk{text-align:center}
+tbody td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.05);font-size:0.92rem}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:rgba(255,255,255,0.04)}
+td.rk{text-align:center;color:#f0c46e;font-weight:700;width:50px}
+td.nick{font-weight:600;color:#fff}
+td.assid{color:rgba(255,255,255,0.85);font-size:0.85rem}
+td.reasons{text-align:right;white-space:nowrap}
+.muted{color:rgba(255,255,255,0.25)}
+.notice{max-width:760px;margin:24px auto;padding:14px 18px;background:rgba(240,196,110,0.08);border-left:3px solid rgba(240,196,110,0.5);border-radius:6px;color:rgba(255,255,255,0.7);font-size:0.88rem;font-style:italic}
+footer{text-align:center;padding:30px 20px 60px;color:rgba(255,255,255,0.3);font-size:0.82rem}
+footer a{color:rgba(240,196,110,0.6);text-decoration:none}
+tr.sans-email td { opacity: 0.45; }
+tr.sans-email .nick { font-style: italic; }
+.tag-mail { display:block; font-size:0.68rem; font-style:normal; color:#f0b866; opacity:0.9; margin-top:2px; letter-spacing:0.02em; }
+</style>
+</head><body>
+<header>
+  <h1>⭐ Candidats LesAccros</h1>
+  <p class="tagline">Si le mois se terminait aujourd’hui</p>
+  <p class="update">Tournoi ciblé : <strong>Octobre 2026</strong> · Mis à jour le 21 septembre 2026 à 13:40</p>
+  <a class="retour-presentation" href="https://chrisblb.github.io/funbridge/presentation.html">← Retour à la présentation des tournois</a>
+</header>
+
+<p class="intro">
+  Cette liste est <strong>recalculée chaque jour</strong> à partir des résultats du mois en cours.
+  Elle anticipe qui sera invité au tournoi LesAccros du mois suivant : avoir joué un même tournoi presque tout le mois, sans être déjà qualifié aux Cadors.
+</p>
+
+<section class="funnel-section">
+  <h2>Comment se compose Les Accros&nbsp;?</h2>
+  <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans, system-ui, sans-serif" style="width:100%;max-width:900px;height:auto;">
+  <defs>
+    <linearGradient id="gFinalAccros" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#f0c46e"/>
+      <stop offset="1" stop-color="#8a652d"/>
+    </linearGradient>
+  </defs>
+  <g>
+    <rect x="60" y="30" width="230" height="110" rx="14" fill="#1a1024" stroke="#e8c97a" stroke-width="3"/>
+    <text x="175" y="58" text-anchor="middle" fill="#e8c97a" font-size="17" font-weight="700">🎴 Trio Quotidien</text>
+    <text x="175" y="88" text-anchor="middle" fill="#fff" font-size="18" font-weight="800">Assidu</text>
+    <text x="175" y="112" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="11">≤ 2 jours manqués</text>
+  </g>
+  <g>
+    <rect x="335" y="30" width="230" height="110" rx="14" fill="#0a2820" stroke="#6ee7b7" stroke-width="2"/>
+    <text x="450" y="58" text-anchor="middle" fill="#6ee7b7" font-size="17" font-weight="700">🖐️ Quinté Quotidien</text>
+    <text x="450" y="88" text-anchor="middle" fill="#fff" font-size="18" font-weight="800">Assidu</text>
+    <text x="450" y="112" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="11">≤ 2 jours manqués</text>
+  </g>
+  <g>
+    <rect x="610" y="30" width="230" height="110" rx="14" fill="#102230" stroke="#6db8e8" stroke-width="2"/>
+    <text x="725" y="58" text-anchor="middle" fill="#6db8e8" font-size="17" font-weight="700">🎭 SergeLive</text>
+    <text x="725" y="88" text-anchor="middle" fill="#fff" font-size="18" font-weight="800">Assidu</text>
+    <text x="725" y="112" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="11">≤ 2 jours manqués</text>
+  </g>
+  <path d="M 175 140 Q 175 195 380 220" stroke="#e8c97a" stroke-width="2.5" fill="none" opacity=".65"/>
+  <path d="M 450 140 Q 450 195 450 220" stroke="#6ee7b7" stroke-width="2.5" fill="none" opacity=".65"/>
+  <path d="M 725 140 Q 725 195 520 220" stroke="#6db8e8" stroke-width="2.5" fill="none" opacity=".65"/>
+  <rect x="280" y="220" width="340" height="90" rx="16" fill="url(#gFinalAccros)" stroke="#fff" stroke-width="2"/>
+  <text x="450" y="250" text-anchor="middle" fill="#1a1024" font-size="20" font-weight="800">⭐ LES ACCROS M+1</text>
+  <text x="450" y="272" text-anchor="middle" fill="rgba(26,16,36,.78)" font-size="12" font-weight="700">un seul tournoi suffit, presque tenu en entier</text>
+  <text x="450" y="292" text-anchor="middle" fill="rgba(26,16,36,.70)" font-size="11" font-weight="600">sauf si déjà qualifié aux Cadors</text>
+</svg>
+</section>
+
+<section class="candidates">
+  <h2>65 candidats au 21 septembre 2026</h2>
+  <p class="meta">Trio (36) · Quinté (0) · SergeLive (7)</p>
+  <div class="legend">
+    <div class="item"><span class="b b-trio">Trio</span> Assidu au Trio Quotidien</div>
+    <div class="item"><span class="b b-quinte">Quinte</span> Assidu au Quinté Quotidien</div>
+    <div class="item"><span class="b b-serge">Serge</span> Assidu au SergeLive</div>
+  </div>
+  <div style="overflow-x:auto">
+  <table>
+    <thead><tr>
+      <th class="rk">#</th>
+      <th>Pseudo</th>
+      <th>Assiduité</th>
+      <th style="text-align:right">Motif</th>
+    </tr></thead>
+    <tbody><tr>
+      <td class="rk">1</td>
+      <td class="nick">54birdie</td>
+      <td class="assid">Trio — 18/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr>
+      <td class="rk">2</td>
+      <td class="nick">anna57</td>
+      <td class="assid">Trio — 20/20 journées jouées<br>SergeLive — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span> <span class="b b-serge">Serge</span></td>
+    </tr>
+<tr>
+      <td class="rk">3</td>
+      <td class="nick">asb10</td>
+      <td class="assid">Trio — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr>
+      <td class="rk">4</td>
+      <td class="nick">Benji57</td>
+      <td class="assid">Trio — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr>
+      <td class="rk">5</td>
+      <td class="nick">benli74</td>
+      <td class="assid">Trio — 19/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr class="sans-email">
+      <td class="rk"><span class="muted">—</span></td>
+      <td class="nick">BGTHIBAUT<span class="tag-mail">adresse email manquante — contacte-moi</span></td>
+      <td class="assid">Trio — 19/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr class="sans-email">
+      <td class="rk"><span class="muted">—</span></td>
+      <td class="nick">calea<span class="tag-mail">adresse email manquante — contacte-moi</span></td>
+      <td class="assid">Trio — 18/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr>
+      <td class="rk">6</td>
+      <td class="nick">Chbrb</td>
+      <td class="assid">Trio — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr>
+      <td class="rk">7</td>
+      <td class="nick">chrisblb</td>
+      <td class="assid">Trio — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr class="sans-email">
+      <td class="rk"><span class="muted">—</span></td>
+      <td class="nick">coyote38<span class="tag-mail">adresse email manquante — contacte-moi</span></td>
+      <td class="assid">Trio — 18/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr class="sans-email">
+      <td class="rk"><span class="muted">—</span></td>
+      <td class="nick">daniele ducry<span class="tag-mail">adresse email manquante — contacte-moi</span></td>
+      <td class="assid">Trio — 18/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr class="sans-email">
+      <td class="rk"><span class="muted">—</span></td>
+      <td class="nick">denf<span class="tag-mail">adresse email manquante — contacte-moi</span></td>
+      <td class="assid">Trio — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr>
+      <td class="rk">8</td>
+      <td class="nick">dif67</td>
+      <td class="assid">Trio — 19/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr class="sans-email">
+      <td class="rk"><span class="muted">—</span></td>
+      <td class="nick">Dominique B<span class="tag-mail">adresse email manquante — contacte-moi</span></td>
+      <td class="assid">SergeLive — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-serge">Serge</span></td>
+    </tr>
+<tr>
+      <td class="rk">9</td>
+      <td class="nick">effekappa</td>
+      <td class="assid">Trio — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr>
+      <td class="rk">10</td>
+      <td class="nick">G-3-D</td>
+      <td class="assid">Trio — 19/20 journées jouées<br>SergeLive — 18/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span> <span class="b b-serge">Serge</span></td>
+    </tr>
+<tr>
+      <td class="rk">11</td>
+      <td class="nick">gegeceyrat</td>
+      <td class="assid">Trio — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr>
+      <td class="rk">12</td>
+      <td class="nick">GEPPETTO83</td>
+      <td class="assid">Trio — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr class="sans-email">
+      <td class="rk"><span class="muted">—</span></td>
+      <td class="nick">Gigi1947<span class="tag-mail">adresse email manquante — contacte-moi</span></td>
+      <td class="assid">Trio — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr>
+      <td class="rk">13</td>
+      <td class="nick">HIBOU666</td>
+      <td class="assid">Trio — 18/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr>
+      <td class="rk">14</td>
+      <td class="nick">hymo</td>
+      <td class="assid">Trio — 20/20 journées jouées<br>SergeLive — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span> <span class="b b-serge">Serge</span></td>
+    </tr>
+<tr>
+      <td class="rk">15</td>
+      <td class="nick">Hynek Svoboda</td>
+      <td class="assid">Trio — 19/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr>
+      <td class="rk">16</td>
+      <td class="nick">jaarco</td>
+      <td class="assid">Trio — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr>
+      <td class="rk">17</td>
+      <td class="nick">jc63</td>
+      <td class="assid">Trio — 19/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr class="sans-email">
+      <td class="rk"><span class="muted">—</span></td>
+      <td class="nick">jean paul belmondo1<span class="tag-mail">adresse email manquante — contacte-moi</span></td>
+      <td class="assid">Trio — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr class="sans-email">
+      <td class="rk"><span class="muted">—</span></td>
+      <td class="nick">jiby<span class="tag-mail">adresse email manquante — contacte-moi</span></td>
+      <td class="assid">Trio — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr>
+      <td class="rk">18</td>
+      <td class="nick">LILLTQ</td>
+      <td class="assid">Trio — 19/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr>
+      <td class="rk">19</td>
+      <td class="nick">Lilou Bragart</td>
+      <td class="assid">Trio — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr>
+      <td class="rk">20</td>
+      <td class="nick">loudel</td>
+      <td class="assid">Trio — 19/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr class="sans-email">
+      <td class="rk"><span class="muted">—</span></td>
+      <td class="nick">M.M.<span class="tag-mail">adresse email manquante — contacte-moi</span></td>
+      <td class="assid">Trio — 18/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr class="sans-email">
+      <td class="rk"><span class="muted">—</span></td>
+      <td class="nick">madosi<span class="tag-mail">adresse email manquante — contacte-moi</span></td>
+      <td class="assid">Trio — 19/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr class="sans-email">
+      <td class="rk"><span class="muted">—</span></td>
+      <td class="nick">Marco##<span class="tag-mail">adresse email manquante — contacte-moi</span></td>
+      <td class="assid">Trio — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr>
+      <td class="rk">21</td>
+      <td class="nick">mc roy</td>
+      <td class="assid">Trio — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr>
+      <td class="rk">22</td>
+      <td class="nick">Meszaros</td>
+      <td class="assid">Trio — 19/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr class="sans-email">
+      <td class="rk"><span class="muted">—</span></td>
+      <td class="nick">Mikaelovitch<span class="tag-mail">adresse email manquante — contacte-moi</span></td>
+      <td class="assid">Trio — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr>
+      <td class="rk">23</td>
+      <td class="nick">mire75</td>
+      <td class="assid">Trio — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr class="sans-email">
+      <td class="rk"><span class="muted">—</span></td>
+      <td class="nick">Momentum<span class="tag-mail">adresse email manquante — contacte-moi</span></td>
+      <td class="assid">SergeLive — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-serge">Serge</span></td>
+    </tr>
+<tr class="sans-email">
+      <td class="rk"><span class="muted">—</span></td>
+      <td class="nick">nic64<span class="tag-mail">adresse email manquante — contacte-moi</span></td>
+      <td class="assid">Trio — 18/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr class="sans-email">
+      <td class="rk"><span class="muted">—</span></td>
+      <td class="nick">olinic<span class="tag-mail">adresse email manquante — contacte-moi</span></td>
+      <td class="assid">Trio — 18/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr>
+      <td class="rk">24</td>
+      <td class="nick">PAAP</td>
+      <td class="assid">Trio — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr>
+      <td class="rk">25</td>
+      <td class="nick">Pacboy</td>
+      <td class="assid">Trio — 20/20 journées jouées<br>SergeLive — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span> <span class="b b-serge">Serge</span></td>
+    </tr>
+<tr class="sans-email">
+      <td class="rk"><span class="muted">—</span></td>
+      <td class="nick">PADEVIR<span class="tag-mail">adresse email manquante — contacte-moi</span></td>
+      <td class="assid">Trio — 19/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr>
+      <td class="rk">26</td>
+      <td class="nick">pawlut</td>
+      <td class="assid">Trio — 18/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr class="sans-email">
+      <td class="rk"><span class="muted">—</span></td>
+      <td class="nick">Philnol<span class="tag-mail">adresse email manquante — contacte-moi</span></td>
+      <td class="assid">Trio — 19/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr>
+      <td class="rk">27</td>
+      <td class="nick">Pierre K</td>
+      <td class="assid">Trio — 18/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr class="sans-email">
+      <td class="rk"><span class="muted">—</span></td>
+      <td class="nick">Pietjepuk2<span class="tag-mail">adresse email manquante — contacte-moi</span></td>
+      <td class="assid">SergeLive — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-serge">Serge</span></td>
+    </tr>
+<tr>
+      <td class="rk">28</td>
+      <td class="nick">Roger Leclerc</td>
+      <td class="assid">Trio — 20/20 journées jouées<br>SergeLive — 18/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span> <span class="b b-serge">Serge</span></td>
+    </tr>
+<tr class="sans-email">
+      <td class="rk"><span class="muted">—</span></td>
+      <td class="nick">rose67<span class="tag-mail">adresse email manquante — contacte-moi</span></td>
+      <td class="assid">Trio — 19/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr>
+      <td class="rk">29</td>
+      <td class="nick">saint mathieu</td>
+      <td class="assid">Trio — 20/20 journées jouées<br>SergeLive — 18/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span> <span class="b b-serge">Serge</span></td>
+    </tr>
+<tr>
+      <td class="rk">30</td>
+      <td class="nick">saluki24</td>
+      <td class="assid">Trio — 20/20 journées jouées<br>SergeLive — 19/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span> <span class="b b-serge">Serge</span></td>
+    </tr>
+<tr>
+      <td class="rk">31</td>
+      <td class="nick">Sarpsborg08</td>
+      <td class="assid">Trio — 19/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr>
+      <td class="rk">32</td>
+      <td class="nick">scotch-soda</td>
+      <td class="assid">Trio — 18/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr class="sans-email">
+      <td class="rk"><span class="muted">—</span></td>
+      <td class="nick">sechsmalacht<span class="tag-mail">adresse email manquante — contacte-moi</span></td>
+      <td class="assid">Trio — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr class="sans-email">
+      <td class="rk"><span class="muted">—</span></td>
+      <td class="nick">sue bowles<span class="tag-mail">adresse email manquante — contacte-moi</span></td>
+      <td class="assid">Trio — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr class="sans-email">
+      <td class="rk"><span class="muted">—</span></td>
+      <td class="nick">Svein- Gunnar<span class="tag-mail">adresse email manquante — contacte-moi</span></td>
+      <td class="assid">SergeLive — 18/20 journées jouées</td>
+      <td class="reasons"><span class="b b-serge">Serge</span></td>
+    </tr>
+<tr>
+      <td class="rk">33</td>
+      <td class="nick">svmsn</td>
+      <td class="assid">Trio — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr class="sans-email">
+      <td class="rk"><span class="muted">—</span></td>
+      <td class="nick">Sylvie Grynblat<span class="tag-mail">adresse email manquante — contacte-moi</span></td>
+      <td class="assid">Trio — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr class="sans-email">
+      <td class="rk"><span class="muted">—</span></td>
+      <td class="nick">Tant Grön<span class="tag-mail">adresse email manquante — contacte-moi</span></td>
+      <td class="assid">Trio — 19/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr>
+      <td class="rk">34</td>
+      <td class="nick">train4453</td>
+      <td class="assid">Trio — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr class="sans-email">
+      <td class="rk"><span class="muted">—</span></td>
+      <td class="nick">tugdu<span class="tag-mail">adresse email manquante — contacte-moi</span></td>
+      <td class="assid">Trio — 19/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr class="sans-email">
+      <td class="rk"><span class="muted">—</span></td>
+      <td class="nick">Verofuks<span class="tag-mail">adresse email manquante — contacte-moi</span></td>
+      <td class="assid">Trio — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr>
+      <td class="rk">35</td>
+      <td class="nick">werner67</td>
+      <td class="assid">Trio — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr class="sans-email">
+      <td class="rk"><span class="muted">—</span></td>
+      <td class="nick">yanez<span class="tag-mail">adresse email manquante — contacte-moi</span></td>
+      <td class="assid">Trio — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr class="sans-email">
+      <td class="rk"><span class="muted">—</span></td>
+      <td class="nick">Zamm<span class="tag-mail">adresse email manquante — contacte-moi</span></td>
+      <td class="assid">Trio — 18/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr>
+<tr>
+      <td class="rk">36</td>
+      <td class="nick">Zzoe</td>
+      <td class="assid">Trio — 20/20 journées jouées</td>
+      <td class="reasons"><span class="b b-trio">Trio</span></td>
+    </tr></tbody>
+  </table>
+  </div>
+  <div class="notice">
+    ⚠️ Cette liste est <strong>provisoire</strong> tant que le mois n’est pas terminé. Les invitations officielles partent le 1er du mois suivant à 6h.
+    <br><br>📧 <strong>29 joueurs en grisé</strong> : votre assiduité vous qualifie, mais je n’ai pas votre adresse email et le mot de passe s’envoie par email. <a href="https://chrisblb.github.io/funbridge/inscription.html" style="color:#f0c46e;font-weight:600">Communiquez-la-moi</a> et votre place est à vous.
+  </div>
+</section>
+
+<footer>
+  <p>Tournois organisés par <strong style="color:rgba(240,196,110,0.7)">chrisblb</strong> · <a href="https://chrisblb.github.io/funbridge/presentation.html">Présentation</a> · <a href="https://chrisblb.github.io/funbridge/accros-resultats.html">Classement Les Accros</a></p>
+</footer>
+</body></html>
