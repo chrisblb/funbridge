@@ -59,6 +59,7 @@ td:first-child,th:first-child{text-align:left;white-space:nowrap}
 tbody tr:hover{background:rgba(255,255,255,.03)}
 tr.total td{border-top:2px solid rgba(232,201,122,.4);background:rgba(232,201,122,.06);font-weight:600}
 .mut{color:rgba(255,255,255,.25)}
+.rappel-nd{font-size:.7rem;color:rgba(255,255,255,.45);line-height:1.4;padding:5px 0 2px}
 .cellr{font-weight:700;color:#fff}
 .cells{display:block;font-size:.76rem;color:rgba(255,255,255,.45)}
 .qed{background:#151d2e;border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:14px;margin-bottom:11px}
@@ -115,12 +116,18 @@ var DATA = null, JOUEURS = [], SEL = null, curseur = -1;
    primesRang (11e case) n'existe que pour les tournois qui en distribuent — le
    Quinté Quotidien depuis le 17/09/2026. Elle a été ajoutée APRÈS jours[] pour
    que toutes les positions déjà lues ici gardent leur rang. */
-var P_NOM=0, P_RANG=1, P_NET=2, P_JOURS=3, P_POS=4, P_BRUT=5, P_JOK=6, P_PRIME=7, P_G15=8, P_JJ=9, P_PRANG=10;
+/* Depuis le 08/11/2026 : 12e et 13e cases = Brut/donne et Net/donne, calculés par le
+   moteur au jour près (la page divisait les Cadors par 4 même après le passage à 5).
+   Absentes d'un fichier plus ancien : la page affiche alors « — », jamais un faux chiffre. */
+var P_NOM=0, P_RANG=1, P_NET=2, P_JOURS=3, P_POS=4, P_BRUT=5, P_JOK=6, P_PRIME=7, P_G15=8, P_JJ=9, P_PRANG=10, P_BRUTD=11, P_NETD=12;
 
 function nrm(s){ return String(s == null ? '' : s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim(); }
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function el(id){ return document.getElementById(id); }
 function kv(k,v){ return '<div class="kv"><span>'+k+'</span>'+v+'</div>'; }
+function parDonne(v){
+  return v == null ? '<span class="mut">—</span>' : '<b class="'+(v>=0?'pos':'neg')+'">'+v.toFixed(2).replace('.', ',')+'</b>';
+}
 
 function ligneDe(cle, my, jc){
   var t = DATA.tournois[cle]; if (!t) return null;
@@ -236,7 +243,9 @@ function vueMois(my){
       (p[P_PRIME] ? kv('🔥 Prime régularité','<b>+'+p[P_PRIME]+'</b>') : '')+
       (p[P_G15] ? kv('⭐ Gain du 15','<b>+'+p[P_G15]+'</b>') : '')+
       (p[P_PRANG] ? kv('🖐️ Primes de rang','<b>+'+p[P_PRANG]+'</b>') : '')+
-      kv('Moyenne / donne','<b class="'+(p[P_BRUT]>=0?'pos':'neg')+'">'+(p[P_BRUT]/p[P_JOURS]/t.donnes).toFixed(2)+'</b>')+
+      kv('Brut / donne', parDonne(p[P_BRUTD]))+
+      kv('Net / donne *', parDonne(p[P_NETD]))+
+      (t.rappels && t.rappels[my] ? '<div class="rappel-nd">* '+esc(t.rappels[my])+'</div>' : '')+
       '</div>'+
       (p[P_JJ] && p[P_JJ].length
         ? '<button class="detail-btn" type="button" data-for="d-'+cle+'">Détail jour par jour</button>'+
