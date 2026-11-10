@@ -120,6 +120,12 @@ var DATA = null, JOUEURS = [], SEL = null, curseur = -1;
    moteur au jour près (la page divisait les Cadors par 4 même après le passage à 5).
    Absentes d'un fichier plus ancien : la page affiche alors « — », jamais un faux chiffre. */
 var P_NOM=0, P_RANG=1, P_NET=2, P_JOURS=3, P_POS=4, P_BRUT=5, P_JOK=6, P_PRIME=7, P_G15=8, P_JJ=9, P_PRANG=10, P_BRUTD=11, P_NETD=12;
+/* 13 à 15 (09/11/2026) : donnes jouées, donnes qui comptent, points du Net/donne — pour la ligne
+   « Sur la période ». Absentes d'un fichier plus ancien : la page affiche « — ». */
+var P_DON=13, P_DONC=14, P_PND=15;
+/* Mêmes arrondis que classementAnnuel du moteur (09/11/2026) : sommes au dixième, moyenne au centième. */
+function arr1(x){ return Math.round(x * 10) / 10; }
+function arr2(x){ return Math.round(x * 100) / 100; }
 
 function nrm(s){ return String(s == null ? '' : s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim(); }
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -276,7 +282,7 @@ function vuePeriode(an){
   var liste = Object.keys(mois).sort().reverse();
   if (!liste.length) return '<div class="state">Aucun tournoi sur cette période.</div>';
 
-  var stats = {}; ORDRE.forEach(function(c){ stats[c] = { jours:0, meilleur:null, mois:0 }; });
+  var stats = {}; ORDRE.forEach(function(c){ stats[c] = { jours:0, meilleur:null, mois:0, brut:0, don:0, donc:0, pnd:0, complet:true }; });
   var lignes = '', vide = true;
   liste.forEach(function(my){
     var cells = '', aJoue = false;
@@ -285,6 +291,8 @@ function vuePeriode(an){
       if (!r) { cells += '<td class="mut">—</td>'; return; }
       aJoue = true;
       var s = stats[cle]; s.jours += r.l[P_JOURS]; s.mois++;
+      if (r.l[P_DON] == null) s.complet = false;
+      else { s.brut = arr1(s.brut + r.l[P_BRUT]); s.don += r.l[P_DON]; s.donc += r.l[P_DONC]; s.pnd = arr1(s.pnd + r.l[P_PND]); }
       if (s.meilleur === null || r.l[P_RANG] < s.meilleur) s.meilleur = r.l[P_RANG];
       cells += '<td><span class="cellr">'+r.l[P_RANG]+'<span class="mut" style="font-weight:400">/'+r.sur+'</span></span>'+
                '<span class="cells">'+r.l[P_NET]+' pts · '+r.l[P_JOURS]+' j</span></td>';
@@ -298,7 +306,9 @@ function vuePeriode(an){
   var tot = '<tr class="total"><td>Sur la période</td>';
   ORDRE.forEach(function(cle){
     var s = stats[cle];
-    tot += s.mois ? '<td><span class="cellr">meilleur '+s.meilleur+'<sup>e</sup></span><span class="cells">'+s.jours+' j · '+s.mois+' mois</span></td>'
+    tot += s.mois ? '<td><span class="cellr">meilleur '+s.meilleur+'<sup>e</sup></span><span class="cells">'+s.jours+' j · '+s.mois+' mois</span>'+
+                    '<span class="cells">Brut / donne '+parDonne(s.complet && s.don ? arr2(s.brut / s.don) : null)+'</span>'+
+                    '<span class="cells">Net / donne * '+parDonne(s.complet && s.donc ? arr2(s.pnd / s.donc) : null)+'</span></td>'
                   : '<td class="mut">—</td>';
   });
   tot += '</tr>';
@@ -306,7 +316,11 @@ function vuePeriode(an){
   return '<h2 class="sec">Mois par mois</h2><div class="tblwrap"><table><thead><tr><th>Mois</th>' +
     ORDRE.map(function(c){ var t = DATA.tournois[c]; return '<th>'+t.emoji+' '+esc(t.nom)+'</th>'; }).join('') +
     '</tr></thead><tbody>' + lignes + tot + '</tbody></table></div>' +
-    '<p class="mut" style="font-size:.78rem;margin-top:8px">Chaque case donne le rang sur le nombre de classés, puis le score net et les jours joués.</p>';
+    '<p class="mut" style="font-size:.78rem;margin-top:8px">Chaque case donne le rang sur le nombre de classés, puis le score net et les jours joués. ' +
+    'La dernière ligne donne aussi le Brut / donne et le Net / donne * de toute la période.</p>' +
+    '<p class="mut" style="font-size:.74rem;margin-top:4px">* Net / donne sur la période : les points que chaque mois compte dans son Net / donne ' +
+    '(le rappel s\'affiche sous chaque tournoi quand on choisit un mois), additionnés, puis divisés par les donnes des journées qui comptent. ' +
+    'Brut / donne : tous les points, divisés par toutes les donnes jouées.</p>';
 }
 
 function vueQuintes(an){
