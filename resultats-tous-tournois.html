@@ -139,6 +139,12 @@ header p.tagline {
 .result-btn.quintes .label { color: #ff9aa2; }
 .result-btn.quintes .live-badge { color: #ff9aa2; background: rgba(220,60,80,0.18); border-color: rgba(220,60,80,0.55); }
 .results-grid.quintes-row { grid-template-columns: repeat(2, 1fr); max-width: 470px; margin: 0 auto 16px; }
+/* Argine c'est moi (20/11/2026) */
+.results-grid.argine-row { grid-template-columns: 1fr; max-width: 230px; margin: 0 auto 16px; }
+.result-btn.argine { border-color: rgba(255,150,170,0.45); background: linear-gradient(135deg, rgba(80,24,48,0.6), rgba(15,22,35,0.6)); }
+.result-btn.argine:hover { border-color: rgba(255,150,170,0.85); }
+.result-btn.argine .label { color: #ffb4c4; }
+.result-btn.argine .live-badge { color: #ffb4c4; background: rgba(255,150,170,0.16); border-color: rgba(255,150,170,0.5); }
 
 /* ── Mini-bouton poster prime de régularité (dans les encarts) ── */
 .poster-mini { display: inline-block; margin-left: 8px; padding: 2px 12px; border: 1px solid rgba(255,159,67,0.5); border-radius: 20px; color: #ffb066; font-size: 0.8rem; font-weight: 600; text-decoration: none; white-space: nowrap; transition: all 0.15s; }
@@ -338,6 +344,15 @@ footer .lang a:hover { color: #e8c97a; border-bottom-color: #e8c97a; }
       <div class="label lang-fr">Le Quinté de la Vuelta</div>
       <div class="label lang-en" style="display:none">The Vuelta Quinté</div>
       <div class="sub-label"><span class="lang-fr">Départ le 22 août</span><span class="lang-en" style="display:none">Starts 22 August</span></div>
+    </a>
+  </div>
+
+  <div class="results-grid argine-row">
+    <a class="result-btn argine" href="https://chrisblb.github.io/funbridge/argine-resultats.html">
+      <span class="live-badge"><span class="lang-fr">en essai</span><span class="lang-en" style="display:none">trial</span></span>
+      <div class="icon">🤖</div>
+      <div class="label">Argine c'est moi</div>
+      <div class="sub-label"><span class="lang-fr">Battez Argine !</span><span class="lang-en" style="display:none">Beat Argine!</span></div>
     </a>
   </div>
 

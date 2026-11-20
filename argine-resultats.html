@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Argine c'est moi – Résultats</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--g:#1d4e79;--gl:#e7eff7;--gm:#2f6ea5;--b:#d6e3ef;--bg:#f6f9fc;--mu:#666;--tx:#1a1a1a;--red:#b3261e;--ok:#1f7a3a;
+      --cream:#f5f0e8;--cream-dark:#e8e0d0;--argine:#ffe3e0;--moi:#fff1b8;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;}
+header{background:var(--g);color:#fff;padding:22px 16px 18px;text-align:center;}
+header h1{font-family:"Playfair Display",serif;font-size:clamp(22px,5vw,34px);}
+header p{font-size:13px;opacity:.8;margin-top:4px;}
+header select{margin-top:10px;font:inherit;font-size:14px;padding:6px 10px;border-radius:8px;border:none;max-width:100%;}
+.regle{display:inline-block;margin-top:10px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);border-radius:8px;padding:6px 12px;font-size:12px;line-height:1.5;}
+.tw{background:#fff;border-bottom:1px solid var(--b);overflow-x:auto;}
+.tbs{display:flex;min-width:max-content;padding:0 12px;}
+.tb{padding:12px 14px;font-size:13px;font-weight:500;color:var(--mu);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;}
+.tb.on{color:var(--g);border-bottom-color:var(--g);font-weight:600;}
+.ct{padding:16px;max-width:1000px;margin:0 auto;}
+.sb{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.sb input{flex:1;min-width:0;border:2px solid var(--g);border-radius:8px;padding:9px 14px;font-size:15px;outline:none;}
+.mc{font-size:12px;color:var(--mu);white-space:nowrap;}
+.ts{overflow:auto;max-height:75vh;border:1px solid var(--b);border-radius:8px;background:#fff;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--g);color:#fff;padding:8px 10px;text-align:left;font-weight:600;font-size:11px;letter-spacing:.4px;white-space:nowrap;position:sticky;top:0;cursor:pointer;user-select:none;}
+th:hover{background:var(--gm);}
+td{padding:7px 10px;border-bottom:1px solid var(--b);white-space:nowrap;}
+td.num{text-align:center;font-family:"DM Mono",monospace;}
+th.num{text-align:center;}
+td.rk{text-align:center;font-weight:600;}
+tr.argine td{background:var(--argine);font-weight:600;}
+tr.moi td{background:var(--moi);}
+.b1,.b2,.b3{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;font-weight:700;font-size:13px;color:#fff;}
+.b1{background:#c9a84c;}.b2{background:#a0a0a0;}.b3{background:#b87333;}
+.ok{color:var(--ok);font-weight:700;}.ko{color:var(--red);}
+.nt{font-size:12px;color:var(--mu);line-height:1.5;margin-top:10px;}
+.vide{color:var(--mu);padding:30px 0;text-align:center;}
+/* Diagramme de la donne : comme Mes Donnes */
+.carte{background:var(--cream);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.12);}
+.donne-haut{display:flex;flex-wrap:wrap;gap:20px;align-items:center;}
+.diagramme{display:grid;grid-template-columns:repeat(3,minmax(92px,auto));gap:6px 14px;align-items:center;}
+.main-j{font-family:"DM Mono",monospace;font-size:.86rem;line-height:1.45;white-space:nowrap;}
+.main-j .qui{font-family:"DM Sans",sans-serif;font-size:.7rem;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:1px;}
+.rouge{color:var(--red);}
+.centre{width:92px;height:92px;border-radius:10px;background:var(--g);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.72rem;text-align:center;line-height:1.35;}
+.centre b{color:#ffe08a;font-size:1rem;}
+.infos{flex:1;min-width:230px;font-size:.9rem;line-height:1.7;}
+.infos b{color:var(--g);}
+.encart{background:var(--argine);border-radius:8px;padding:6px 10px;margin-bottom:6px;}
+/* Jeu de la carte d'Argine (19/11/2026) */
+details.jeu{background:#fff;border:1px solid var(--b);border-radius:12px;padding:10px 14px;margin-bottom:14px;}
+details.jeu summary{cursor:pointer;font-weight:600;color:var(--g);font-size:14px;}
+details.jeu h3{font-size:13px;color:var(--g);margin:12px 0 6px;}
+.jeu-boite{overflow-x:auto;}
+table.petit-t{width:auto;min-width:280px;border:1px solid var(--b);}
+table.petit-t th{position:static;cursor:default;text-align:center;background:var(--gm);}
+table.petit-t td{text-align:center;padding:5px 10px;}
+table.petit-t td.g{text-align:left;}
+.alerte{color:var(--red);font-weight:700;}
+.gagne{font-weight:700;background:#fff1b8;border-radius:4px;padding:0 3px;}
+.coupe{font-size:11px;color:var(--mu);}
+/* Donneur et vulnérabilité en couleur (19/11/2026) : rouge = vulnérable, vert = non vulnérable, D doré = donneur */
+.vq{display:inline-block;padding:2px 7px;border-radius:5px;color:#fff;}
+.vq.v{background:#c62828;}.vq.nv{background:#2e7d32;}
+.dd{display:inline-block;margin-left:5px;width:18px;height:18px;line-height:18px;border-radius:50%;background:#d4a017;color:#fff;font-size:11px;font-weight:700;text-align:center;font-family:"DM Sans",sans-serif;letter-spacing:0;vertical-align:middle;}
+.centre{position:relative;width:108px;height:108px;}
+.centre .dd{position:absolute;margin:0;}
+.centre .dN{top:-12px;left:50%;transform:translateX(-50%);}.centre .dS{bottom:-12px;left:50%;transform:translateX(-50%);}
+.centre .dW{left:-12px;top:50%;transform:translateY(-50%);}.centre .dE{right:-12px;top:50%;transform:translateY(-50%);}
+.centre .vul-v{color:#ff8a80;font-weight:700;}.centre .vul-nv{color:#a5d6a7;font-weight:700;}
+/* Tapis de revue des plis (19/11/2026) */
+.tapis{background:radial-gradient(circle at 50% 45%,#2f7d4f,#1a5434);border-radius:16px;padding:10px;display:grid;grid-template-columns:auto 1fr auto;grid-template-areas:"n n n" "w c e" "s s s";gap:8px;align-items:center;user-select:none;-webkit-user-select:none;touch-action:pan-y;}
+.zone-n{grid-area:n;}.zone-s{grid-area:s;}.zone-w{grid-area:w;}.zone-e{grid-area:e;}.zone-c{grid-area:c;}
+.zone{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.etiq{font-size:11px;font-weight:700;color:#fff;background:rgba(0,0,0,.4);border-radius:6px;padding:2px 8px;white-space:nowrap;}
+.etiq .rouge{color:#ffcdd2;}
+.etiq.v{background:#c62828;}.etiq.nv{background:#1b5e20;border:1px solid rgba(255,255,255,.55);}
+.etiq .dd{width:16px;height:16px;line-height:16px;font-size:10px;margin-left:4px;}
+.main-h{display:flex;justify-content:center;min-height:46px;}
+.main-h .cj+.cj{margin-left:-14px;}
+.main-v{display:flex;flex-direction:column;align-items:center;min-width:42px;}
+.main-v .cj{width:42px;height:26px;flex-direction:row;gap:2px;padding:2px 4px;}
+.main-v .cj+.cj{margin-top:-8px;}
+.cj{width:32px;height:46px;background:#fff;border:1px solid #b9b9b9;border-radius:5px;box-shadow:0 1px 2px rgba(0,0,0,.35);color:#111;font-weight:700;font-size:13px;line-height:1.05;padding:3px 3px;display:flex;flex-direction:column;align-items:flex-start;font-family:"DM Sans",sans-serif;}
+.cj.r{color:#c62828;}
+.pli{position:relative;height:178px;min-width:150px;border:2px solid #d9a441;border-radius:10px;}
+.pli .cj{position:absolute;width:40px;height:58px;font-size:16px;}
+.pli .pN{top:6px;left:50%;transform:translateX(-50%);}
+.pli .pS{bottom:6px;left:50%;transform:translateX(-50%);}
+.pli .pW{left:8px;top:50%;transform:translateY(-50%);}
+.pli .pE{right:8px;top:50%;transform:translateY(-50%);}
+.pli .cj .ord{position:absolute;top:-9px;right:-9px;width:20px;height:20px;line-height:20px;border-radius:50%;background:#37474f;color:#fff;font-size:11px;font-weight:700;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.4);}
+.pli .cj .ord.o1{background:#1e88e5;}
+.etiq.ent{box-shadow:0 0 0 2px #64b5f6;}
+.etiq .fl{color:#90caf9;margin-right:3px;}
+.pli .cj.gagne{outline:3px solid #ffd54f;box-shadow:0 0 10px #ffd54f;}
+.pli .cpt{position:absolute;bottom:4px;color:#ffe08a;font-size:12px;font-weight:700;line-height:1.2;}
+.pli .cpt.g{left:7px;}.pli .cpt.d{right:7px;text-align:right;}
+.pli .msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff;font-size:13px;line-height:1.5;padding:0 30px;}
+.nav-pli{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;}
+.nav-pli button{width:46px;height:46px;border-radius:50%;border:1px solid var(--b);background:#fff;color:var(--g);font-size:24px;font-weight:700;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15);}
+.nav-pli button:disabled{opacity:.3;cursor:default;}
+.nav-pli .ou{flex:1;text-align:center;font-size:13px;color:var(--g);font-weight:600;line-height:1.4;}
+table.enc{border-collapse:separate;border-spacing:4px;width:auto;}
+table.enc th{position:static;cursor:default;background:none;color:var(--g);text-align:center;font-size:12px;padding:2px;}
+table.enc td{border:none;padding:0;text-align:center;}
+.eb{display:inline-block;min-width:54px;padding:5px 6px;border-radius:6px;font-weight:700;font-size:14px;background:#fff;border:1px solid var(--b);}
+.eb.pa{background:#2e9b4f;color:#fff;border-color:#2e9b4f;font-size:11px;letter-spacing:.5px;}
+.eb.x{background:#c62828;color:#fff;border-color:#c62828;}
+.eb .a{background:#1565c0;color:#fff;font-size:9px;border-radius:3px;padding:0 3px;margin-left:3px;vertical-align:top;}
+@media (min-width:760px){.jeu-cote{display:flex;gap:18px;align-items:flex-start;}.col-enc{flex:0 0 auto;}.col-tapis{flex:1;min-width:0;}}
+.tapis,.nav-pli{max-width:620px;margin-left:auto;margin-right:auto;}
+@media (min-width:601px){.cj{width:40px;height:58px;font-size:15px;}.main-h{min-height:58px;}.main-h .cj+.cj{margin-left:-16px;}.main-v .cj{width:50px;height:30px;font-size:14px;}.main-v .cj+.cj{margin-top:-8px;}.pli{height:230px;}.pli .cj{width:52px;height:74px;font-size:19px;}}
+@media (max-width:600px){.eb{min-width:44px;font-size:13px;padding:4px 4px;}.pli{min-width:0;}}
+@media (max-width:600px){details.jeu{padding:10px 8px;}table.petit-t{min-width:0;}table.petit-t th,table.petit-t td{padding:4px 5px;font-size:12px;}table.petit-t td.g{white-space:normal;}.coupe{font-size:10px;}}
+@media (max-width:600px){.diagramme{grid-template-columns:repeat(3,auto);gap:4px 8px;}.main-j{font-size:.78rem;}}
+.liste-t{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
+.carte-t{flex:1 1 240px;background:#fff;border:1px solid var(--b);border-left:4px solid var(--g);border-radius:10px;padding:10px 14px;font-size:13px;line-height:1.6;cursor:pointer;}
+.carte-t:hover{border-color:var(--g);background:var(--gl);}
+.carte-t b{color:var(--g);font-size:14px;}
+.petit{font-size:12px;color:var(--mu);}
+header select{font-size:15px;padding:8px 12px;min-width:min(340px,100%);}
+.numeros{display:flex;flex-wrap:wrap;gap:6px;padding:10px 16px;max-width:1000px;margin:0 auto;}
+#nav{background:var(--gl);border-bottom:1px solid var(--b);padding:4px 0;}
+.rang{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:7px 16px;max-width:1000px;margin:0 auto;}
+.rang+.rang{border-top:1px dashed var(--b);}
+.rang .lab{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--mu);min-width:86px;}
+.nb{min-width:40px;padding:7px 11px;border:1px solid var(--b);border-radius:8px;background:#fff;color:var(--g);font:inherit;font-size:13px;font-weight:600;cursor:pointer;}
+.nb:hover{border-color:var(--g);}
+.nb.on{background:var(--g);color:#fff;border-color:var(--g);}
+.nav-d{display:flex;justify-content:space-between;gap:8px;margin-bottom:10px;}
+.nav-d button{padding:8px 14px;border:1px solid var(--g);border-radius:8px;background:#fff;color:var(--g);font:inherit;font-size:13px;font-weight:600;cursor:pointer;}
+.nav-d button:disabled{opacity:.3;cursor:default;}
+</style>
+</head>
+<body>
+<header>
+  <h1>🤖 Argine c'est moi</h1>
+  <p id="sous-titre">Tournoi en essai</p>
+  <div class="regle" id="regle"></div>
+  <p style="font-size:12px;opacity:.75;margin-top:6px;">Mis à jour le 20 novembre 2026 à 08:33</p>
+  <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:8px;"><a href="https://chrisblb.github.io/funbridge/resultats-tous-tournois.html" style="display:inline-block;background:rgba(255,255,255,.15);color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.35);font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;letter-spacing:.02em;">🏆 Tous les résultats</a><a href="https://chrisblb.github.io/funbridge/regles-tournois.html" style="display:inline-block;background:rgba(255,255,255,.15);color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.35);font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;letter-spacing:.02em;">ⓘ Présentation des tournois</a></div>
+</header>
+<nav id="nav"></nav>
+<div class="ct" id="contenu"><div class="vide">Chargement…</div></div>
+<script>
+/* ═══ RÈGLES (en essai — à affiner avec les joueurs) ═══ */
+const BONUS = 3;              // points gagnés sur chaque donne où le joueur fait MIEUX qu'Argine (égalité : rien)
+const MOI = 'chrisblb', ARG = 'Argine';
+/* « Chris joue comme Argine » (19/11/2026) : dans chaque tournoi, la ligne de chrisblb n'est jamais celle d'une joueuse.
+   Tournoi joué comme Argine (tous, sauf ceux de ANCIEN_MODE) : la ligne d'Argine EST celle de chrisblb (IMP Funbridge) ;
+   si son score diffère de celui du défi, la donne le signale. ANCIEN_MODE : Chris jouait pour elle → sa ligne est retirée
+   et Argine vient du défi (IMP calculés par rapport à la référence de la salle). */
+const ANCIEN_MODE = ['6afd9f3f441a791d8949b9ed'];   // TousContreArgine (19-23/11/2026)
+/* Classement du MOIS = somme des totaux (IMP + bonus) des tournois du mois (tournoi non joué = 0).
+   Classement de l'ANNÉE = somme des mois. Pas de jokers ni de prime de régularité (décision du 18/11/2026). */
+/* ════════════════════════════════════════════════════ */
+const COUL = { C: '♣', D: '♦', H: '♥', S: '♠', N: 'SA' };
+const POS = { N: 'Nord', S: 'Sud', E: 'Est', W: 'Ouest', '': '' };
+const VUL = { L: 'Personne', N: 'Nord/Sud', E: 'Est/Ouest', A: 'Tous' };
+const BAREME = [15,45,85,125,165,215,265,315,365,425,495,595,745,895,1095,1295,1495,1745,1995,2245,2495,2995,3495,3995];
+const imp = d => { const n = BAREME.filter(t => Math.abs(d) >= t).length; return d >= 0 ? n : -n; };
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const couleur = s => (s === 'H' || s === 'D') ? `<span class="rouge">${COUL[s]}</span>` : COUL[s];
+const r2 = n => Math.round(n * 100) / 100;
+const fmt = n => n == null ? '' : (n > 0 ? '+' : '') + r2(n);
+const NOM_MOIS = m => { const s = new Date(m + '-15T12:00').toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }); return s[0].toUpperCase() + s.slice(1); };
+const DATE = (j, o) => new Date(j + 'T12:00').toLocaleDateString('fr-FR', o || { day: 'numeric', month: 'long', year: 'numeric' });
+function contrat(c) { const m = /^(\d)([CDHSN])(X(\d))?$/.exec(c || ''); return m ? m[1] + couleur(m[2]) + (m[3] ? (m[4] === '1' ? 'X' : 'XX') : '') : esc(c || ''); }
+function resultat(c, l) { const m = /^(\d)/.exec(c || ''); if (!m || l == null) return ''; const d = l - (+m[1]) - 6; return d === 0 ? '=' : (d > 0 ? '+' : '') + d; }
+function entame(e) { return e ? couleur(e[1]) + (e[0] === 'T' ? '10' : e[0]) : ''; }
+function main(h) {
+  const cs = { S: [], H: [], D: [], C: [] };
+  for (const c of String(h || '').split('-')) if (c) cs[c[1]].push(c[0]);
+  const o = 'AKQJT98765432', v = r => r === 'T' ? '10' : r;
+  return ['S', 'H', 'D', 'C'].map(s => couleur(s) + ' ' + (cs[s].sort((a, b) => o.indexOf(a) - o.indexOf(b)).map(v).join('') || '—')).join('<br>');
+}
+/* ═══ Jeu de la carte d'Argine : enchères (« 1DE-PAW-2CNA… ») et cartes jouées (« 4DW-7DN-…-!N2 ») ═══ */
+const NOM_J = { N: 'Nord', E: 'Est', S: 'Sud', W: 'Ouest' };
+const carteTxt = (r, c) => (r === 'T' ? '10' : r) + couleur(c);
+function encheres(jeu, donneur) {
+  const ordre = ['W', 'N', 'E', 'S'], L = String(jeu.encheres || '').split('-').filter(Boolean);
+  if (!L.length) return '';
+  const cases = Array(ordre.indexOf(donneur)).fill('');
+  for (const b of L) {
+    const m = /^(PA|X1|X2|[1-7][CDHSN])([NESW])(A?)$/.exec(b);
+    if (!m) { cases.push(`<span class="eb">${esc(b)}</span>`); continue; }
+    const al = m[3] ? '<span class="a" title="enchère alertée">A</span>' : '';
+    cases.push(m[1] === 'PA' ? `<span class="eb pa">PASSE${al}</span>` : m[1][0] === 'X' ? `<span class="eb x">${m[1] === 'X1' ? 'X' : 'XX'}${al}</span>` : `<span class="eb">${m[1][0]}${couleur(m[1][1])}${al}</span>`);
+  }
+  let h = '<table class="enc"><thead><tr>' + ordre.map(x => `<th>${NOM_J[x]}</th>`).join('') + '</tr></thead><tbody>';
+  for (let i = 0; i < cases.length; i += 4) h += '<tr>' + [0, 1, 2, 3].map(k => `<td>${cases[i + k] ?? ''}</td>`).join('') + '</tr>';
+  return h + '</tbody></table>' + (L.some(b => /A$/.test(b) && b.length > 3) ? '<div class="nt">A = enchère alertée</div>' : '');
+}
+
+/* Tapis : les 4 mains, le pli au centre, ‹ › pour défiler. Écran 0 = avant l'entame, puis un écran par pli,
+   puis un écran « revendication » si Argine a revendiqué avant la fin. */
+const ORDRE_C = { S: 0, H: 1, C: 2, D: 3 }, ORDRE_R = 'AKQJT98765432', PARTENAIRE = { N: 'S', S: 'N', E: 'W', W: 'E' };
+let JEU = null, pliCourant = 0, jeuOuvert = false;
+function preparerJeu(d, jeu) {
+  const mains = {};
+  for (const [k, cle] of [['N', 'N'], ['E', 'E'], ['S', 'S'], ['W', 'O']]) mains[k] = String(d.mains[cle] || '').split('-').filter(Boolean).map(c => ({ r: c[0], c: c[1] }));
+  const cartes = [], fin = [];
+  for (const t of String(jeu.cartes || '').split('-')) { const m = /^([2-9TJQKA])([CDHS])([NESW])$/.exec(t); if (m) cartes.push({ r: m[1], c: m[2], j: m[3] }); else if (t) fin.push(t); }
+  const plis = []; for (let i = 0; i < cartes.length; i += 4) plis.push(cartes.slice(i, i + 4));
+  const complets = plis.filter(p => p.length === 4).length;
+  return { vul: d.vul, donneur: d.donneur, mains, plis, complets, gagnants: String(jeu.plis || ''), revend: complets < 13, rev: fin.some(t => t[0] === '!'), decl: jeu.declarant, contrat: jeu.contrat,
+           ecrans: plis.length + 1 + (complets < 13 ? 1 : 0) };
+}
+const carteJ = (x, cls) => `<div class="cj${x.c === 'H' || x.c === 'D' ? ' r' : ''}${cls ? ' ' + cls : ''}"><span>${x.r === 'T' ? '10' : x.r}</span><span>${COUL[x.c]}</span></div>`;
+function majTapis() {
+  const J = JEU; pliCourant = Math.max(0, Math.min(pliCourant, J.ecrans - 1)); const k = pliCourant;
+  const finRev = J.revend && k === J.ecrans - 1, nbP = finRev ? J.plis.length : Math.min(k, J.plis.length);
+  const joue = new Set(J.plis.slice(0, nbP).flat().map(x => x.j + x.r + x.c));
+  const reste = st => J.mains[st].filter(x => !joue.has(st + x.r + x.c)).sort((a, b) => ORDRE_C[a.c] - ORDRE_C[b.c] || ORDRE_R.indexOf(a.r) - ORDRE_R.indexOf(b.r));
+  const pli = !finRev && k >= 1 ? J.plis[k - 1] : null, g = pli && pli.length === 4 ? J.gagnants[k - 1] : null;
+  const comptes = finRev ? J.gagnants.length : J.plis.slice(0, nbP).filter(p => p.length === 4).length;
+  const gagnes = J.gagnants.slice(0, comptes), ns = [...gagnes].filter(x => x === 'N' || x === 'S').length, eo = gagnes.length - ns;
+  const ent = pli ? pli[0].j : (k === 0 && J.plis.length ? J.plis[0][0].j : null);
+  const etiq = st => `<span class="etiq ${vulnerable(J.vul, st) ? 'v' : 'nv'}${st === ent ? ' ent' : ''}">${st === ent ? '<span class="fl" title="entame">▶</span>' : ''}${NOM_J[st]}${st === J.decl ? ' · ' + contrat(J.contrat) : st === PARTENAIRE[J.decl] ? ' · mort' : ''} · ${J.mains[st].reduce((t, x) => t + (PH[x.r] || 0), 0)} H${J.donneur === st ? '<span class="dd" title="donneur">D</span>' : ''}</span>`;
+  const zone = st => { const v = st === 'W' || st === 'E', c = reste(st).map(x => carteJ(x)).join('');
+    return `<div class="zone zone-${st.toLowerCase()}">${st === 'S' ? '' : etiq(st)}<div class="${v ? 'main-v' : 'main-h'}">${c}</div>${st === 'S' ? etiq(st) : ''}</div>`; };
+  let centre = '';
+  if (pli) centre = pli.map((x, i) => { const c = carteJ(x, 'p' + x.j + (x.j === g ? ' gagne' : '')); return c.slice(0, -6) + `<span class="ord o${i + 1}" title="${i ? (i + 1) + 'e carte' : 'entame'}">${i + 1}</span></div>`; }).join('');
+  else if (k === 0) centre = `<div class="msg">Avant l'entame<br>Entame : ${J.plis.length ? NOM_J[J.plis[0][0].j] : '—'}</div>`;
+  else centre = `<div class="msg">${J.rev ? 'Revendication' : 'Fin de la donne'}<br>${13 - J.complets} pli${13 - J.complets > 1 ? 's' : ''} restant${13 - J.complets > 1 ? 's' : ''}</div>`;
+  const ou = k === 0 ? 'Avant l\'entame' : finRev ? (J.rev ? 'Revendication' : 'Fin de la donne') : `Pli ${k} / 13 · entame ${NOM_J[pli[0].j]}` + (g ? `<br>gagné par ${NOM_J[g]}` : '');
+  $('tapis-boite').innerHTML = `<div class="tapis" id="tapis">${zone('N')}${zone('W')}<div class="zone-c"><div class="pli">${centre}
+      <span class="cpt g">NS<br>${ns}</span><span class="cpt d">EO<br>${eo}</span></div></div>${zone('E')}${zone('S')}</div>
+    <div class="nav-pli"><button id="pli-prec" aria-label="Pli précédent" ${k ? '' : 'disabled'}>‹</button><div class="ou">${ou}</div><button id="pli-suiv" aria-label="Pli suivant" ${k < J.ecrans - 1 ? '' : 'disabled'}>›</button></div>`;
+  $('pli-prec').onclick = () => { pliCourant--; majTapis(); };
+  $('pli-suiv').onclick = () => { pliCourant++; majTapis(); };
+  /* Glisser le doigt sur le tapis : vers la gauche = pli suivant, vers la droite = pli précédent. */
+  const t = $('tapis'); let x0 = null, y0 = 0;
+  t.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+  t.addEventListener('touchend', e => {
+    if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null;
+    if (Math.abs(dx) < 40 || Math.abs(dx) < 1.5 * Math.abs(dy)) return;
+    const n = pliCourant + (dx < 0 ? 1 : -1); if (n >= 0 && n < JEU.ecrans) { pliCourant = n; majTapis(); }
+  }, { passive: true });
+}
+
+/* Points d'honneur d'une main au format Funbridge « 4C-5C-… » : As 4, Roi 3, Dame 2, Valet 1. */
+const PH = { A: 4, K: 3, Q: 2, J: 1 };
+const points = h => String(h || '').split('-').reduce((t, c) => t + (PH[c[0]] || 0), 0);
+
+/* Vulnérabilité (L = personne, N = Nord-Sud, E = Est-Ouest, A = tous) et donneur */
+const vulnerable = (vul, st) => vul === 'A' || (vul === 'N' && (st === 'N' || st === 'S')) || (vul === 'E' && (st === 'E' || st === 'W'));
+const COUL_V = (vul, st) => vulnerable(vul, st) ? '#c62828' : '#2e7d32';
+
+const rang = r => r >= 1 && r <= 3 ? `<span class="b${r}">${r}</span>` : r;
+
+/* vue = { type: 'annee'|'mois'|'tournoi', cle: '2026' | '2026-11' | index dans TOURS } */
+let PER = null, TOURS = [], vue = null, T = null, onglet = 'classement', cherche = '', tri = null, ROWS = [], COLS = [];
+/* Page publique (argine-page-publique.mjs) : les résultats sont dans la page, rien n'est lu ailleurs. */
+const DONNEES = {"index.json":{"maj":"2026-11-19T16:19:08.102Z","tournois":[]}};
+async function charger(u) { const k = u.split('/').pop(); if (!(k in DONNEES)) throw new Error('404'); return JSON.parse(JSON.stringify(DONNEES[k])); }
+
+$('regle').innerHTML = `Chaque joueur garde ses IMP Funbridge · <b>+${BONUS}</b> par donne où il fait mieux qu'Argine · Argine est classée avec les joueurs<br>🤖 Dans Funbridge, la ligne de <b>chrisblb</b>, c'est Argine : Chris rejoue exactement son jeu<br>Mois = somme des tournois du mois · Année = somme des mois`;
+
+async function demarrer() {
+  let INDEX = null;
+  try { INDEX = await charger('tournois/argine/resultats/index.json'); } catch (e) {}
+  if (INDEX && INDEX.tournois.length) {
+    TOURS = (await Promise.all(INDEX.tournois.map(async e => {
+      try { const t = await charger('tournois/argine/resultats/' + e.fichier); t.fichier = e.fichier; calculer(t); return t; } catch (err) { return null; }
+    }))).filter(Boolean).sort((a, b) => b.jour.localeCompare(a.jour) || b.nom.localeCompare(a.nom));
+  }
+  if (!TOURS.length) { $('contenu').innerHTML = '<div class="vide">Aucun résultat pour l\'instant : ils sont lus une fois le tournoi fermé.</div>'; return; }
+  const annees = [...new Set(TOURS.map(t => t.jour.slice(0, 4)))].sort().reverse();
+  const mois = [...new Set(TOURS.map(t => t.jour.slice(0, 7)))].sort().reverse();
+  PER = { annees, mois };
+  $('nav').onclick = ev => { const b = ev.target.closest('.nb'); if (!b) return; const [t, c] = b.dataset.a.split(':');
+    if (t === 'annee' || t === 'mois') ouvrirPeriode(t, c); else if (t === 't') ouvrirTournoi(+c); else allerA(c === 'classement' ? c : +c); };
+  ouvrirPeriode('mois', mois[0]);
+}
+
+/* Classement du mois (colonnes = ses tournois) ou de l'année (colonnes = ses mois). */
+function ouvrirPeriode(type, cle) {
+  vue = { type, cle }; T = null; cherche = ''; tri = null;
+  const tours = TOURS.filter(t => t.jour.startsWith(cle)).slice().reverse();      // du plus ancien au plus récent
+  const groupe = type === 'mois' ? t => [t.fichier, t.nom + ' · ' + DATE(t.jour, { day: 'numeric', month: 'numeric' })]
+                                 : t => [t.jour.slice(0, 7), NOM_MOIS(t.jour.slice(0, 7)).replace(/ \d{4}$/, '')];
+  const subs = [], P = {};
+  for (const t of tours) {
+    const [k, lab] = groupe(t); let si = subs.findIndex(s => s.k === k); if (si < 0) { subs.push({ k, lab }); si = subs.length - 1; }
+    for (const c of t.classement) {
+      const x = P[c.p] || (P[c.p] = { p: c.p, nb: 0, imp: 0, bonus: 0, bat: 0, total: 0, sub: {} });
+      x.nb++; x.imp += c.imp; x.bonus += c.bonus || 0; x.bat += c.bat || 0; x.total += c.total; x.sub[si] = (x.sub[si] || 0) + c.total;
+    }
+  }
+  ROWS = Object.values(P).map(x => {
+    const o = { p: x.p, nb: x.nb, imp: r2(x.imp), bat: x.p === ARG ? null : x.bat, bonus: x.p === ARG ? null : x.bonus, total: r2(x.total) };
+    subs.forEach((s, i) => o['x' + i] = x.sub[i] == null ? null : r2(x.sub[i]));
+    return o;
+  }).sort((a, b) => b.total - a.total || b.imp - a.imp);
+  let r = 0; ROWS.forEach((c, k) => { r = k && c.total === ROWS[k - 1].total ? r : k + 1; c.r = r; });
+  COLS = [['r', 'Rang', 1], ['p', 'Joueur'], ['nb', 'Tournois joués', 1], ...subs.map((s, i) => ['x' + i, s.lab, 1]),
+          ['imp', 'IMP', 1], ['bat', 'Donnes où il bat Argine', 1], ['bonus', 'Bonus', 1], ['total', 'Total', 1]];
+  const nbJ = ROWS.filter(x => x.p !== ARG).length;
+  $('sous-titre').textContent = (type === 'mois' ? 'Classement de ' + NOM_MOIS(cle) : 'Classement de l\'année ' + cle)
+    + ` · ${tours.length} tournoi${tours.length > 1 ? 's' : ''} · ${nbJ} joueur${nbJ > 1 ? 's' : ''} + Argine`;
+  let h = `<div class="nt" style="margin:0 0 8px">${type === 'mois'
+      ? 'Total du mois = somme des totaux (IMP + bonus) de chaque tournoi du mois. Un tournoi non joué compte 0.'
+      : 'Total de l\'année = somme des totaux de chaque mois.'} ${type === 'mois' ? 'Pour ouvrir un tournoi, touchez son nom dans la rangée du dessus.' : 'Pour voir les tournois, choisissez d\'abord un mois.'}</div>`;
+  dessiner(h);
+  
+}
+
+function ouvrirTournoi(i) {
+  T = TOURS[i]; vue = { type: 'tournoi', cle: i, mois: T.jour.slice(0, 7) }; pliCourant = 0;
+  $('sous-titre').textContent = `${T.nom} · ${DATE(T.jour, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} · ${T.donnes.length} donnes en IMP · ${T.nbJ} joueur${T.nbJ > 1 ? 's' : ''} + Argine`;
+  onglet = 'classement'; cherche = ''; tri = null;
+  afficherTournoi();
+  window.scrollTo(0, 0);
+}
+
+function allerA(o) { pliCourant = 0; onglet = o; tri = null; cherche = ''; afficherTournoi(); }
+
+/* Lignes de chaque donne (joueurs + Argine) et classement du tournoi. */
+function calculer(T) {
+  const cumul = {};
+  const ajoute = (p, i, bonus, bat) => { const c = cumul[p] || (cumul[p] = { p, imp: 0, bat: 0, bonus: 0, jouees: 0 }); c.imp += i || 0; c.bonus += bonus; c.bat += bat ? 1 : 0; c.jouees++; };
+  T.commeArgine = !ANCIEN_MODE.includes(T.id);
+  const joueursVus = new Set();
+  for (const d of T.donnes) {
+    const moi = d.joueurs.find(j => j.p === MOI);
+    if (T.commeArgine && moi && moi.c) {
+      d.arg = { ...(d.argine || {}), c: moi.c, d: moi.d, l: moi.l, e: moi.e, s: moi.s, i: moi.i };
+      d.ecartDefi = d.argine && d.argine.s !== moi.s ? d.argine : null;
+    } else { d.arg = d.argine; d.ecartDefi = null; }
+    const a = d.arg;
+    d.joueurs.forEach(j => { if (j.p !== MOI) joueursVus.add(j.p); });
+    d.lignes = d.joueurs.filter(j => j.p !== MOI).map(j => {
+      const bat = !!(a && j.c && j.s != null && j.s > a.s);
+      return { p: j.p, c: j.c, d: j.d, l: j.l, res: resultat(j.c, j.l), e: j.e, s: j.s, i: j.i, bat: a && j.c ? (bat ? 'oui' : 'non') : '', bonus: bat ? BONUS : 0 };
+    });
+    if (a) d.lignes.push({ p: ARG, c: a.c, d: a.d, l: a.l, res: resultat(a.c, a.l), e: a.e, s: a.s, i: a.i, bat: '', bonus: null });
+    d.lignes.sort((x, y) => (y.i ?? -99) - (x.i ?? -99));
+    d.lignes.forEach(x => ajoute(x.p, x.i, x.bonus || 0, x.bat === 'oui'));
+  }
+  T.nbJ = joueursVus.size;
+  T.classement = Object.values(cumul).map(c => ({ ...c, imp: r2(c.imp), total: r2(c.imp + c.bonus), bonus: c.p === ARG ? null : c.bonus, bat: c.p === ARG ? null : c.bat }))
+    .sort((x, y) => y.total - x.total || y.imp - x.imp);
+  let r = 0; T.classement.forEach((c, k) => { r = k && c.total === T.classement[k - 1].total ? r : k + 1; c.r = r; });
+}
+
+const COLS_C = [['r', 'Rang', 1], ['p', 'Joueur'], ['imp', 'IMP', 1], ['bat', 'Donnes où il bat Argine', 1], ['bonus', 'Bonus', 1], ['total', 'Total', 1], ['jouees', 'Donnes jouées', 1]];
+const COLS_D = [['p', 'Joueur'], ['c', 'Contrat'], ['d', 'Décl.'], ['l', 'Lev.', 1], ['res', 'Rés.'], ['e', 'Entame'], ['s', 'Score N/S', 1], ['i', 'IMP', 1], ['bat', 'Bat Argine ?'], ['bonus', 'Bonus', 1]];
+
+/* Onglets du haut : la période en cours (ou le mois du tournoi ouvert) est soulignée. */
+function marquer() {
+  const m = vue.type === 'annee' ? null : vue.type === 'mois' ? vue.cle : vue.mois;
+  const bt = (a, txt, on) => `<button class="nb${on ? ' on' : ''}" data-a="${a}">${txt}</button>`;
+  let h = '<div class="rang"><span class="lab">Période</span>'
+    + PER.annees.map(y => bt('annee:' + y, '📅 Année ' + y, vue.type === 'annee' && vue.cle === y)).join('')
+    + PER.mois.map(x => bt('mois:' + x, NOM_MOIS(x), x === m)).join('') + '</div>';
+  if (m) h += `<div class="rang"><span class="lab">${NOM_MOIS(m).replace(/ \d{4}$/, '')}</span>` + bt('mois:' + m, '🏆 Classement du mois', vue.type === 'mois')
+    + TOURS.map((t, i) => t.jour.startsWith(m) ? [t.jour + (t.id || ''), bt('t:' + i, esc(t.nom) + ' · ' + DATE(t.jour, { day: '2-digit', month: '2-digit' }), vue.type === 'tournoi' && vue.cle === i)] : null)
+      .filter(Boolean).sort((a, b) => a[0].localeCompare(b[0])).map(x => x[1]).join('') + '</div>';
+  if (vue.type === 'tournoi') h += '<div class="rang"><span class="lab">Donnes</span>' + bt('d:classement', '🏆 Classement', onglet === 'classement')
+    + T.donnes.map(d => bt('d:' + d.n, d.n, onglet === d.n)).join('') + '</div>';
+  $('nav').innerHTML = h;
+}
+
+function afficherTournoi() {
+  let h = '';
+  if (onglet === 'classement') {
+    ROWS = T.classement; COLS = COLS_C;
+    h += `<div class="nt" style="margin:0 0 8px">Total = IMP de Funbridge + bonus (${BONUS} par donne où le joueur fait mieux qu'Argine). ${T.commeArgine ? 'La ligne d\'Argine est celle de chrisblb dans Funbridge : Chris y a rejoué exactement le jeu d\'Argine, ses IMP sont donc ceux de Funbridge.' : 'Les IMP d\'Argine sont calculés comme ceux des joueurs, par rapport à la référence de la salle.'}</div>`;
+  } else {
+    const d = T.donnes.find(x => x.n === onglet), a = d.arg;
+    ROWS = d.lignes; COLS = COLS_D;
+    const k = T.donnes.indexOf(d), av = T.donnes[k - 1], ap = T.donnes[k + 1];
+    h += `<div class="nav-d"><button id="prec" ${av ? '' : 'disabled'}>◀ Donne précédente</button><button id="suiv" ${ap ? '' : 'disabled'}>Donne suivante ▶</button></div>`;
+    h += `<div class="carte"><div class="donne-haut"><div class="diagramme">
+      <div></div><div class="main-j"><div class="qui"><span class="vq ${vulnerable(d.vul, 'N') ? 'v' : 'nv'}">Nord · ${points(d.mains.N)} H</span>${d.donneur === 'N' ? '<span class="dd" title="donneur">D</span>' : ''}</div>${main(d.mains.N)}</div><div></div>
+      <div class="main-j"><div class="qui"><span class="vq ${vulnerable(d.vul, 'W') ? 'v' : 'nv'}">Ouest · ${points(d.mains.O)} H</span>${d.donneur === 'W' ? '<span class="dd" title="donneur">D</span>' : ''}</div>${main(d.mains.O)}</div>
+      <div class="centre" style="border-top:6px solid ${COUL_V(d.vul, 'N')};border-bottom:6px solid ${COUL_V(d.vul, 'S')};border-left:6px solid ${COUL_V(d.vul, 'W')};border-right:6px solid ${COUL_V(d.vul, 'E')}"><span class="dd d${d.donneur}" title="donneur">D</span><b>Donne ${d.n}</b>Donneur ${POS[d.donneur]}<br>Vuln. <span class="${d.vul === 'L' ? 'vul-nv' : 'vul-v'}">${VUL[d.vul] || d.vul}</span></div>
+      <div class="main-j"><div class="qui"><span class="vq ${vulnerable(d.vul, 'E') ? 'v' : 'nv'}">Est · ${points(d.mains.E)} H</span>${d.donneur === 'E' ? '<span class="dd" title="donneur">D</span>' : ''}</div>${main(d.mains.E)}</div>
+      <div></div><div class="main-j"><div class="qui"><span class="vq ${vulnerable(d.vul, 'S') ? 'v' : 'nv'}">Sud · ${points(d.mains.S)} H</span>${d.donneur === 'S' ? '<span class="dd" title="donneur">D</span>' : ''}</div>${main(d.mains.S)}</div><div></div></div>
+      <div class="infos">
+        <div class="encart"><b>🤖 Argine :</b> ${a ? `${contrat(a.c)} ${POS[a.d] ? 'par ' + POS[a.d] : ''} · ${a.l} levées (${resultat(a.c, a.l)}) · entame ${entame(a.e) || '—'} · <b>${fmt(a.s)}</b> · ${fmt(a.i)} IMP` : 'résultat introuvable'}${d.ecartDefi ? `<br><span class="nt">Dans le défi, Argine avait fait ${contrat(d.ecartDefi.c)} · ${d.ecartDefi.l} levées · ${fmt(d.ecartDefi.s)}</span>` : ''}</div>
+        <div><b>Ont battu Argine :</b> ${a ? d.lignes.filter(x => x.bat === 'oui').length + ' / ' + d.lignes.filter(x => x.bat).length : '—'}</div>
+        <div><b>Par :</b> ${d.par ? contrat(d.par.contrat) + ' par ' + (d.par.camp === 'NS' ? 'Nord/Sud' : 'Est/Ouest') + ' (' + fmt(d.par.ns) + ')' : '—'}</div>
+        <div><b>Référence de la salle :</b> ${d.reference != null ? fmt(d.reference) : '—'}</div>
+      </div></div></div>`;
+    if (a && a.jeu) h += `<details class="jeu" id="jeu"${jeuOuvert ? ' open' : ''}><summary>🤖 Le jeu d'Argine : enchères et plis</summary>
+      <div class="jeu-cote"><div class="col-enc"><h3>Enchères (donneur ${POS[d.donneur]})</h3><div class="jeu-boite">${encheres(a.jeu, d.donneur)}</div></div>
+      <div class="col-tapis"><h3>Jeu de la carte : ${contrat(a.jeu.contrat)} par ${POS[a.jeu.declarant] || ''}, ${a.l} levées</h3><div id="tapis-boite"></div></div></div></details>`;
+  }
+  dessiner(h);
+  if ($('jeu')) $('jeu').ontoggle = e => { jeuOuvert = e.target.open; };
+  if ($('tapis-boite')) { JEU = preparerJeu(T.donnes.find(x => x.n === onglet), T.donnes.find(x => x.n === onglet).argine.jeu); majTapis(); }
+  if (onglet !== 'classement') {
+    const k = T.donnes.findIndex(x => x.n === onglet);
+    if ($('prec')) $('prec').onclick = () => allerA(T.donnes[k - 1].n);
+    if ($('suiv')) $('suiv').onclick = () => allerA(T.donnes[k + 1].n);
+    /* Glisser le doigt sur le cadre de la donne : vers la gauche = suivante, vers la droite = précédente. */
+    const carte = document.querySelector('.carte'); let x0 = null, y0 = 0;
+    carte.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+    carte.addEventListener('touchend', e => {
+      if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null;
+      if (Math.abs(dx) < 50 || Math.abs(dx) < 1.5 * Math.abs(dy)) return;      // trop court, ou geste surtout vertical
+      const cible = T.donnes[k + (dx < 0 ? 1 : -1)]; if (cible) allerA(cible.n);
+    }, { passive: true });
+  }
+}
+
+/* Bloc d'en-tête (h) + recherche + tableau ROWS / COLS. */
+function dessiner(h) {
+  marquer();
+  h += `<div class="sb"><input id="cherche" placeholder="Chercher un joueur…" value="${esc(cherche)}"><span class="mc" id="compte"></span></div>
+        <div class="ts"><table><thead><tr id="tete"></tr></thead><tbody id="corps"></tbody></table></div>`;
+  $('contenu').innerHTML = h;
+  $('cherche').oninput = e => { cherche = e.target.value; lignes(); };
+  $('tete').onclick = e => { const th = e.target.closest('th'); if (!th) return; const c = th.dataset.c, num = COLS.find(x => x[0] === c)[2];
+    tri = { col: c, sens: tri && tri.col === c ? -tri.sens : (num && c !== 'r' ? -1 : 1) }; lignes(); };
+  lignes();
+}
+
+function lignes() {
+  const C = COLS, q = cherche.trim().toLowerCase();
+  $('tete').innerHTML = C.map(c => `<th data-c="${c[0]}"${c[2] ? ' class="num"' : ''}>${esc(c[1])}${tri && tri.col === c[0] ? (tri.sens > 0 ? ' ▲' : ' ▼') : ''}</th>`).join('');
+  let L = ROWS.filter(x => !q || x.p.toLowerCase().includes(q));
+  if (tri) { const num = C.find(c => c[0] === tri.col)[2];
+    L = L.slice().sort((a, b) => { const x = a[tri.col], y = b[tri.col], vx = x == null || x === '', vy = y == null || y === '';
+      if (vx !== vy) return vx ? 1 : -1; return (vx ? 0 : num ? x - y : String(x).localeCompare(String(y), 'fr')) * tri.sens; }); }
+  $('corps').innerHTML = L.map(x => `<tr class="${x.p === ARG ? 'argine' : x.p === MOI ? 'moi' : ''}">` + C.map(([k, , n]) => {
+    let v = x[k];
+    if (k === 'r') return `<td class="rk">${rang(v)}</td>`;
+    if (k === 'p') v = (x.p === ARG ? '🤖 ' : '') + esc(v);
+    else if (k === 'c') v = x.c ? contrat(x.c) : 'non jouée';
+    else if (k === 'd') v = POS[x.d] || '';
+    else if (k === 'e') v = entame(x.e);
+    else if (k === 'bat') return `<td class="${v === 'oui' ? 'ok' : v === 'non' ? 'ko' : ''}${n ? ' num' : ''}">${v == null ? '' : v}</td>`;
+    else if (k === 'bonus') v = v == null ? '' : v ? '+' + v : '0';
+    else if (/^x\d/.test(k)) v = v == null ? '–' : fmt(v);
+    else if (['i', 'imp', 'total', 's'].includes(k)) v = fmt(v);
+    return `<td${n ? ' class="num"' : ''}>${v == null ? '' : v}</td>`;
+  }).join('') + '</tr>').join('');
+  $('compte').textContent = L.length + (vue.type === 'tournoi' && onglet !== 'classement' ? ' lignes' : ' classés');
+}
+
+demarrer();
+</script>
+</body>
+</html>
