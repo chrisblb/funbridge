@@ -141,7 +141,7 @@ header select{font-size:15px;padding:8px 12px;min-width:min(340px,100%);}
   <h1>🤖 Argine c'est moi</h1>
   <p id="sous-titre">Tournoi en essai</p>
   <div class="regle" id="regle"></div>
-  <p style="font-size:12px;opacity:.75;margin-top:6px;">Mis à jour le 20 novembre 2026 à 08:33</p>
+  <p style="font-size:12px;opacity:.75;margin-top:6px;">Mis à jour le 21 novembre 2026 à 05:38</p>
   <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:8px;"><a href="https://chrisblb.github.io/funbridge/resultats-tous-tournois.html" style="display:inline-block;background:rgba(255,255,255,.15);color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.35);font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;letter-spacing:.02em;">🏆 Tous les résultats</a><a href="https://chrisblb.github.io/funbridge/regles-tournois.html" style="display:inline-block;background:rgba(255,255,255,.15);color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.35);font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;letter-spacing:.02em;">ⓘ Présentation des tournois</a></div>
 </header>
 <nav id="nav"></nav>
@@ -170,7 +170,7 @@ const r2 = n => Math.round(n * 100) / 100;
 const fmt = n => n == null ? '' : (n > 0 ? '+' : '') + r2(n);
 const NOM_MOIS = m => { const s = new Date(m + '-15T12:00').toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }); return s[0].toUpperCase() + s.slice(1); };
 const DATE = (j, o) => new Date(j + 'T12:00').toLocaleDateString('fr-FR', o || { day: 'numeric', month: 'long', year: 'numeric' });
-function contrat(c) { const m = /^(\d)([CDHSN])(X(\d))?$/.exec(c || ''); return m ? m[1] + couleur(m[2]) + (m[3] ? (m[4] === '1' ? 'X' : 'XX') : '') : esc(c || ''); }
+function contrat(c) { if (c === 'PA') return 'Passe'; const m = /^(\d)([CDHSN])(X(\d))?$/.exec(c || ''); return m ? m[1] + couleur(m[2]) + (m[3] ? (m[4] === '1' ? 'X' : 'XX') : '') : esc(c || ''); }
 function resultat(c, l) { const m = /^(\d)/.exec(c || ''); if (!m || l == null) return ''; const d = l - (+m[1]) - 6; return d === 0 ? '=' : (d > 0 ? '+' : '') + d; }
 function entame(e) { return e ? couleur(e[1]) + (e[0] === 'T' ? '10' : e[0]) : ''; }
 function main(h) {
@@ -257,7 +257,7 @@ const rang = r => r >= 1 && r <= 3 ? `<span class="b${r}">${r}</span>` : r;
 /* vue = { type: 'annee'|'mois'|'tournoi', cle: '2026' | '2026-11' | index dans TOURS } */
 let PER = null, TOURS = [], vue = null, T = null, onglet = 'classement', cherche = '', tri = null, ROWS = [], COLS = [];
 /* Page publique (argine-page-publique.mjs) : les résultats sont dans la page, rien n'est lu ailleurs. */
-const DONNEES = {"index.json":{"maj":"2026-11-19T16:19:08.102Z","tournois":[]}};
+const DONNEES = {"index.json":{"maj":"2026-11-20T16:33:37.580Z","tournois":[]}};
 async function charger(u) { const k = u.split('/').pop(); if (!(k in DONNEES)) throw new Error('404'); return JSON.parse(JSON.stringify(DONNEES[k])); }
 
 $('regle').innerHTML = `Chaque joueur garde ses IMP Funbridge · <b>+${BONUS}</b> par donne où il fait mieux qu'Argine · Argine est classée avec les joueurs<br>🤖 Dans Funbridge, la ligne de <b>chrisblb</b>, c'est Argine : Chris rejoue exactement son jeu<br>Mois = somme des tournois du mois · Année = somme des mois`;
