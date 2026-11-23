@@ -141,7 +141,7 @@ header select{font-size:15px;padding:8px 12px;min-width:min(340px,100%);}
   <h1>🤖 Argine c'est moi</h1>
   <p id="sous-titre">Tournoi en essai</p>
   <div class="regle" id="regle"></div>
-  <p style="font-size:12px;opacity:.75;margin-top:6px;">Mis à jour le 23 novembre 2026 à 13:16</p>
+  <p style="font-size:12px;opacity:.75;margin-top:6px;">Mis à jour le 23 novembre 2026 à 13:21</p>
   <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:8px;"><a href="https://chrisblb.github.io/funbridge/resultats-tous-tournois.html" style="display:inline-block;background:rgba(255,255,255,.15);color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.35);font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;letter-spacing:.02em;">🏆 Tous les résultats</a><a href="https://chrisblb.github.io/funbridge/regles-tournois.html" style="display:inline-block;background:rgba(255,255,255,.15);color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.35);font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;letter-spacing:.02em;">ⓘ Présentation des tournois</a></div>
 </header>
 <nav id="nav"></nav>
@@ -281,7 +281,7 @@ async function demarrer() {
 
 /* Classement du mois (colonnes = ses tournois) ou de l'année (colonnes = ses mois). */
 function ouvrirPeriode(type, cle) {
-  vue = { type, cle }; T = null; cherche = ''; tri = null;
+  vue = { type, cle }; T = null; tri = null;   /* 23/11/2026 : la recherche d'un joueur est gardée d'une vue à l'autre */
   const tours = TOURS.filter(t => t.jour.startsWith(cle)).slice().reverse();      // du plus ancien au plus récent
   const groupe = type === 'mois' ? t => [t.fichier, DATE(t.jour, { day: '2-digit', month: '2-digit' })]   /* 23/11/2026 : un seul tournoi → la date seule */
                                  : t => [t.jour.slice(0, 7), NOM_MOIS(t.jour.slice(0, 7)).replace(/ \d{4}$/, '')];
@@ -314,12 +314,12 @@ function ouvrirPeriode(type, cle) {
 function ouvrirTournoi(i) {
   T = TOURS[i]; vue = { type: 'tournoi', cle: i, mois: T.jour.slice(0, 7) }; pliCourant = 0;
   $('sous-titre').textContent = `${DATE(T.jour, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} · ${T.donnes.length} donnes en IMP · ${T.nbJ} joueur${T.nbJ > 1 ? 's' : ''} + Argine`;
-  onglet = 'classement'; cherche = ''; tri = null;
+  onglet = 'classement'; tri = null;
   afficherTournoi();
   window.scrollTo(0, 0);
 }
 
-function allerA(o) { pliCourant = 0; onglet = o; tri = null; cherche = ''; afficherTournoi(); }
+function allerA(o) { pliCourant = 0; onglet = o; tri = null; afficherTournoi(); }
 
 /* Lignes de chaque donne (joueurs + Argine) et classement du tournoi. */
 function calculer(T) {
@@ -426,7 +426,7 @@ function dessiner(h) {
 function lignes() {
   const C = COLS, q = cherche.trim().toLowerCase();
   $('tete').innerHTML = C.map(c => `<th data-c="${c[0]}"${c[2] ? ' class="num"' : ''}>${esc(c[1])}${tri && tri.col === c[0] ? (tri.sens > 0 ? ' ▲' : ' ▼') : ''}</th>`).join('');
-  let L = ROWS.filter(x => !q || x.p.toLowerCase().includes(q));
+  let L = ROWS.filter(x => !q || x.p === ARG || x.p.toLowerCase().includes(q));   /* Argine reste visible pour se comparer (23/11/2026) */
   if (tri) { const num = C.find(c => c[0] === tri.col)[2];
     L = L.slice().sort((a, b) => { const x = a[tri.col], y = b[tri.col], vx = x == null || x === '', vy = y == null || y === '';
       if (vx !== vy) return vx ? 1 : -1; return (vx ? 0 : num ? x - y : String(x).localeCompare(String(y), 'fr')) * tri.sens; }); }
