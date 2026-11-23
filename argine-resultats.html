@@ -141,7 +141,7 @@ header select{font-size:15px;padding:8px 12px;min-width:min(340px,100%);}
   <h1>🤖 Argine c'est moi</h1>
   <p id="sous-titre">Tournoi en essai</p>
   <div class="regle" id="regle"></div>
-  <p style="font-size:12px;opacity:.75;margin-top:6px;">Mis à jour le 23 novembre 2026 à 08:25</p>
+  <p style="font-size:12px;opacity:.75;margin-top:6px;">Mis à jour le 23 novembre 2026 à 09:16</p>
   <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:8px;"><a href="https://chrisblb.github.io/funbridge/resultats-tous-tournois.html" style="display:inline-block;background:rgba(255,255,255,.15);color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.35);font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;letter-spacing:.02em;">🏆 Tous les résultats</a><a href="https://chrisblb.github.io/funbridge/regles-tournois.html" style="display:inline-block;background:rgba(255,255,255,.15);color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.35);font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;letter-spacing:.02em;">ⓘ Présentation des tournois</a></div>
 </header>
 <nav id="nav"></nav>
@@ -283,7 +283,7 @@ async function demarrer() {
 function ouvrirPeriode(type, cle) {
   vue = { type, cle }; T = null; cherche = ''; tri = null;
   const tours = TOURS.filter(t => t.jour.startsWith(cle)).slice().reverse();      // du plus ancien au plus récent
-  const groupe = type === 'mois' ? t => [t.fichier, t.nom + ' · ' + DATE(t.jour, { day: 'numeric', month: 'numeric' })]
+  const groupe = type === 'mois' ? t => [t.fichier, DATE(t.jour, { day: '2-digit', month: '2-digit' })]   /* 23/11/2026 : un seul tournoi → la date seule */
                                  : t => [t.jour.slice(0, 7), NOM_MOIS(t.jour.slice(0, 7)).replace(/ \d{4}$/, '')];
   const subs = [], P = {};
   for (const t of tours) {
@@ -313,7 +313,7 @@ function ouvrirPeriode(type, cle) {
 
 function ouvrirTournoi(i) {
   T = TOURS[i]; vue = { type: 'tournoi', cle: i, mois: T.jour.slice(0, 7) }; pliCourant = 0;
-  $('sous-titre').textContent = `${T.nom} · ${DATE(T.jour, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} · ${T.donnes.length} donnes en IMP · ${T.nbJ} joueur${T.nbJ > 1 ? 's' : ''} + Argine`;
+  $('sous-titre').textContent = `${DATE(T.jour, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} · ${T.donnes.length} donnes en IMP · ${T.nbJ} joueur${T.nbJ > 1 ? 's' : ''} + Argine`;
   onglet = 'classement'; cherche = ''; tri = null;
   afficherTournoi();
   window.scrollTo(0, 0);
@@ -360,7 +360,7 @@ function marquer() {
     + PER.annees.map(y => bt('annee:' + y, '📅 Année ' + y, vue.type === 'annee' && vue.cle === y)).join('')
     + PER.mois.map(x => bt('mois:' + x, NOM_MOIS(x), x === m)).join('') + '</div>';
   if (m) h += `<div class="rang"><span class="lab">${NOM_MOIS(m).replace(/ \d{4}$/, '')}</span>` + bt('mois:' + m, '🏆 Classement du mois', vue.type === 'mois')
-    + TOURS.map((t, i) => t.jour.startsWith(m) ? [t.jour + (t.id || ''), bt('t:' + i, esc(t.nom) + ' · ' + DATE(t.jour, { day: '2-digit', month: '2-digit' }), vue.type === 'tournoi' && vue.cle === i)] : null)
+    + TOURS.map((t, i) => t.jour.startsWith(m) ? [t.jour + (t.id || ''), bt('t:' + i, DATE(t.jour, { day: '2-digit', month: '2-digit' }), vue.type === 'tournoi' && vue.cle === i)] : null)
       .filter(Boolean).sort((a, b) => a[0].localeCompare(b[0])).map(x => x[1]).join('') + '</div>';
   if (vue.type === 'tournoi') h += '<div class="rang"><span class="lab">Donnes</span>' + bt('d:classement', '🏆 Classement', onglet === 'classement')
     + T.donnes.map(d => bt('d:' + d.n, d.n, onglet === d.n)).join('') + '</div>';
