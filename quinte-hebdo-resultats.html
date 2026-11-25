@@ -82,8 +82,133 @@ td.nj .nt{margin:0;font-size:10px;font-style:normal;}
 <nav id="nav"></nav>
 <div class="ct" id="contenu"><div class="vide">Chargement…</div></div>
 <script>
+/* ═══════════════════════════════════════════════════════
+   QUINTE-HEBDO-CALCUL.JS  (25/11/2026, demande de Christiane)
+
+   Le calcul de LeQuintéHebdo, écrit UNE SEULE FOIS. Lu par :
+     - la page quinte-hebdo.html (NUC) ; sa copie publique (quinte-hebdo-resultats.html) le reçoit recopié dedans
+       à la fabrication (quinte-hebdo-page-publique.mjs) : aucun fichier de plus à publier ;
+     - le programme du matin (funbridge-auto.mjs) : la porte « Top 40 de LeQuintéHebdo » vers Les Cadors, dès les
+       résultats de décembre 2026. Deux calculs qui divergeraient inviteraient les mauvais joueurs.
+
+   RÈGLE DES 13 MEILLEURES (24/11/2026) : à la fin de la semaine, les 2 plus mauvaises donnes JOUÉES de chaque
+   joueur sont effacées, chacune seulement si elle est négative ; bonus = ce qu'elles lui avaient fait perdre.
+   Donne non jouée : Funbridge met −24 ; ici elle compte le plus mauvais score réalisé sur la donne par ceux qui
+   l'ont jouée, et elle ne peut pas être effacée. Total = IMP Funbridge + correction des non jouées + bonus.
+
+   MOIS D'UNE SEMAINE (25/11/2026, règle A) : une semaine compte pour le mois de son jeudi de FIN (le jeudi 4 h
+   où elle se ferme), et non de son jeudi de départ. Raison : la sélection des Cadors se fait le 1er sur le mois
+   écoulé ; avec le jeudi de départ, la dernière semaine du mois ne serait jamais terminée à ce moment-là.
+   Exemple : la semaine du 26/11 au 03/12 compte pour décembre ; celle du 31/12 au 07/01 compte pour janvier.
+
+   Aucune dépendance. Navigateur : window.QuinteHebdoCalcul. Node : require(). Seule classementMois() lit des
+   fichiers (Node uniquement).
+   ═══════════════════════════════════════════════════════ */
+(function (racine) {
+  'use strict';
+  const NB_EFFACEES = 2;
+  const r2 = n => Math.round(n * 100) / 100;
+
+  /* Le jeudi où la semaine se ferme : sept jours après son jeudi de départ (midi UTC : pas de souci d'heure d'été). */
+  function jourFin(jour) {
+    const d = new Date(jour + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + 7);
+    return d.toISOString().slice(0, 10);
+  }
+  /* « AAAA-MM » du mois auquel la semaine compte. */
+  function moisDeSemaine(jour) { return jourFin(jour).slice(0, 7); }
+
+  /* Le calcul d'une semaine. donnes = [{ n, joueurs: [{ p, c, i }] }]. Ajoute d.pire à chaque donne.
+     Rend { pseudo: { p, imp, ajust, nbNJ, jouees, donnes, efface (Set de n°), pires (donnes effacées, par n°), bonus, total } }. */
+  function calculSemaine(donnes, nbEffacees) {
+    const NB = nbEffacees == null ? NB_EFFACEES : nbEffacees;
+    const J = {};
+    for (const d of donnes) {
+      /* Donne non jouée : au lieu du −24 de Funbridge, le plus mauvais score réalisé sur la donne. */
+      const joues = d.joueurs.filter(j => j.c).map(j => j.i ?? 0);
+      d.pire = joues.length ? Math.min(...joues) : null;
+      for (const j of d.joueurs) {
+        const x = J[j.p] || (J[j.p] = { p: j.p, imp: 0, ajust: 0, nbNJ: 0, jouees: 0, donnes: [] });
+        const f = j.i ?? 0, nj = !j.c, i = nj && d.pire != null ? d.pire : f;
+        x.imp += f; if (nj) { x.nbNJ++; x.ajust += i - f; } else x.jouees++;
+        x.donnes.push({ n: d.n, i, nj });
+      }
+    }
+    for (const x of Object.values(J)) {
+      /* Seules les donnes JOUÉES peuvent être effacées : les 2 effacements servent aux vrais accidents. */
+      const pires = x.donnes.filter(z => !z.nj).sort((a, b) => a.i - b.i || a.n - b.n).slice(0, NB).filter(z => z.i < 0);
+      x.efface = new Set(pires.map(z => z.n));
+      x.pires = pires.slice().sort((a, b) => a.n - b.n);
+      x.bonus = -pires.reduce((s, z) => s + z.i, 0);
+      x.imp = r2(x.imp); x.ajust = r2(x.ajust); x.total = r2(x.imp + x.ajust + x.bonus);
+    }
+    return J;
+  }
+
+  /* Le classement d'une semaine (rang au total, rang sans bonus, places gagnées). Rend la liste triée. */
+  function classerSemaine(J) {
+    const L = Object.values(J);
+    const classer = (cle, nom) => {
+      const s = L.slice().sort((a, b) => b[cle] - a[cle] || b.imp - a.imp); let r = 0;
+      s.forEach((c, k) => { r = k && c[cle] === s[k - 1][cle] && c.imp === s[k - 1].imp ? r : k + 1; c[nom] = r; });
+      return s;
+    };
+    classer('imp', 'rangSans');
+    const classement = classer('total', 'r');
+    classement.forEach(c => c.ecart = c.rangSans - c.r);
+    return classement;
+  }
+
+  /* Cumul de plusieurs semaines (chacune avec son .classement, de la plus ancienne à la plus récente).
+     groupe(t) → [clé, libellé] de la colonne où ranger la semaine (par défaut : une colonne par semaine).
+     Rend { subs: colonnes, rows: joueurs triés au total, rang r (ex aequo au total = même rang) }. */
+  function cumul(tours, groupe) {
+    const subs = [], P = {};
+    for (const t of tours) {
+      const [k, lab] = groupe ? groupe(t) : [t.jour, t.jour];
+      let si = subs.findIndex(s => s.k === k); if (si < 0) { subs.push({ k, lab }); si = subs.length - 1; }
+      for (const c of t.classement) {
+        const x = P[c.p] || (P[c.p] = { p: c.p, nb: 0, imp: 0, ajust: 0, bonus: 0, total: 0, sub: {} });
+        x.nb++; x.imp += c.imp; x.ajust += c.ajust; x.bonus += c.bonus; x.total += c.total; x.sub[si] = (x.sub[si] || 0) + c.total;
+      }
+    }
+    const rows = Object.values(P).map(x => {
+      const o = { p: x.p, nb: x.nb, imp: r2(x.imp), ajust: r2(x.ajust), bonus: r2(x.bonus), total: r2(x.total) };
+      subs.forEach((s, i) => o['x' + i] = x.sub[i] == null ? null : r2(x.sub[i]));
+      return o;
+    }).sort((a, b) => b.total - a.total || b.imp - a.imp);
+    let r = 0; rows.forEach((c, k) => { r = k && c.total === rows[k - 1].total ? r : k + 1; c.r = r; });
+    return { subs, rows };
+  }
+
+  /* NODE SEULEMENT — le classement d'un mois (« AAAA-MM »), lu dans le dossier des donnes (index.json + fichiers
+     « hebdo » écrits par donnes-funbridge.mjs). Rend { semaines: [jeudis de départ retenus], rows: classement du mois }.
+     Une semaine illisible du mois demandé lève une erreur (mieux vaut le dire que classer sur un mois incomplet). */
+  function classementMois(dossier, cleMois) {
+    const fs = require('fs'), path = require('path');
+    const index = JSON.parse(fs.readFileSync(path.join(dossier, 'index.json'), 'utf8'));
+    const tours = [];
+    for (const e of (index.tournois || [])) {
+      if (e.court !== 'hebdo') continue;
+      if (/^\d{4}-\d{2}-\d{2}$/.test(e.jour || '') && moisDeSemaine(e.jour) !== cleMois) continue;
+      const t = JSON.parse(fs.readFileSync(path.join(dossier, e.fichier), 'utf8'));
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(t.jour || '') || !(t.donnes || []).length) throw new Error('semaine illisible : ' + e.fichier);
+      if (moisDeSemaine(t.jour) !== cleMois) continue;
+      t.classement = classerSemaine(calculSemaine(t.donnes));
+      tours.push(t);
+    }
+    tours.sort((a, b) => a.jour.localeCompare(b.jour));
+    return { semaines: tours.map(t => t.jour), rows: cumul(tours).rows };
+  }
+
+  const api = { NB_EFFACEES, r2, jourFin, moisDeSemaine, calculSemaine, classerSemaine, cumul, classementMois };
+  if (typeof module !== 'undefined' && module.exports) module.exports = api; else racine.QuinteHebdoCalcul = api;
+})(typeof self !== 'undefined' ? self : this);
+
+</script>
+<script>
 /* ═══ RÈGLE DES 13 MEILLEURES (décision de Christiane, 24/11/2026) ═══ */
-const NB_EFFACEES = 2;   // les 2 plus mauvaises donnes de chaque joueur sont effacées, chacune seulement si elle est négative
+const QHC = QuinteHebdoCalcul;   // le calcul (2 plus mauvaises donnes effacées si négatives, non jouées, cumul) : fichier quinte-hebdo-calcul.js du dossier tournois
+const moisDe = t => QHC.moisDeSemaine(t.jour);   // mois auquel compte une semaine : celui de son jeudi de FIN (25/11/2026)
 const MOI = 'chrisblb';
 /* ════════════════════════════════════════════════════ */
 const COUL = { C: '♣', D: '♦', H: '♥', S: '♠', N: 'SA' };
@@ -118,7 +243,7 @@ let PER = null, TOURS = [], vue = null, T = null, onglet = 'classement', cherche
 /* Page publique (quinte-hebdo-page-publique.mjs) : l'index est toujours relu ; une semaine déjà vue reste dans le navigateur. */
 async function charger(u) { const r = await fetch(u, { cache: /index\.json$/.test(u) ? 'no-store' : 'default' }); if (!r.ok) throw new Error(r.status); return r.json(); }
 
-$('regle').innerHTML = `15 donnes en IMP · à la fin de la semaine, les <b>2 plus mauvaises donnes</b> de chaque joueur sont effacées, <b>si elles sont négatives</b> : on ne garde que les 13 meilleures<br>Une donne non jouée compte <b>le plus mauvais score réalisé sur cette donne</b> (et non −24) ; elle ne peut pas être effacée<br>Bonus = ce que les donnes effacées lui avaient fait perdre · Total = IMP Funbridge + correction des non jouées + bonus · Mois = somme des semaines · Année = somme des mois`;
+$('regle').innerHTML = `15 donnes en IMP · à la fin de la semaine, les <b>2 plus mauvaises donnes</b> de chaque joueur sont effacées, <b>si elles sont négatives</b> : on ne garde que les 13 meilleures<br>Une donne non jouée compte <b>le plus mauvais score réalisé sur cette donne</b> (et non −24) ; elle ne peut pas être effacée<br>Bonus = ce que les donnes effacées lui avaient fait perdre · Total = IMP Funbridge + correction des non jouées + bonus · Mois = somme des semaines terminées dans le mois · Année = somme des mois`;
 
 /* Les semaines d'un index : celles qu'il retient, chacune calculée. */
 async function lireSemaines(indexUrl, dossier, retenir) {
@@ -135,42 +260,20 @@ async function demarrer() {
   TOURS.sort((a, b) => b.jour.localeCompare(a.jour));
   if (!TOURS.length) { $('contenu').innerHTML = '<div class="vide">Aucun résultat pour l\'instant : ils sont lus le jeudi matin, une fois la semaine fermée.</div>'; return; }
   $('bandeau-essai').hidden = !TOURS.some(t => t.essai);
-  PER = { annees: [...new Set(TOURS.map(t => t.jour.slice(0, 4)))].sort().reverse(), mois: [...new Set(TOURS.map(t => t.jour.slice(0, 7)))].sort().reverse() };
+  PER = { annees: [...new Set(TOURS.map(t => moisDe(t).slice(0, 4)))].sort().reverse(), mois: [...new Set(TOURS.map(t => moisDe(t)))].sort().reverse() };
   $('nav').onclick = ev => { const b = ev.target.closest('.nb'); if (!b) return; const [t, c] = b.dataset.a.split(':');
     if (t === 'annee' || t === 'mois') ouvrirPeriode(t, c); else if (t === 't') ouvrirTournoi(+c); else allerA(c === 'classement' ? c : +c); };
   ouvrirPeriode('mois', PER.mois[0]);
 }
 
-/* Le calcul de la semaine : IMP de Funbridge, puis les 2 plus mauvaises donnes effacées si elles sont négatives. */
+/* Le calcul de la semaine : IMP de Funbridge, puis les 2 plus mauvaises donnes effacées si elles sont négatives.
+   (25/11/2026 : le calcul lui-même est dans quinte-hebdo-calcul.js (dossier tournois), partagé avec le programme du matin.) */
 function calculer(T) {
-  const J = {};
-  for (const d of T.donnes) {
-    /* Donne non jouée (24/11/2026) : au lieu du −24 de Funbridge, le plus mauvais score réalisé sur la donne. */
-    const joues = d.joueurs.filter(j => j.c).map(j => j.i ?? 0);
-    d.pire = joues.length ? Math.min(...joues) : null;
-    for (const j of d.joueurs) {
-      const x = J[j.p] || (J[j.p] = { p: j.p, imp: 0, ajust: 0, nbNJ: 0, jouees: 0, donnes: [] });
-      const f = j.i ?? 0, nj = !j.c, i = nj && d.pire != null ? d.pire : f;
-      x.imp += f; if (nj) { x.nbNJ++; x.ajust += i - f; } else x.jouees++;
-      x.donnes.push({ n: d.n, i, nj });
-    }
-  }
-  for (const x of Object.values(J)) {
-    /* Seules les donnes JOUÉES peuvent être effacées : les 2 effacements servent aux vrais accidents. */
-    const pires = x.donnes.filter(z => !z.nj).sort((a, b) => a.i - b.i || a.n - b.n).slice(0, NB_EFFACEES).filter(z => z.i < 0);
-    x.efface = new Set(pires.map(z => z.n));
-    x.effaceesTxt = pires.sort((a, b) => a.n - b.n).map(z => `<span class="ef">D${z.n} ${fmt(z.i)}</span>`).join('');
-    x.bonus = -pires.reduce((s, z) => s + z.i, 0);
-    x.imp = r2(x.imp); x.ajust = r2(x.ajust); x.total = r2(x.imp + x.ajust + x.bonus);
-  }
-  const L = Object.values(J);
-  const classer = (cle, nom) => { const s = L.slice().sort((a, b) => b[cle] - a[cle] || b.imp - a.imp); let r = 0;
-    s.forEach((c, k) => { r = k && c[cle] === s[k - 1][cle] && c.imp === s[k - 1].imp ? r : k + 1; c[nom] = r; }); return s; };
-  classer('imp', 'rangSans');
-  T.classement = classer('total', 'r');
-  T.classement.forEach(c => c.ecart = c.rangSans - c.r);
+  const J = QHC.calculSemaine(T.donnes);
+  for (const x of Object.values(J)) x.effaceesTxt = x.pires.map(z => `<span class="ef">D${z.n} ${fmt(z.i)}</span>`).join('');
+  T.classement = QHC.classerSemaine(J);
   T.parJoueur = J;
-  T.nbJ = L.length;
+  T.nbJ = Object.keys(J).length;
   for (const d of T.donnes) {
     d.lignes = d.joueurs.map(j => ({ p: j.p, c: j.c, d: j.d, l: j.l, res: resultat(j.c, j.l), e: j.e, s: j.s,
       i: !j.c && d.pire != null ? d.pire : j.i, iFb: j.c ? null : j.i,
@@ -181,33 +284,21 @@ function calculer(T) {
 /* Classement du mois (colonnes = ses semaines) ou de l'année (colonnes = ses mois). */
 function ouvrirPeriode(type, cle) {
   vue = { type, cle }; T = null; tri = null;
-  const tours = TOURS.filter(t => t.jour.startsWith(cle)).slice().reverse();
-  const groupe = type === 'mois' ? t => [t.fichier, JJMM(t.jour)] : t => [t.jour.slice(0, 7), NOM_MOIS(t.jour.slice(0, 7)).replace(/ \d{4}$/, '')];
-  const subs = [], P = {};
-  for (const t of tours) {
-    const [k, lab] = groupe(t); let si = subs.findIndex(s => s.k === k); if (si < 0) { subs.push({ k, lab }); si = subs.length - 1; }
-    for (const c of t.classement) {
-      const x = P[c.p] || (P[c.p] = { p: c.p, nb: 0, imp: 0, ajust: 0, bonus: 0, total: 0, sub: {} });
-      x.nb++; x.imp += c.imp; x.ajust += c.ajust; x.bonus += c.bonus; x.total += c.total; x.sub[si] = (x.sub[si] || 0) + c.total;
-    }
-  }
-  ROWS = Object.values(P).map(x => {
-    const o = { p: x.p, nb: x.nb, imp: r2(x.imp), ajust: r2(x.ajust), bonus: r2(x.bonus), total: r2(x.total) };
-    subs.forEach((s, i) => o['x' + i] = x.sub[i] == null ? null : r2(x.sub[i]));
-    return o;
-  }).sort((a, b) => b.total - a.total || b.imp - a.imp);
-  let r = 0; ROWS.forEach((c, k) => { r = k && c.total === ROWS[k - 1].total ? r : k + 1; c.r = r; });
+  const tours = TOURS.filter(t => moisDe(t).startsWith(cle)).slice().reverse();
+  const groupe = type === 'mois' ? t => [t.fichier, JJMM(t.jour)] : t => [moisDe(t), NOM_MOIS(moisDe(t)).replace(/ \d{4}$/, '')];
+  const C = QHC.cumul(tours, groupe), subs = C.subs;
+  ROWS = C.rows;
   COLS = [['r', 'Rang', 1], ['p', 'Joueur'], ['nb', 'Semaines jouées', 1], ...subs.map((s, i) => ['x' + i, s.lab, 1]),
           ['imp', 'IMP Funbridge', 1], ['ajust', 'Non jouées', 1], ['bonus', 'Bonus', 1], ['total', 'Total', 1]];
   $('sous-titre').textContent = (type === 'mois' ? 'Classement de ' + NOM_MOIS(cle) : 'Classement de l\'année ' + cle)
     + ` · ${tours.length} semaine${tours.length > 1 ? 's' : ''} · ${ROWS.length} joueur${ROWS.length > 1 ? 's' : ''}`;
   dessiner(`<div class="nt" style="margin:0 0 8px">${type === 'mois'
-      ? 'Total du mois = somme des totaux (IMP + correction des non jouées + bonus) de chaque semaine commencée dans le mois. Une semaine non jouée compte 0. Pour ouvrir une semaine, touchez sa date dans la rangée du dessus.'
+      ? 'Total du mois = somme des totaux (IMP + correction des non jouées + bonus) de chaque semaine terminée dans le mois (une semaine compte pour le mois où elle se termine, le jeudi à 4 h). Une semaine non jouée compte 0. Pour ouvrir une semaine, touchez sa date dans la rangée du dessus.'
       : 'Total de l\'année = somme des totaux de chaque mois. Pour voir les semaines, choisissez d\'abord un mois.'}</div>`);
 }
 
 function ouvrirTournoi(i) {
-  T = TOURS[i]; vue = { type: 'tournoi', cle: i, mois: T.jour.slice(0, 7) };
+  T = TOURS[i]; vue = { type: 'tournoi', cle: i, mois: moisDe(T) };
   $('sous-titre').textContent = `${nomT(T)} · ${T.donnes.length} donnes en IMP · ${T.nbJ} joueur${T.nbJ > 1 ? 's' : ''}`;
   onglet = 'classement'; tri = null;
   afficherTournoi();
@@ -226,7 +317,7 @@ function marquer() {
     + PER.annees.map(y => bt('annee:' + y, '📅 Année ' + y, vue.type === 'annee' && vue.cle === y)).join('')
     + PER.mois.map(x => bt('mois:' + x, NOM_MOIS(x), x === m)).join('') + '</div>';
   if (m) h += `<div class="rang"><span class="lab">Semaines</span>` + bt('mois:' + m, '🏆 Classement du mois', vue.type === 'mois')
-    + TOURS.map((t, i) => t.jour.startsWith(m) ? [t.jour, bt('t:' + i, JJMM(t.jour), vue.type === 'tournoi' && vue.cle === i)] : null)
+    + TOURS.map((t, i) => moisDe(t) === m ? [t.jour, bt('t:' + i, JJMM(t.jour), vue.type === 'tournoi' && vue.cle === i)] : null)
       .filter(Boolean).sort((a, b) => a[0].localeCompare(b[0])).map(x => x[1]).join('') + '</div>';
   if (vue.type === 'tournoi') h += '<div class="rang"><span class="lab">Donnes</span>' + bt('d:classement', '🏆 Classement', onglet === 'classement')
     + T.donnes.map(d => bt('d:' + d.n, d.n, onglet === d.n)).join('') + '</div>';
