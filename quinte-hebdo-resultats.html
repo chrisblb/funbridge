@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LeQuintéHebdo – Résultats</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--g:#1d5e3a;--gl:#e6f2ea;--gm:#2e8050;--b:#d3e5d9;--bg:#f6faf7;--mu:#666;--tx:#1a1a1a;--red:#b3261e;--ok:#1f7a3a;
+      --cream:#f5f0e8;--moi:#fff1b8;--efface:#fde2e0;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;}
+header{background:var(--g);color:#fff;padding:22px 16px 18px;text-align:center;}
+header h1{font-family:"Playfair Display",serif;font-size:clamp(22px,5vw,34px);}
+header p{font-size:13px;opacity:.85;margin-top:4px;}
+.regle{display:inline-block;margin-top:10px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);border-radius:8px;padding:6px 12px;font-size:12px;line-height:1.5;max-width:720px;}
+.essai{display:inline-block;margin-top:8px;background:#ffd54f;color:#4a3b00;border-radius:8px;padding:4px 12px;font-size:12px;font-weight:700;}
+.ct{padding:16px;max-width:1000px;margin:0 auto;}
+.sb{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.sb input{flex:1;min-width:0;border:2px solid var(--g);border-radius:8px;padding:9px 14px;font-size:15px;outline:none;}
+.mc{font-size:12px;color:var(--mu);white-space:nowrap;}
+.ts{overflow:auto;max-height:75vh;border:1px solid var(--b);border-radius:8px;background:#fff;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--g);color:#fff;padding:8px 10px;text-align:left;font-weight:600;font-size:11px;letter-spacing:.4px;white-space:nowrap;position:sticky;top:0;cursor:pointer;user-select:none;}
+th:hover{background:var(--gm);}
+td{padding:7px 10px;border-bottom:1px solid var(--b);white-space:nowrap;}
+td.num{text-align:center;font-family:"DM Mono",monospace;}
+th.num{text-align:center;}
+td.rk{text-align:center;font-weight:600;}
+td.total{font-weight:700;}
+tr.moi td{background:var(--moi);}
+tr.efface td{background:var(--efface);}
+tr.efface td.i{text-decoration:line-through;color:var(--red);}
+td.nj{font-style:italic;color:#6a4a00;background:#fff6dc;}
+td.nj .nt{margin:0;font-size:10px;font-style:normal;}
+.b1,.b2,.b3{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;font-weight:700;font-size:13px;color:#fff;}
+.b1{background:#c9a84c;}.b2{background:#a0a0a0;}.b3{background:#b87333;}
+.ok{color:var(--ok);font-weight:700;}.ko{color:var(--red);}
+.monte{color:var(--ok);font-weight:600;}.descend{color:var(--red);}
+.ef{display:inline-block;background:var(--efface);color:var(--red);border-radius:5px;padding:0 5px;margin-right:3px;font-family:"DM Mono",monospace;font-size:12px;}
+.nt{font-size:12px;color:var(--mu);line-height:1.5;margin-top:10px;}
+.vide{color:var(--mu);padding:30px 0;text-align:center;}
+.carte{background:var(--cream);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.12);}
+.donne-haut{display:flex;flex-wrap:wrap;gap:20px;align-items:center;}
+.diagramme{display:grid;grid-template-columns:repeat(3,minmax(92px,auto));gap:6px 14px;align-items:center;}
+.main-j{font-family:"DM Mono",monospace;font-size:.86rem;line-height:1.45;white-space:nowrap;}
+.main-j .qui{font-family:"DM Sans",sans-serif;font-size:.7rem;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:1px;}
+.rouge{color:var(--red);}
+.centre{position:relative;width:108px;height:108px;border-radius:10px;background:var(--g);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.72rem;text-align:center;line-height:1.35;}
+.centre b{color:#ffe08a;font-size:1rem;}
+.centre .vul-v{color:#ff8a80;font-weight:700;}.centre .vul-nv{color:#a5d6a7;font-weight:700;}
+.infos{flex:1;min-width:230px;font-size:.9rem;line-height:1.7;}
+.infos b{color:var(--g);}
+.vq{display:inline-block;padding:2px 7px;border-radius:5px;color:#fff;}
+.vq.v{background:#c62828;}.vq.nv{background:#2e7d32;}
+.dd{display:inline-block;margin-left:5px;width:18px;height:18px;line-height:18px;border-radius:50%;background:#d4a017;color:#fff;font-size:11px;font-weight:700;text-align:center;font-family:"DM Sans",sans-serif;vertical-align:middle;}
+.centre .dd{position:absolute;margin:0;}
+.centre .dN{top:-12px;left:50%;transform:translateX(-50%);}.centre .dS{bottom:-12px;left:50%;transform:translateX(-50%);}
+.centre .dW{left:-12px;top:50%;transform:translateY(-50%);}.centre .dE{right:-12px;top:50%;transform:translateY(-50%);}
+@media (max-width:600px){.diagramme{grid-template-columns:repeat(3,auto);gap:4px 8px;}.main-j{font-size:.78rem;}}
+#nav{background:var(--gl);border-bottom:1px solid var(--b);padding:4px 0;}
+.rang{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:7px 16px;max-width:1000px;margin:0 auto;}
+.rang+.rang{border-top:1px dashed var(--b);}
+.rang .lab{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--mu);min-width:86px;}
+.nb{min-width:40px;padding:7px 11px;border:1px solid var(--b);border-radius:8px;background:#fff;color:var(--g);font:inherit;font-size:13px;font-weight:600;cursor:pointer;}
+.nb:hover{border-color:var(--g);}
+.nb.on{background:var(--g);color:#fff;border-color:var(--g);}
+.nav-d{display:flex;justify-content:space-between;gap:8px;margin-bottom:10px;}
+.nav-d button{padding:8px 14px;border:1px solid var(--g);border-radius:8px;background:#fff;color:var(--g);font:inherit;font-size:13px;font-weight:600;cursor:pointer;}
+.nav-d button:disabled{opacity:.3;cursor:default;}
+</style>
+</head>
+<body>
+<header>
+  <h1>🖐️ LeQuintéHebdo</h1>
+  <p id="sous-titre">15 donnes en IMP chaque semaine</p>
+  <div class="regle" id="regle"></div>
+  <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:8px;"><a href="https://chrisblb.github.io/funbridge/resultats-tous-tournois.html" style="display:inline-block;background:rgba(255,255,255,.15);color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.35);font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;letter-spacing:.02em;">🏆 Tous les résultats</a><a href="https://chrisblb.github.io/funbridge/regles-tournois.html" style="display:inline-block;background:rgba(255,255,255,.15);color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.35);font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;letter-spacing:.02em;">ⓘ Présentation des tournois</a></div><br>
+  <div class="essai" id="bandeau-essai" hidden>ESSAI · semaines reconstituées avec 3 Quintés Quotidiens qui se suivent</div>
+</header>
+<nav id="nav"></nav>
+<div class="ct" id="contenu"><div class="vide">Chargement…</div></div>
+<script>
+/* ═══ RÈGLE DES 13 MEILLEURES (décision de Christiane, 24/11/2026) ═══ */
+const NB_EFFACEES = 2;   // les 2 plus mauvaises donnes de chaque joueur sont effacées, chacune seulement si elle est négative
+const MOI = 'chrisblb';
+/* ════════════════════════════════════════════════════ */
+const COUL = { C: '♣', D: '♦', H: '♥', S: '♠', N: 'SA' };
+const POS = { N: 'Nord', S: 'Sud', E: 'Est', W: 'Ouest', '': '' };
+const VUL = { L: 'Personne', N: 'Nord/Sud', E: 'Est/Ouest', A: 'Tous' };
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const couleur = s => (s === 'H' || s === 'D') ? `<span class="rouge">${COUL[s]}</span>` : COUL[s];
+const r2 = n => Math.round(n * 100) / 100;
+const fmt = n => n == null ? '' : (n > 0 ? '+' : '') + r2(n);
+const NOM_MOIS = m => { const s = new Date(m + '-15T12:00').toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }); return s[0].toUpperCase() + s.slice(1); };
+const DATE = (j, o) => new Date(j + 'T12:00').toLocaleDateString('fr-FR', o || { day: 'numeric', month: 'long', year: 'numeric' });
+const JJMM = j => DATE(j, { day: '2-digit', month: '2-digit' });
+function contrat(c) { if (c === 'PA') return 'Passe'; const m = /^(\d)([CDHSN])(X(\d))?$/.exec(c || ''); return m ? m[1] + couleur(m[2]) + (m[3] ? (m[4] === '1' ? 'X' : 'XX') : '') : esc(c || ''); }
+function resultat(c, l) { const m = /^(\d)/.exec(c || ''); if (!m || l == null) return ''; const d = l - (+m[1]) - 6; return d === 0 ? '=' : (d > 0 ? '+' : '') + d; }
+function entame(e) { return e ? couleur(e[1]) + (e[0] === 'T' ? '10' : e[0]) : ''; }
+function main(h) {
+  const cs = { S: [], H: [], D: [], C: [] };
+  for (const c of String(h || '').split('-')) if (c) cs[c[1]].push(c[0]);
+  const o = 'AKQJT98765432', v = r => r === 'T' ? '10' : r;
+  return ['S', 'H', 'D', 'C'].map(s => couleur(s) + ' ' + (cs[s].sort((a, b) => o.indexOf(a) - o.indexOf(b)).map(v).join('') || '—')).join('<br>');
+}
+const PH = { A: 4, K: 3, Q: 2, J: 1 };
+const points = h => String(h || '').split('-').reduce((t, c) => t + (PH[c[0]] || 0), 0);
+const vulnerable = (vul, st) => vul === 'A' || (vul === 'N' && (st === 'N' || st === 'S')) || (vul === 'E' && (st === 'E' || st === 'W'));
+const COUL_V = (vul, st) => vulnerable(vul, st) ? '#c62828' : '#2e7d32';
+const rang = r => r >= 1 && r <= 3 ? `<span class="b${r}">${r}</span>` : r;
+const mainDe = (d, st) => d.mains[st] || (st === 'W' ? d.mains.O : '');
+const nomT = t => 'Semaine du ' + JJMM(t.jour);
+
+let PER = null, TOURS = [], vue = null, T = null, onglet = 'classement', cherche = '', tri = null, ROWS = [], COLS = [];
+/* Page publique (quinte-hebdo-page-publique.mjs) : l'index est toujours relu ; une semaine déjà vue reste dans le navigateur. */
+async function charger(u) { const r = await fetch(u, { cache: /index\.json$/.test(u) ? 'no-store' : 'default' }); if (!r.ok) throw new Error(r.status); return r.json(); }
+
+$('regle').innerHTML = `15 donnes en IMP · à la fin de la semaine, les <b>2 plus mauvaises donnes</b> de chaque joueur sont effacées, <b>si elles sont négatives</b> : on ne garde que les 13 meilleures<br>Une donne non jouée compte <b>le plus mauvais score réalisé sur cette donne</b> (et non −24) ; elle ne peut pas être effacée<br>Bonus = ce que les donnes effacées lui avaient fait perdre · Total = IMP Funbridge + correction des non jouées + bonus · Mois = somme des semaines · Année = somme des mois`;
+
+/* Les semaines d'un index : celles qu'il retient, chacune calculée. */
+async function lireSemaines(indexUrl, dossier, retenir) {
+  let I = null;
+  try { I = await charger(indexUrl); } catch (e) { return []; }
+  return (await Promise.all((I.tournois || []).filter(retenir).map(async e => {
+    try { const t = await charger(dossier + e.fichier); t.fichier = e.fichier; calculer(t); return t; } catch (err) { return null; }
+  }))).filter(Boolean);
+}
+
+async function demarrer() {
+  /* Les vraies semaines (lues chaque jeudi matin) ; tant qu'il n'y en a aucune, les semaines d'essai. */
+  TOURS = await lireSemaines('quinte-hebdo/index.json', 'quinte-hebdo/', () => true);
+  TOURS.sort((a, b) => b.jour.localeCompare(a.jour));
+  if (!TOURS.length) { $('contenu').innerHTML = '<div class="vide">Aucun résultat pour l\'instant : ils sont lus le jeudi matin, une fois la semaine fermée.</div>'; return; }
+  $('bandeau-essai').hidden = !TOURS.some(t => t.essai);
+  PER = { annees: [...new Set(TOURS.map(t => t.jour.slice(0, 4)))].sort().reverse(), mois: [...new Set(TOURS.map(t => t.jour.slice(0, 7)))].sort().reverse() };
+  $('nav').onclick = ev => { const b = ev.target.closest('.nb'); if (!b) return; const [t, c] = b.dataset.a.split(':');
+    if (t === 'annee' || t === 'mois') ouvrirPeriode(t, c); else if (t === 't') ouvrirTournoi(+c); else allerA(c === 'classement' ? c : +c); };
+  ouvrirPeriode('mois', PER.mois[0]);
+}
+
+/* Le calcul de la semaine : IMP de Funbridge, puis les 2 plus mauvaises donnes effacées si elles sont négatives. */
+function calculer(T) {
+  const J = {};
+  for (const d of T.donnes) {
+    /* Donne non jouée (24/11/2026) : au lieu du −24 de Funbridge, le plus mauvais score réalisé sur la donne. */
+    const joues = d.joueurs.filter(j => j.c).map(j => j.i ?? 0);
+    d.pire = joues.length ? Math.min(...joues) : null;
+    for (const j of d.joueurs) {
+      const x = J[j.p] || (J[j.p] = { p: j.p, imp: 0, ajust: 0, nbNJ: 0, jouees: 0, donnes: [] });
+      const f = j.i ?? 0, nj = !j.c, i = nj && d.pire != null ? d.pire : f;
+      x.imp += f; if (nj) { x.nbNJ++; x.ajust += i - f; } else x.jouees++;
+      x.donnes.push({ n: d.n, i, nj });
+    }
+  }
+  for (const x of Object.values(J)) {
+    /* Seules les donnes JOUÉES peuvent être effacées : les 2 effacements servent aux vrais accidents. */
+    const pires = x.donnes.filter(z => !z.nj).sort((a, b) => a.i - b.i || a.n - b.n).slice(0, NB_EFFACEES).filter(z => z.i < 0);
+    x.efface = new Set(pires.map(z => z.n));
+    x.effaceesTxt = pires.sort((a, b) => a.n - b.n).map(z => `<span class="ef">D${z.n} ${fmt(z.i)}</span>`).join('');
+    x.bonus = -pires.reduce((s, z) => s + z.i, 0);
+    x.imp = r2(x.imp); x.ajust = r2(x.ajust); x.total = r2(x.imp + x.ajust + x.bonus);
+  }
+  const L = Object.values(J);
+  const classer = (cle, nom) => { const s = L.slice().sort((a, b) => b[cle] - a[cle] || b.imp - a.imp); let r = 0;
+    s.forEach((c, k) => { r = k && c[cle] === s[k - 1][cle] && c.imp === s[k - 1].imp ? r : k + 1; c[nom] = r; }); return s; };
+  classer('imp', 'rangSans');
+  T.classement = classer('total', 'r');
+  T.classement.forEach(c => c.ecart = c.rangSans - c.r);
+  T.parJoueur = J;
+  T.nbJ = L.length;
+  for (const d of T.donnes) {
+    d.lignes = d.joueurs.map(j => ({ p: j.p, c: j.c, d: j.d, l: j.l, res: resultat(j.c, j.l), e: j.e, s: j.s,
+      i: !j.c && d.pire != null ? d.pire : j.i, iFb: j.c ? null : j.i,
+      efface: J[j.p].efface.has(d.n) ? 'oui' : '' })).sort((a, b) => (b.i ?? -99) - (a.i ?? -99));
+  }
+}
+
+/* Classement du mois (colonnes = ses semaines) ou de l'année (colonnes = ses mois). */
+function ouvrirPeriode(type, cle) {
+  vue = { type, cle }; T = null; tri = null;
+  const tours = TOURS.filter(t => t.jour.startsWith(cle)).slice().reverse();
+  const groupe = type === 'mois' ? t => [t.fichier, JJMM(t.jour)] : t => [t.jour.slice(0, 7), NOM_MOIS(t.jour.slice(0, 7)).replace(/ \d{4}$/, '')];
+  const subs = [], P = {};
+  for (const t of tours) {
+    const [k, lab] = groupe(t); let si = subs.findIndex(s => s.k === k); if (si < 0) { subs.push({ k, lab }); si = subs.length - 1; }
+    for (const c of t.classement) {
+      const x = P[c.p] || (P[c.p] = { p: c.p, nb: 0, imp: 0, ajust: 0, bonus: 0, total: 0, sub: {} });
+      x.nb++; x.imp += c.imp; x.ajust += c.ajust; x.bonus += c.bonus; x.total += c.total; x.sub[si] = (x.sub[si] || 0) + c.total;
+    }
+  }
+  ROWS = Object.values(P).map(x => {
+    const o = { p: x.p, nb: x.nb, imp: r2(x.imp), ajust: r2(x.ajust), bonus: r2(x.bonus), total: r2(x.total) };
+    subs.forEach((s, i) => o['x' + i] = x.sub[i] == null ? null : r2(x.sub[i]));
+    return o;
+  }).sort((a, b) => b.total - a.total || b.imp - a.imp);
+  let r = 0; ROWS.forEach((c, k) => { r = k && c.total === ROWS[k - 1].total ? r : k + 1; c.r = r; });
+  COLS = [['r', 'Rang', 1], ['p', 'Joueur'], ['nb', 'Semaines jouées', 1], ...subs.map((s, i) => ['x' + i, s.lab, 1]),
+          ['imp', 'IMP Funbridge', 1], ['ajust', 'Non jouées', 1], ['bonus', 'Bonus', 1], ['total', 'Total', 1]];
+  $('sous-titre').textContent = (type === 'mois' ? 'Classement de ' + NOM_MOIS(cle) : 'Classement de l\'année ' + cle)
+    + ` · ${tours.length} semaine${tours.length > 1 ? 's' : ''} · ${ROWS.length} joueur${ROWS.length > 1 ? 's' : ''}`;
+  dessiner(`<div class="nt" style="margin:0 0 8px">${type === 'mois'
+      ? 'Total du mois = somme des totaux (IMP + correction des non jouées + bonus) de chaque semaine commencée dans le mois. Une semaine non jouée compte 0. Pour ouvrir une semaine, touchez sa date dans la rangée du dessus.'
+      : 'Total de l\'année = somme des totaux de chaque mois. Pour voir les semaines, choisissez d\'abord un mois.'}</div>`);
+}
+
+function ouvrirTournoi(i) {
+  T = TOURS[i]; vue = { type: 'tournoi', cle: i, mois: T.jour.slice(0, 7) };
+  $('sous-titre').textContent = `${nomT(T)} · ${T.donnes.length} donnes en IMP · ${T.nbJ} joueur${T.nbJ > 1 ? 's' : ''}`;
+  onglet = 'classement'; tri = null;
+  afficherTournoi();
+  window.scrollTo(0, 0);
+}
+function allerA(o) { onglet = o; tri = null; afficherTournoi(); }
+
+const COLS_C = [['r', 'Rang', 1], ['p', 'Joueur'], ['imp', 'IMP Funbridge', 1], ['ajust', 'Non jouées', 1], ['effaceesTxt', 'Donnes effacées'], ['bonus', 'Bonus', 1], ['total', 'Total', 1],
+                ['rangSans', 'Rang sans bonus', 1], ['ecart', 'Places gagnées', 1], ['jouees', 'Donnes jouées', 1]];
+const COLS_D = [['p', 'Joueur'], ['c', 'Contrat'], ['d', 'Décl.'], ['l', 'Lev.', 1], ['res', 'Rés.'], ['e', 'Entame'], ['s', 'Score N/S', 1], ['i', 'IMP', 1], ['efface', 'Effacée ?']];
+
+function marquer() {
+  const m = vue.type === 'annee' ? null : vue.type === 'mois' ? vue.cle : vue.mois;
+  const bt = (a, txt, on) => `<button class="nb${on ? ' on' : ''}" data-a="${a}">${txt}</button>`;
+  let h = '<div class="rang"><span class="lab">Période</span>'
+    + PER.annees.map(y => bt('annee:' + y, '📅 Année ' + y, vue.type === 'annee' && vue.cle === y)).join('')
+    + PER.mois.map(x => bt('mois:' + x, NOM_MOIS(x), x === m)).join('') + '</div>';
+  if (m) h += `<div class="rang"><span class="lab">Semaines</span>` + bt('mois:' + m, '🏆 Classement du mois', vue.type === 'mois')
+    + TOURS.map((t, i) => t.jour.startsWith(m) ? [t.jour, bt('t:' + i, JJMM(t.jour), vue.type === 'tournoi' && vue.cle === i)] : null)
+      .filter(Boolean).sort((a, b) => a[0].localeCompare(b[0])).map(x => x[1]).join('') + '</div>';
+  if (vue.type === 'tournoi') h += '<div class="rang"><span class="lab">Donnes</span>' + bt('d:classement', '🏆 Classement', onglet === 'classement')
+    + T.donnes.map(d => bt('d:' + d.n, d.n, onglet === d.n)).join('') + '</div>';
+  $('nav').innerHTML = h;
+}
+
+function afficherTournoi() {
+  let h = '';
+  if (T.essai && T.note) h += `<div class="nt" style="margin:0 0 8px">🧪 ${esc(T.note)}. Seuls sont classés les joueurs présents les 3 jours ; les donnes 1-5, 6-10 et 11-15 sont celles de chaque jour.</div>`;
+  if (onglet === 'classement') {
+    ROWS = T.classement; COLS = COLS_C;
+    h += `<div class="nt" style="margin:0 0 8px">Total = IMP de Funbridge + correction des donnes non jouées + bonus. Une donne non jouée vaut −24 chez Funbridge : ici, elle compte le plus mauvais score réalisé sur la donne, d'où la colonne « Non jouées ». Le bonus efface les 2 plus mauvaises donnes JOUÉES du joueur, chacune seulement si elle est négative. « Rang sans bonus » = la place que donnerait Funbridge.</div>`;
+  } else {
+    const d = T.donnes.find(x => x.n === onglet);
+    ROWS = d.lignes; COLS = COLS_D;
+    const k = T.donnes.indexOf(d), av = T.donnes[k - 1], ap = T.donnes[k + 1];
+    const qui = st => `<div class="main-j"><div class="qui"><span class="vq ${vulnerable(d.vul, st) ? 'v' : 'nv'}">${POS[st]} · ${points(mainDe(d, st))} H</span>${d.donneur === st ? '<span class="dd" title="donneur">D</span>' : ''}</div>${main(mainDe(d, st))}</div>`;
+    const nbEf = d.lignes.filter(x => x.efface).length;
+    h += `<div class="nav-d"><button id="prec" ${av ? '' : 'disabled'}>◀ Donne précédente</button><button id="suiv" ${ap ? '' : 'disabled'}>Donne suivante ▶</button></div>`;
+    h += `<div class="carte"><div class="donne-haut"><div class="diagramme">
+      <div></div>${qui('N')}<div></div>
+      ${qui('W')}
+      <div class="centre" style="border-top:6px solid ${COUL_V(d.vul, 'N')};border-bottom:6px solid ${COUL_V(d.vul, 'S')};border-left:6px solid ${COUL_V(d.vul, 'W')};border-right:6px solid ${COUL_V(d.vul, 'E')}"><span class="dd d${d.donneur}" title="donneur">D</span><b>Donne ${d.n}</b>Donneur ${POS[d.donneur]}<br>Vuln. <span class="${d.vul === 'L' ? 'vul-nv' : 'vul-v'}">${VUL[d.vul] || ''}</span></div>
+      ${qui('E')}
+      <div></div>${qui('S')}<div></div></div>
+      <div class="infos">
+        ${d.origine ? `<div><b>Origine :</b> Quinté Quotidien du ${DATE(d.origine.jour)}, donne ${d.origine.n}</div>` : ''}
+        ${d.mains && d.mains.N ? '' : '<div><b>Mains :</b> non disponibles sur Funbridge (les scores de la donne, eux, sont complets)</div>'}
+        <div><b>Par :</b> ${d.par ? contrat(d.par.contrat) + ' par ' + (d.par.camp === 'NS' ? 'Nord/Sud' : 'Est/Ouest') + ' (' + fmt(d.par.ns) + ')' : '—'}</div>
+        <div><b>Référence de la salle :</b> ${d.reference != null ? fmt(d.reference) : '—'}</div>
+        <div><b>Plus mauvais score :</b> ${d.pire != null ? fmt(d.pire) + ' IMP <span class="nt">(compté aux joueurs qui ne l\'ont pas jouée)</span>' : '—'}</div>
+        <div><b>Effacée pour :</b> ${nbEf} joueur${nbEf > 1 ? 's' : ''} sur ${d.lignes.length}</div>
+      </div></div></div>`;
+  }
+  dessiner(h);
+  if (onglet !== 'classement') {
+    const k = T.donnes.findIndex(x => x.n === onglet);
+    if ($('prec')) $('prec').onclick = () => allerA(T.donnes[k - 1].n);
+    if ($('suiv')) $('suiv').onclick = () => allerA(T.donnes[k + 1].n);
+    /* Glisser le doigt sur le cadre de la donne : vers la gauche = suivante, vers la droite = précédente. */
+    const carte = document.querySelector('.carte'); let x0 = null, y0 = 0;
+    carte.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+    carte.addEventListener('touchend', e => {
+      if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null;
+      if (Math.abs(dx) < 50 || Math.abs(dx) < 1.5 * Math.abs(dy)) return;
+      const cible = T.donnes[k + (dx < 0 ? 1 : -1)]; if (cible) allerA(cible.n);
+    }, { passive: true });
+  }
+}
+
+function dessiner(h) {
+  marquer();
+  h += `<div class="sb"><input id="cherche" placeholder="Chercher un joueur…" value="${esc(cherche)}"><span class="mc" id="compte"></span></div>
+        <div class="ts"><table><thead><tr id="tete"></tr></thead><tbody id="corps"></tbody></table></div>`;
+  $('contenu').innerHTML = h;
+  $('cherche').oninput = e => { cherche = e.target.value; lignes(); };
+  $('tete').onclick = e => { const th = e.target.closest('th'); if (!th) return; const c = th.dataset.c, num = COLS.find(x => x[0] === c)[2];
+    tri = { col: c, sens: tri && tri.col === c ? -tri.sens : (num && c !== 'r' && c !== 'rangSans' ? -1 : 1) }; lignes(); };
+  lignes();
+}
+
+function lignes() {
+  const C = COLS, q = cherche.trim().toLowerCase();
+  $('tete').innerHTML = C.map(c => `<th data-c="${c[0]}"${c[2] ? ' class="num"' : ''}>${esc(c[1])}${tri && tri.col === c[0] ? (tri.sens > 0 ? ' ▲' : ' ▼') : ''}</th>`).join('');
+  let L = ROWS.filter(x => !q || x.p.toLowerCase().includes(q));
+  if (tri) { const num = C.find(c => c[0] === tri.col)[2];
+    L = L.slice().sort((a, b) => { const x = a[tri.col], y = b[tri.col], vx = x == null || x === '', vy = y == null || y === '';
+      if (vx !== vy) return vx ? 1 : -1; return (vx ? 0 : num ? x - y : String(x).localeCompare(String(y), 'fr')) * tri.sens; }); }
+  $('corps').innerHTML = L.map(x => `<tr class="${x.p === MOI ? 'moi' : x.efface === 'oui' ? 'efface' : ''}">` + C.map(([k, , n]) => {
+    let v = x[k];
+    if (k === 'r' || k === 'rangSans') return `<td class="rk">${k === 'r' ? rang(v) : v}</td>`;
+    if (k === 'p') v = esc(v);
+    else if (k === 'c') v = x.c ? contrat(x.c) : '<i>non jouée</i>';
+    else if (k === 'd') v = POS[x.d] || '';
+    else if (k === 'e') v = entame(x.e);
+    else if (k === 'effaceesTxt') v = v || '—';
+    else if (k === 'ajust' && x.nbNJ != null) return `<td class="num">${x.nbNJ ? fmt(x.ajust) + ` <span class="nt">(${x.nbNJ} donne${x.nbNJ > 1 ? 's' : ''})</span>` : '–'}</td>`;
+    else if (k === 'i' && x.iFb != null) return `<td class="num i nj"><s>${fmt(x.iFb)}</s> → <b>${fmt(v)}</b><br><span class="nt">plus mauvais score de la donne</span></td>`;
+    else if (k === 'efface') return `<td class="${v ? 'ko' : ''}">${v ? '✂️ oui' : ''}</td>`;
+    else if (k === 'ecart') return `<td class="num ${v > 0 ? 'monte' : v < 0 ? 'descend' : ''}">${v > 0 ? '▲ ' + v : v < 0 ? '▼ ' + (-v) : '='}</td>`;
+    else if (k === 'bonus') v = v == null ? '' : v ? '+' + r2(v) : '0';
+    else if (/^x\d/.test(k)) v = v == null ? '–' : fmt(v);
+    else if (k === 'ajust') v = v ? fmt(v) : '–';
+    else if (['i', 'imp', 'total', 's'].includes(k)) v = fmt(v);
+    return `<td class="${n ? 'num' : ''}${k === 'total' ? ' total' : ''}${k === 'i' ? ' i' : ''}">${v == null ? '' : v}</td>`;
+  }).join('') + '</tr>').join('');
+  $('compte').textContent = L.length + (vue.type === 'tournoi' && onglet !== 'classement' ? ' lignes' : ' classés');
+}
+
+demarrer();
+</script>
+</body>
+</html>
