@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Le Quinté Quotidien — votre avis</title>
+<title>Le Quinté Quotidien — sondage terminé</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{--purple:#1a2a4a;--purple-mid:#2d4a7a;--gold:#c9a84c;--gold-light:#e8c97a;--cream:#f5f0e8;--blue:#1d4e79;}
@@ -41,6 +41,9 @@ button[type=submit]:disabled{opacity:.6;cursor:default;}
 .success .check{font-size:48px;margin-bottom:12px;}
 .success p{color:#2a2a2a;font-size:1rem;line-height:1.6;}
 .err{display:none;background:#fdecec;border-left:4px solid #c0392b;border-radius:6px;padding:11px 14px;margin-top:14px;color:#7c2418;font-size:0.88rem;}
+.lien{display:inline-block;margin:8px 8px 0 0;background:var(--blue);color:#fff;text-decoration:none;font-size:.9rem;font-weight:500;padding:10px 16px;border-radius:8px;}
+.lien:hover{background:#2f6ea5;}
+.card p{color:#2a2a2a;font-size:.97rem;line-height:1.6;margin-bottom:14px;}
 .footer{margin:22px 0 10px;color:rgba(255,255,255,0.3);font-size:0.72rem;text-align:center;}
 </style>
 </head>
@@ -49,8 +52,8 @@ button[type=submit]:disabled{opacity:.6;cursor:default;}
 <header>
   <div class="main">🖐️</div>
   <h1>Le Quinté Quotidien</h1>
-  <div class="subtitle lang-fr">Votre avis sur le test</div>
-  <div class="subtitle lang-en" style="display:none">Your feedback on the trial</div>
+  <div class="subtitle lang-fr">Sondage terminé</div>
+  <div class="subtitle lang-en" style="display:none">Survey closed</div>
   <a class="back lang-fr" href="javascript:history.back()">&larr; Retour</a>
   <a class="back lang-en" style="display:none" href="javascript:history.back()">&larr; Back</a>
   <br>
@@ -59,70 +62,31 @@ button[type=submit]:disabled{opacity:.6;cursor:default;}
 
 <div class="card">
 
-  <div class="info-box lang-fr">
-    <strong>Merci de prendre un instant.</strong>
-    C'est votre avis qui décidera si ce tournoi reste — et sous quelle forme.
-    Aucune question n'est obligatoire, sauf votre pseudo.
+  <div class="lang-fr">
+    <div class="info-box">
+      <strong>Ce sondage est terminé. Merci à tous !</strong>
+      Vos avis ont compté dans la décision.
+    </div>
+    <p>Le Quinté Quotidien s'arrête après le <strong>31 décembre 2026</strong>. Il est remplacé par <strong>LeQuintéHebdo</strong> : 15 donnes par semaine, ouvert à tous, sans mot de passe, avec les résultats chaque jeudi. Le Trio Quotidien continue comme avant.</p>
+    <a class="lien" href="https://chrisblb.github.io/funbridge/quinte-hebdo-resultats.html">Résultats de LeQuintéHebdo</a>
+    <a class="lien" href="https://chrisblb.github.io/funbridge/regles-tournois.html">Les règles des tournois</a>
   </div>
-  <div class="info-box lang-en" style="display:none">
-    <strong>Thank you for taking a moment.</strong>
-    Your opinion will decide whether this tournament stays — and in what form.
-    No question is required, except your nickname.
-  </div>
 
-  <form id="avisForm" action="https://bridge.3050.fr/submit-email" method="POST">
-    <input type="hidden" name="type" value="avis-quinte">
-
-    <div class="field">
-      <label class="lang-fr" for="pseudo">Votre pseudo Funbridge</label>
-      <label class="lang-en" style="display:none" for="pseudo">Your Funbridge nickname</label>
-      <input type="text" id="pseudo" name="pseudo" maxlength="60" required autocomplete="off">
+  <div class="lang-en" style="display:none">
+    <div class="info-box">
+      <strong>This survey is now closed. Thank you all!</strong>
+      Your opinions counted in the decision.
     </div>
-
-    <div class="field">
-      <div class="question lang-fr">Le Quinté Quotidien (5 donnes) restera. Et le Trio Quotidien, pour vous, en 2027 ?</div>
-      <div class="question lang-en" style="display:none">The Quinté Quotidien (5 deals) will stay. And the Trio Quotidien, for you, in 2027?</div>
-      <label class="choix"><input type="radio" name="trio2027" value="deux"><span class="lang-fr">Je jouerai les deux tournois</span><span class="lang-en" style="display:none">I will play both tournaments</span></label>
-      <label class="choix"><input type="radio" name="trio2027" value="quinteonly"><span class="lang-fr">Je ne jouerai plus que le Quinté — le Trio ne m'apportera plus rien</span><span class="lang-en" style="display:none">I will only play the Quinté — the Trio won't bring me anything anymore</span></label>
-      <label class="choix"><input type="radio" name="trio2027" value="trioonly"><span class="lang-fr">Je ne jouerai que le Trio — le Quinté ne me conviendra pas</span><span class="lang-en" style="display:none">I will only play the Trio — the Quinté won't suit me</span></label>
-      <label class="choix"><input type="radio" name="trio2027" value="indecis"><span class="lang-fr">Je ne sais pas encore</span><span class="lang-en" style="display:none">I don't know yet</span></label>
-    </div>
-
-    <div class="field">
-      <label class="lang-fr" for="commentaire">Vos remarques <span class="facultatif">(facultatif)</span></label>
-      <label class="lang-en" style="display:none" for="commentaire">Your comments <span class="facultatif">(optional)</span></label>
-      <textarea id="commentaire" name="commentaire" maxlength="2000"></textarea>
-    </div>
-
-    <div class="field">
-      <label class="lang-fr" for="email">Votre email <span class="facultatif">(facultatif, si vous souhaitez une réponse)</span></label>
-      <label class="lang-en" style="display:none" for="email">Your email <span class="facultatif">(optional, if you would like a reply)</span></label>
-      <input type="email" id="email" name="email" maxlength="120" autocomplete="off">
-    </div>
-
-    <button type="submit">
-      <span class="lang-fr">Envoyer mon avis</span>
-      <span class="lang-en" style="display:none">Send my feedback</span>
-    </button>
-    <div class="err" id="errMsg"></div>
-  </form>
-
-  <div class="success" id="successMsg">
-    <div class="check">🖐️</div>
-    <p class="lang-fr"><strong>Merci beaucoup !</strong><br>Votre avis est enregistré. Il comptera vraiment dans la décision.</p>
-    <p class="lang-en" style="display:none"><strong>Thank you very much!</strong><br>Your feedback has been recorded. It will genuinely count.</p>
+    <p>The Quinté Quotidien ends after <strong>31 December 2026</strong>. It is replaced by <strong>LeQuintéHebdo</strong>: 15 deals per week, open to everyone, no password, with results every Thursday. The Daily Trio carries on as before.</p>
+    <a class="lien" href="https://chrisblb.github.io/funbridge/quinte-hebdo-resultats.html">LeQuintéHebdo results</a>
+    <a class="lien" href="https://chrisblb.github.io/funbridge/regles-tournois.html">Tournament rules</a>
   </div>
 
 </div>
 
-<div class="footer">Le Quinté Quotidien · test du 17 au 30 septembre 2026</div>
+<div class="footer"><span class="lang-fr">Le Quinté Quotidien · sondage clos le 25 novembre 2026</span><span class="lang-en" style="display:none">Le Quinté Quotidien · survey closed on 25 November 2026</span></div>
 
 <script>
-var MOTS = {
-  fr: { erreur: "L'envoi n'a pas abouti. Vérifiez votre connexion et réessayez.", pseudo: 'Merci d’indiquer votre pseudo Funbridge.' },
-  en: { erreur: 'Sending failed. Please check your connection and try again.', pseudo: 'Please enter your Funbridge nickname.' }
-};
-
 function setLang(l){
   document.documentElement.lang = l;
   var fr = l !== 'en';
@@ -136,41 +100,6 @@ try { pref = localStorage.getItem('pblang') || 'fr'; } catch (e) {}
 setLang(pref === 'en' ? 'en' : 'fr');
 document.getElementById('lang-btn').addEventListener('click', function(){
   setLang(document.documentElement.lang === 'en' ? 'fr' : 'en');
-});
-
-/* Le choix retenu se voit d'un coup d'œil, sans avoir à viser la pastille. */
-Array.prototype.forEach.call(document.querySelectorAll('.choix input'), function(r){
-  r.addEventListener('change', function(){
-    Array.prototype.forEach.call(document.getElementsByName(r.name), function(x){
-      x.parentNode.className = 'choix';
-    });
-    r.parentNode.className = 'choix sel';
-  });
-});
-
-var form = document.getElementById('avisForm');
-var err = document.getElementById('errMsg');
-form.addEventListener('submit', async function(e){
-  e.preventDefault();
-  var lang = document.documentElement.lang === 'en' ? 'en' : 'fr';
-  err.style.display = 'none';
-  if (!document.getElementById('pseudo').value.trim()){
-    err.textContent = MOTS[lang].pseudo; err.style.display = 'block'; return;
-  }
-  var bouton = form.querySelector('button[type=submit]');
-  bouton.disabled = true;
-  try {
-    var resp = await fetch(form.action, { method:'POST', body:new FormData(form), headers:{ 'Accept':'application/json' } });
-    if (resp.ok){
-      form.style.display = 'none';
-      document.getElementById('successMsg').style.display = 'block';
-      return;
-    }
-    throw new Error('HTTP ' + resp.status);
-  } catch (e2) {
-    err.textContent = MOTS[lang].erreur; err.style.display = 'block';
-    bouton.disabled = false;
-  }
 });
 </script>
 
